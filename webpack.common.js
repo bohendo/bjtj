@@ -5,11 +5,11 @@ const HtmlPlugin = require('html-webpack-plugin');
 module.exports = {
 
   entry: {
-    blog: './c/entry.js',
+    bjvm: './src/entry.js',
   },
 
   output: {
-    path: path.join(__dirname, 'static'),
+    path: path.join(__dirname, 'dist'),
     filename: '[name].bundle.js',
   },
 
@@ -24,7 +24,7 @@ module.exports = {
 
   plugins: [
     new HtmlPlugin({
-      template: './c/index.html',
+      template: './src/index.html',
       filename: 'index.html',
       inject: 'body'
     }),

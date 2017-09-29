@@ -9,7 +9,7 @@ module.exports = merge(require('./webpack.common.js'), {
 
   devServer: {
     // folder to serve files out of
-    contentBase: 'static',
+    contentBase: 'dist',
     hot: true,
     port: 3000,
   },
