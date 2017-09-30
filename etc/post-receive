@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git --work-tree=/var/git/bjvm --git-dir=/var/git/live.git checkout -f
+
+cd /var/git/bjvm
+
+ln -sfT /var/www/live dist
+
+npm install
+npm run build
+
