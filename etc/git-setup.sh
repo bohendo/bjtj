@@ -31,7 +31,7 @@ if [[ $? -eq 1 ]]; then
   sudo chown -R git:git /home/git/.ssh
 
   # git will be the one who deploys so give them permission to
-  sudo chown -R git:git /var/www/live
+  sudo usermod -aG www-data git
   
   # Add our default user to git's group so we can edit these files
   sudo usermod -aG git bjvm
