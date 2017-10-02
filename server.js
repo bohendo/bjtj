@@ -4,22 +4,10 @@
 
 const path = require('path');
 const fs = require('fs');
-const app = require('express')();
+const express = require('express');
 
-//////////////////////////////
-// Setup dev environment
+const app = express();
 
-const webpack = require('webpack');
-const config = require('./webpack.dev.js');
-
-const compiler = webpack(config);
-
-app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath,
-}));
-
-app.use(require("webpack-hot-middleware")(compiler));
 
 //////////////////////////////
 // setup Mongo connection
@@ -36,11 +24,13 @@ const db = require('monk')(
 //////////////////////////////
 // Express pipeline
 
-const staticDir = path.join(__dirname, '/static/');
+const distDir = path.join(__dirname, '/dist/');
+
+app.use(express.static(distDir, { extensions: ['html'] }));
 
 // Serve homepage
 app.get('/', (req, res) => {
-  res.sendFile(path.join(`${staticDir}index.html`));
+  res.sendFile(path.join(`${distDir}index.html`));
 });
 
 app.use((err, req, res, next) => {
@@ -50,7 +40,7 @@ app.use((err, req, res, next) => {
 
 // error handler goes at the end of our pipe
 app.use((req, res) => {
-  res.sendFile(path.join(staticDir, 'error.html'));
+  res.sendFile(path.join(distDir, 'error.html'));
 });
 
 //////////////////////////////
