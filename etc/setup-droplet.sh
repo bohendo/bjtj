@@ -5,7 +5,7 @@
 # ssh-keygen -t rsa -b 4096 -C "name@example.com"
 
 # Once your droplet's awake & your ssh keys are configured to login w/out pass,
-# Run this script and pass it's IP as the first argument
+# Run this script and pass the droplet's IP as the first & only argument
 
 # define a clean error handler
 function err { >&2 echo "Error: $1"; exit 1; }
@@ -16,7 +16,7 @@ IP=$1
 
 # Check our given IP and the default ssh credentials
 ssh -q root@$IP exit
-if [[ $? -ne 0 ]]; then err "SSH Connection Error"; fi
+if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to root@$IP"; fi
 
 ####################
 # Begin main heredoc
@@ -55,12 +55,11 @@ ufw --force enable
 # Create users & groups
 
 id -u git
-if [[ $? -ne 0 ]]; then
-
+if [[ $? -ne 0 ]]
+then
   adduser --disabled-password --gecos "" git
   cp -r /root/.ssh /home/git/.ssh
   chown -R git:git /home/git/.ssh
-
   # git will be the one who deploys so give them permission to
   usermod -aG www-data git
 fi
@@ -77,8 +76,9 @@ if [[ ! -d hooks ]]; then
   git init --bare
 
   echo '#!/bin/bash' > hooks/post-receive
-  echo 'git --work-tree=/var/git/live --git-dir=/var/git/live.git checkout -f' >> hooks/post=receive
-  echo '' >> hooks/post=receive
+  echo 'git --work-tree=/var/git/live --git-dir=/var/git/live.git checkout -f' >> hooks/post-receive
+  echo 'ln -sfT /var/www/live /var/git/live/dist' >> hooks/post-receive
+  echo 'make all' >> hooks/post-receive
 
   chmod 755 hooks/post-receive
 
@@ -87,13 +87,31 @@ fi
 chown -R git:git /var/git
 
 mkdir -p /var/www/live
+chown -R www-data:www-data /var/www
 
 EOF
 
-if [[ ! `git branch --list live` ]]
+# Add a remote git repo to push to
+if ! git ls-remote live
 then
   git remote add live ssh://git@$IP:/var/git/live.git
 fi
 
-echo;echo "We're good to go, git push to live whenever you're ready to deploy.";
+
+# Add bjvm to our ssh/config
+if grep -Fxq $IP ~/.ssh/config
+then
+  echo >> ~/.ssh/config
+  echo "Host bjvm" >> ~/.ssh/config
+  echo "  Hostname $IP" >> ~/.ssh/config
+  echo "  User root" >> ~/.ssh/config
+  echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+fi
+
+bash reconfigure.sh
+
+echo;
+echo "If you didn't see any errors above, we're good to go."
+echo "  ssh to your droplet with: ssh bjvm"
+echo "  push to your droplet with: git push -u live master";
 
