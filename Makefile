@@ -36,18 +36,10 @@ all: $(out_dir) $(out_files) npm_build
 # $* is an auto var for the stem ie %
 $(out_files): $(out_dir)/%.html: $(in_dir)/%.md  $(template)
 
-	# Generate our body html from the markdown source
 	$(pandoc) $< > $(body)
-
-  # copy our template to the location for this page
 	cp -f $(template) $(out_dir)/$*.html
-
-	# dump the contents of $snipfile right after it's include comment
 	sed -i '/<!--#include body-->/r '"$(body)" "$(out_dir)/$*.html"
-
-	# remove this include comment, we're done with it!
 	sed -i '/<!--#include body-->/d' "$(out_dir)/$*.html"
-
 	rm $(body)
 
 $(out_dir):

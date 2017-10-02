@@ -21,12 +21,12 @@ scp nginx.conf bjvm:/etc/nginx/nginx.conf
 ssh bjvm "bash -s" <<`EOF`
 
 # Make sure our nginx config is for the correct servername
-sed -i 's/server_name .*;/server_name `hostname`;/' /etc/nginx/nginx.conf
+sed -i 's/server_name .*;/server_name '`hostname`';/' /etc/nginx/nginx.conf
 
 nginx -t
 if [[ $? -eq 0 ]]
 then
-  systemctl reload nginx
+  systemctl restart nginx
   systemctl status nginx
 else
   echo "Syntax error in nginx.conf"

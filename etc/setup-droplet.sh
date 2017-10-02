@@ -36,6 +36,8 @@ apt-get autoremove -y
 apt-get install -y git
 apt-get install -y nginx
 apt-get install -y nodejs
+apt-get install -y make
+apt-get install -y pandoc
 
 ########################################
 # Firewalls
@@ -54,8 +56,8 @@ ufw --force enable
 ########################################
 # Create users & groups
 
-id -u git
-if [[ $? -ne 0 ]]
+
+if ! getent passwd git
 then
   adduser --disabled-password --gecos "" git
   cp -r /root/.ssh /home/git/.ssh
@@ -78,6 +80,7 @@ if [[ ! -d hooks ]]; then
   echo '#!/bin/bash' > hooks/post-receive
   echo 'git --work-tree=/var/git/live --git-dir=/var/git/live.git checkout -f' >> hooks/post-receive
   echo 'ln -sfT /var/www/live /var/git/live/dist' >> hooks/post-receive
+  echo 'cd /var/git/live' >> hooks/post-receive
   echo 'make all' >> hooks/post-receive
 
   chmod 755 hooks/post-receive
@@ -88,11 +91,13 @@ chown -R git:git /var/git
 
 mkdir -p /var/www/live
 chown -R www-data:www-data /var/www
+chmod 775 /var/www
+chmod 775 /var/www/live
 
 EOF
 
 # Add a remote git repo to push to
-if ! git ls-remote live
+if ! git ls-remote live 2> /dev/null
 then
   git remote add live ssh://git@$IP:/var/git/live.git
 fi
