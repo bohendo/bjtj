@@ -18,54 +18,44 @@ IP=$1
 ssh -q root@$IP exit
 if [[ $? -ne 0 ]]; then err "SSH Connection Error"; fi
 
-scp ./nginx.conf root@$IP:~
-
 ####################
 # Begin main heredoc
+ssh root@$IP "bash -s" <<EOF
 
-# `backticks` around delimiter means don't execute them in heredoc
-ssh root@$IP "bash -s" <<`EOF`
+########################################
+# Installations
+
+# add node repo and update our apt cache
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
+# https://askubuntu.com/questions/146921/how-do-i-apt-get-y-dist-upgrade-without-a-grub-config-prompt
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+
+apt-get autoremove -y
+
+apt-get install -y git
+apt-get install -y nginx
+apt-get install -y nodejs
 
 ########################################
 # Firewalls
 
 # Clear all rules & disable firewall
-ufw --force reset > /dev/null
+ufw --force reset
 
 # only allow ssh, http, and https traffic
-ufw allow 22  > /dev/null &&\
-ufw allow 80  > /dev/null &&\
-ufw allow 443 > /dev/null &&\
-ufw --force enable > /dev/null
+ufw allow 22  &&\
+ufw allow 80  &&\
+ufw allow 443 &&\
+ufw --force enable
 # chained && means we shouldn't enable the firewall unless
 # all of the previous commands succeeded
 
 ########################################
-# Installations
-
-# First: make sure our system is up to date
-apt-get update -y
-apt-get upgrade -y
-apt-get autoremove -y
-
-if ! hash git 2> /dev/null; then
-  sudo apt-get install git -y
-fi
-
-if ! hash nginx 2> /dev/null; then
-  sudo apt-get install nginx -y
-fi
-
-if ! hash node 2> /dev/null; then
-  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  sudo apt install -y nodejs
-fi
-
-########################################
 # Create users & groups
 
-id -u git &> /dev/null
-if [[ $? -eq 1 ]]; then
+id -u git
+if [[ $? -ne 0 ]]; then
 
   adduser --disabled-password --gecos "" git
   cp -r /root/.ssh /home/git/.ssh
@@ -98,28 +88,12 @@ chown -R git:git /var/git
 
 mkdir -p /var/www/live
 
-########################################
-# Configure nginx
+EOF
 
-# We scp'ed stuff to ~
-cd ~
-sed -i 's/server_name .*;/server_name '`hostname`';/' nginx.conf
-mv -f nginx.conf /etc/nginx/nginx.conf
-chmod 644 /etc/nginx/nginx.conf
-chown www-data /etc/nginx/nginx.conf
-
-nginx -t 2> /dev/null
-if [[ $? -eq 0 ]]; then
-  systemctl reload nginx
-else
-  echo "Syntax error in nginx.conf"
+if [[ ! `git branch --list live` ]]
+then
+  git remote add live ssh://git@$IP:/var/git/live.git
 fi
 
-
-`EOF`
-
-git remote add live ssh://git@$IP:/var/git/live.git
-git push -u live master
-
-echo "You're good to go"
+echo;echo "We're good to go, git push to live whenever you're ready to deploy.";
 
