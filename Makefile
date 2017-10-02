@@ -25,11 +25,10 @@ pandoc=pandoc -f markdown -t html
 ##### RULES #####
 
 # remake everything that needs to be updated
-default: setup $(out_files)
+default: $(out_dir) $(out_files)
 
 # remake everything
-all: setup $(out_files) npm_build
-
+all: $(out_dir) $(out_files) npm_build
 
 # Build doc pages
 # targets: target-pattern: prereq-patterns
@@ -44,15 +43,14 @@ $(out_files): $(out_dir)/%.html: $(in_dir)/%.md  $(template)
 	cp -f $(template) $(out_dir)/$*.html
 
 	# dump the contents of $snipfile right after it's include comment
-	sed -i '/<!--#include body-->/r '"$(body)" "$(template)"
+	sed -i '/<!--#include body-->/r '"$(body)" "$(out_dir)/$*.html"
 
 	# remove this include comment, we're done with it!
-	sed -i '/<!--#include body-->/d' "$(template)"
+	sed -i '/<!--#include body-->/d' "$(out_dir)/$*.html"
 
 	rm $(body)
 
-.PHONY: setup
-setup:
+$(out_dir):
 	mkdir -p $(out_dir)
 
 
