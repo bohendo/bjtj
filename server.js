@@ -26,7 +26,7 @@ const db = require('monk')(
 
 const distDir = path.join(__dirname, '/dist/');
 
-app.use(express.static(distDir, { extensions: ['html'] }));
+app.use(express.static(distDir));
 
 // Serve homepage
 app.get('/', (req, res) => {

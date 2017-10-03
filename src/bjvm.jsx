@@ -8,6 +8,7 @@ export default class BJVM extends React.Component {
 <div class="center canvas">
 
   <svg height="600" width="600">
+
     <rect x="0" y="100" height="500" width="500"
           fill="#171" stroke="white"/>
     <polygon points="0,100 100,0 600,0 500,100"
