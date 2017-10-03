@@ -5,6 +5,8 @@ import style from './bjvm.scss';
 import Card from './card.jsx';
 import Dealer from './dealer.jsx';
 
+import {Hit, Stay} from './buttons.jsx';
+
 export default class BJVM extends React.Component { 
   render() { 
     return (
@@ -22,13 +24,14 @@ export default class BJVM extends React.Component {
 
     <Dealer />
 
-    <Card x="200" y="200" size="75" suit="clubs" val="Q" />
+    <Card x="175" y="100" size="75" suit="hidden" rank="hidden" />
+    <Card x="200" y="150" size="75" suit="spades" rank="J" />
 
-    <Card x="300" y="200" size="75" suit="diamonds" val="A" />
+    <Card x="50" y="325" size="100" suit="diamonds" rank="A" />
+    <Card x="175" y="325" size="100" suit="hearts" rank="7" />
 
-    <Card x="200" y="350" size="75" suit="hearts" val="7" />
-
-    <Card x="300" y="350" size="75" suit="spades" val="3" />
+    <Hit x="315" y="310"/>
+    <Stay x="315" y="410"/>
 
   </svg> 
 

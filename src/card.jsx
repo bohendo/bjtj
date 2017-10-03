@@ -1,36 +1,50 @@
 
 import React from 'react';
 
+////////////////////////////////////////
+// Global Variables
+
 let ratio = 7/5; // card height/width
 
 export default class Card extends React.Component {
 
-  ////////////////////////////////////////
-  renderSuit(x, y, s) {
+  renderBack(x, y, s) {
 
-    let shape;
-    if (this.props.suit === "clubs") { shape = this.renderClub; }
-
-    else if (this.props.suit === "diamonds") { shape = this.renderDiamond; }
-
-    else if (this.props.suit === "hearts") { shape = this.renderHeart; }
-
-    else if (this.props.suit === "spades") { shape = this.renderSpade; }
- 
-    let ns = Number(s);
-
-    // tr_ for Top Right
-    let tr_x = Number(x) + (ns * 0.25);
-    let tr_y = Number(y) + (ns * 0.25);
-
-    // bl_ for Bottom Left
-    let bl_x = Number(x) + (ns * 0.75);
-    let bl_y = Number(y) + (ns * 0.82) * ratio;
+    let m = s * 0.1; // m for margin
 
     return (
 <g>
-    {shape(tr_x, tr_y, ns/5)}
-    {shape(bl_x, bl_y, ns/5)}
+   <rect x={x+m} y={y+m} width={s-2*m} height={1.4*s-2*m} rx="3" ry="3"
+         fill="blue" fill-opacity="0.5" stroke="blue"/>
+</g>
+    );
+   }
+
+  ////////////////////////////////////////
+  renderSuit(x, y, s, suit) {
+
+    let shape;
+
+    if (suit === "clubs") { shape = this.renderClub; }
+    else if (suit === "diamonds") { shape = this.renderDiamond; }
+    else if (suit === "hearts") { shape = this.renderHeart; }
+    else if (suit === "spades") { shape = this.renderSpade; }
+
+    // Render back of the card if this card is facedown
+    else { return(this.renderBack(x, y, s)); }
+ 
+    // tr_ for Top Right
+    let tr_x = x + (s * 0.25);
+    let tr_y = y + (s * 0.25);
+
+    // bl_ for Bottom Left
+    let bl_x = x + (s * 0.75);
+    let bl_y = y + (s * 0.82) * ratio;
+
+    return (
+<g>
+    {shape(tr_x, tr_y, s/5)}
+    {shape(bl_x, bl_y, s/5)}
 </g>
     );
   }
@@ -55,7 +69,8 @@ export default class Card extends React.Component {
    return (
 <g>
   <path d={path} fill="black" stroke="black"/>
-  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+{//  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/> 
+}
 </g>
     );
   }
@@ -71,7 +86,8 @@ export default class Card extends React.Component {
                   ${cx},${cy-dy} ${cx-dx},${cy}`;
     return (
 <g>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+{//      <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+}
       <polygon points={points} fill="red" stroke="black"/>
 </g>
     );
@@ -96,7 +112,8 @@ export default class Card extends React.Component {
                 Z`;
     return (
 <g>
-  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+{//  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+}
   <path d={path} fill="red" stroke="black"/>
 </g>
     );
@@ -124,30 +141,46 @@ export default class Card extends React.Component {
                 Z`;
     return (
 <g>
-  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+{//  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+}
   <path d={path} fill="black" stroke="black"/>
 </g>
     );
   }
 
+  renderRank(x, y, size, rank) {
+
+    // Don't render text if this card is facedown
+    if (rank === 'hidden') { return(<g/>); }
+
+    return (
+<g>
+      <text x={x + size/3.5}
+            y={y + size/1.05}
+            font-size={size/1.5}>
+        {rank}
+      </text>
+
+</g>
+    );
+   }
+
 
   render() {
+    const n = Number;
     return (
 <g>
       <rect x={this.props.x} y={this.props.y} rx="10" ry="10"
             width={this.props.size} height={this.props.size*ratio}
             stroke="black" fill="white"/>
 
-      <text x={Number(this.props.x) + Number(this.props.size)/3.5}
-            y={Number(this.props.y) + Number(this.props.size)/1.05}
-            font-size={this.props.size/1.5}>
-        {this.props.val}
-      </text>
+      {this.renderRank(n(this.props.x), n(this.props.y),
+                       n(this.props.size), this.props.rank)}
 
-      {this.renderSuit(this.props.x, this.props.y, this.props.size)}
+      {this.renderSuit(n(this.props.x), n(this.props.y),
+                       n(this.props.size), this.props.suit)}
 </g>
     );
   }
 }
-
 
