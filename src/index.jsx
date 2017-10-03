@@ -2,7 +2,7 @@
 import React from 'react';
 import BJVM from './bjvm.jsx';
 
-class Index extends React.Component { render() { return (
+export default class Index extends React.Component { render() { return (
 <div>
 
     <div class="container">
@@ -13,10 +13,7 @@ class Index extends React.Component { render() { return (
               <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+              <a class="nav-link" href="about">About</a>
             </li>
           </ul>
         </nav>
@@ -33,8 +30,22 @@ class Index extends React.Component { render() { return (
         </div>
 
         <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+          <a href="react"><h4>React</h4></a>
+          <p>The BJVM frontend is built from React, this article will walk you through setting up a basic react environment and then introduce some of React's core concepts.</p>
+
+        </div>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <a href="mongo"><h4>Mongo</h4></a>
+          <p>This application doesn't use a database yet but I think it will soon. When it does, I'll set up mongo according to this guide.</p>
+
+        </div>
+
+        <div class="col-lg-6">
+          <a href="buying-crypto"><h4>Buying Cryptocurrecies</h4></a>
+          <p>Buying cryptocurrencies is intimidating the first time. This simple guide will walk you though some of your best options for trading in your USD.</p>
 
         </div>
       </div>
@@ -47,4 +58,3 @@ class Index extends React.Component { render() { return (
 
 </div>
 ); } }
-export default Index;

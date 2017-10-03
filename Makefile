@@ -25,10 +25,14 @@ pandoc=pandoc -f markdown -t html
 ##### RULES #####
 
 # remake everything that needs to be updated
-default: $(out_dir) $(out_files)
+default: setup $(out_dir) $(out_files)
 
 # remake everything
-all: $(out_dir) $(out_files) npm_build
+all: setup $(out_dir) $(out_files) npm_build
+
+.PHONY: setup
+setup:
+	cp -f README.md doc/about.md
 
 # Build doc pages
 # targets: target-pattern: prereq-patterns

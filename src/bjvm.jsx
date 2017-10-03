@@ -1,13 +1,19 @@
 
 import React from 'react';
 
-class BJVM extends React.Component { render() { return (
-<div>
+export default class BJVM extends React.Component { 
+  render() { 
+    return (
 
-  <svg height="500" width="300">
-    <rect x="50" y="50" height="400" width="200" fill="green"/>
+<div class="center canvas">
+
+  <svg height="600" width="600">
+    <rect x="0" y="0" height="700" width="600"
+          fill="#ddd" stroke="white"/>
+    <polygon points=""
+          fill="#171" stroke="white"/>
   </svg> 
 
 </div>
+
 ); } }
-export default BJVM;
