@@ -22,11 +22,13 @@ export default class BJVM extends React.Component {
 
     <Dealer />
 
-    <Card x="200" y="200" size="75" suit="spades" val="Q" />
+    <Card x="200" y="200" size="75" suit="clubs" val="Q" />
 
-    <Card x="300" y="200" size="75" suit="spades" val="A" />
+    <Card x="300" y="200" size="75" suit="diamonds" val="A" />
 
-    <Card x="200" y="350" size="75" suit="spades" val="7" />
+    <Card x="200" y="350" size="75" suit="hearts" val="7" />
+
+    <Card x="300" y="350" size="75" suit="spades" val="3" />
 
   </svg> 
 
