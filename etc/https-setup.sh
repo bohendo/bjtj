@@ -1,68 +1,42 @@
 #!/bin/bash
 
+########################################
+# Sanity Check: can we ssh to bjvm?
+
 # define a clean error handler
 function err { >&2 echo "Error: $1"; exit 1; }
 
-# Sanity check: can we even ssh to the server we're setting up?
+# Sanity check, were we given a domain name?
+if [[ ! $1 || $2 ]]; then err "Provide droplet's domain name as the first & only arg"; fi
+DN=$1
+
 ssh -q bjvm exit
-if [[ $? -ne 0 ]]; then err "can't ssh to bjvm, did you initialize this droplet?"; fi
-
-dir=`dirname "$(readlink -f "$0")"`
-
-scp "$dir/nginx.conf" bjvm:~
+if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to bjvm (have you run setup-droplet.sh?)"; fi
 
 email=`git config user.email`
 
-ssh bjvm "bash -s" <<`EOF`
+ssh bjvm "bash -s" <<EOF
 
+sed -i 's/server_name .*;/server_name '$DN';/' /etc/nginx/nginx.conf
 
-## Install nginx if it's not installed already
-if ! hash nginx 2> /dev/null; then
-  sudo apt-get update -y
-  sudo apt-get upgrade -y
-  sudo apt-get install nginx -y
+# Request and install an https certificate
+certbot --nginx -d $DN -m $email --agree-tos --no-eff-email -n
+
+if [[ ! -f /etc/ssl/certs/dhparam.pem ]]
+then
+  openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 fi
 
-sed -i 's/server_name .*;/server_name '`hostname`';/' nginx.conf
-# sudo mv -f nginx.conf /etc/nginx/nginx.conf
-
-echo `hostname`
-exit
-
-## Install certbot if it's not installed already
-if ! hash certbot 2> /dev/null; then
-  sudo add-apt-repository ppa:certbot/certbot -y
-  sudo apt-get update -y
-  sudo apt-get install python-certbot-nginx -y
-
-  sudo certbot --nginx -d `hostname` <<EOIF
-$email
-A
-N
-2
-EOIF
-
-  sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-  sudo sed -i '0,/# managed by Certbot/ s/.*# managed by Certbot/        ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;\n&/' /etc/nginx/nginx.conf
-else
-
-# Reinstall existing certificates
-sudo certbot --nginx -d `hostname` <<EOIF
-1
-2
-EOIF
-
+if ! grep ssl_dhparam /etc/nginx/nginx.conf
+then
+  sed -i '0,/# managed by Certbot/ s/.*# managed by Certbot/        ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;\n&/' /etc/nginx/nginx.conf
 fi
 
-# Set appropriate permissions
-
-sudo nginx -t 2> /dev/null
-if [[ $? -eq 0 ]]; then
-  sudo systemctl reload nginx
-  sudo systemctl status nginx
-else
-  echo "Syntax error in nginx.conf"
+if nginx -t
+then
+  systemctl restart nginx
+  systemctl status nginx
 fi
 
-`EOF`
+EOF
 

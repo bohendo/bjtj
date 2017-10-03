@@ -11,12 +11,18 @@
 function err { >&2 echo "Error: $1"; exit 1; }
 
 # Sanity check, were we given an IP?
-if [[ ! $1 || $2 ]]; then err "Provide droplet's IP as the first & only arg"; fi
+if [[ ! $1 || $2 ]]
+then
+  err "Provide droplet's IP as the first & only arg"
+fi
 IP=$1
 
 # Check our given IP and the default ssh credentials
 ssh -q root@$IP exit
-if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to root@$IP"; fi
+if [[ $? -ne 0 ]]
+then
+  err "Couldn't open an ssh connection to root@$IP"
+fi
 
 ####################
 # Begin main heredoc
@@ -25,19 +31,23 @@ ssh root@$IP "bash -s" <<EOF
 ########################################
 # Installations
 
-# add node repo and update our apt cache
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-
+# update & upgrade without prompts
 # https://askubuntu.com/questions/146921/how-do-i-apt-get-y-dist-upgrade-without-a-grub-config-prompt
-DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
-apt-get autoremove -y
+# Manually add node repo: https://github.com/nodesource/distributions#debinstall
+curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+echo "deb https://deb.nodesource.com/node_6.x xenial main" > /etc/apt/sources.list.d/nodesource.list
+echo "deb-src https://deb.nodesource.com/node_6.x xenial main" >> /etc/apt/sources.list.d/nodesource.list
 
-apt-get install -y git
-apt-get install -y nginx
-apt-get install -y nodejs
-apt-get install -y make
-apt-get install -y pandoc
+# Add certbot repo
+add-apt-repository ppa:certbot/certbot -y
+
+# Update & install stuff
+apt-get update -y
+apt-get install -y git nginx nodejs make pandoc software-properties-common python-certbot-nginx
+
 
 ########################################
 # Firewalls
@@ -56,7 +66,6 @@ ufw --force enable
 ########################################
 # Create users & groups
 
-
 if ! getent passwd git
 then
   adduser --disabled-password --gecos "" git
@@ -74,7 +83,8 @@ mkdir -p /var/git/live
 
 cd /var/git/live.git
 
-if [[ ! -d hooks ]]; then
+if [[ ! -d hooks ]]
+then
   git init --bare
 
   echo '#!/bin/bash' > hooks/post-receive
@@ -87,12 +97,24 @@ if [[ ! -d hooks ]]; then
 
 fi
 
-chown -R git:git /var/git
+########################################
+# Set appropriate ownership/permissions
 
 mkdir -p /var/www/live
+
 chown -R www-data:www-data /var/www
+chown -R git:git /var/git
+
 chmod 775 /var/www
 chmod 775 /var/www/live
+
+########################################
+# Restart to finish updates
+
+apt-get update -y
+apt-get upgrade -y
+apt-get autoremove -y
+reboot
 
 EOF
 
@@ -113,6 +135,8 @@ then
   echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
 fi
 
+echo "Waiting for server to finish rebooting..."
+sleep 15
 bash reconfigure.sh
 
 echo;

@@ -27,8 +27,8 @@ class Index extends React.Component { render() { return (
 
       <div class="row marketing">
         <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+          <a href="nodejs"><h4>NodeJS</h4></a>
+          <p>This application will utilize a node server, check out this article to get an overview of how Node works.</p>
 
         </div>
 
