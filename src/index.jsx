@@ -51,7 +51,7 @@ export default class Index extends React.Component { render() { return (
       </div>
 
       <footer class="footer">
-        <p>&copy; Company 2017</p>
+        <p>&copy; Bo Henderson {new Date().getFullYear()}</p>
       </footer>
 
     </div>
