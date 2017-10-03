@@ -9,8 +9,10 @@ function err { >&2 echo "Error: $1"; exit 1; }
 ssh -q bjvm exit
 if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to bjvm (have you run setup-droplet.sh?)"; fi
 
-# Load our config file into memory
-nginx=`cat nginx.conf`
+########################################
+# Send our config files to our remote server
+
+scp nginx.conf bjvm:/etc/nginx/nginx.conf
 
 ########################################
 # Tweak config files and reload services
@@ -18,12 +20,8 @@ nginx=`cat nginx.conf`
 # `ticks` around delimiter means don't execute `expressions` before sending heredoc
 ssh bjvm "bash -s" <<`EOF`
 
-# Keep a copy juuust in case
-mv -f /etc/nginx/nginx.conf /etc/nginx/.nginx.conf.backup
-
-echo "$nginx" |\
-sed 's/server_name .*;/server_name '`hostname`';/' \
-> /etc/nginx/nginx.conf
+# Make sure our nginx config is for the correct servername
+sed -i 's/server_name .*;/server_name '`hostname`';/' /etc/nginx/nginx.conf
 
 nginx -t
 if [[ $? -eq 0 ]]
