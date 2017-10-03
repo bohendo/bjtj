@@ -126,7 +126,7 @@ fi
 
 
 # Add bjvm to our ssh/config
-if grep -Fxq $IP ~/.ssh/config
+if grep -Fxq bjvm ~/.ssh/config
 then
   echo >> ~/.ssh/config
   echo "Host bjvm" >> ~/.ssh/config

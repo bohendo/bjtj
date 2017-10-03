@@ -1,5 +1,5 @@
 {
-  "name": "BoHendo",
+  "name": "blackjack-vending-machine",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --config webpack.dev.js"
   },
   "keywords": [],
-  "author": "Bo Henderson",
+  "author": "Bo Henderson et al",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^7.1.4",
