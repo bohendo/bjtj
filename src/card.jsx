@@ -37,11 +37,28 @@ export default class Card extends React.Component {
 
   ////////////////////////////////////////
   // Draw a club
-  renderClub(cx, cy, r) { return (
+  renderClub(cx, cy, r) {
+    
+    let cpx = 0.15; // critical point x scalar
+    let cpy = 0.15; // critical point y scalar
+    let shs = 0.15; // start height scalar
+    let ar = 0.4; // arc radius scalar
+    
+    // Arc: xr yr x-rot sm-lg-flag pos-neg-flag x y
+    let path = `M ${cx} ${cy+r*shs}
+                A ${r*ar} ${r*ar} 0 1 1 ${cx-r*cpx} ${cy-r*cpy}
+                A ${r*ar} ${r*ar} 0 1 1 ${cx+r*cpx} ${cy-r*cpy}
+                A ${r*ar} ${r*ar} 0 1 1 ${cx} ${cy+r*shs}
+                L ${cx-r*cpx} ${cy+r}
+                L ${cx+r*cpx} ${cy+r}
+                Z`;
+   return (
 <g>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
+  <path d={path} fill="black" stroke="black"/>
+  <circle cx={cx} cy={cy} r={r} fill="none" stroke="black"/>
 </g>
-  ); }
+    );
+  }
 
   ////////////////////////////////////////
   // Draw a Diamond
