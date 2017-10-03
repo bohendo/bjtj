@@ -13,6 +13,9 @@ in_files=$(wildcard $(in_dir)/*.md)
 out_dir=dist
 out_files=$(subst $(in_dir)/,$(out_dir)/,$(subst .md,.html,$(in_files)))
 
+fe_dir=src
+fe_files=$(wildcard $(fe_dir)/*) package.json
+
 # Templates & Temp files
 template=$(in_dir)/template.html
 body=$(in_dir)/body.html
@@ -24,15 +27,15 @@ pandoc=pandoc -f markdown -t html
 
 ##### RULES #####
 
-# remake everything that needs to be updated
-default: setup $(out_dir) $(out_files)
+# remake everything that needs to be updated frequently
+default: $(out_dir) $(out_files) doc/about.md
 
 # remake everything
-all: setup $(out_dir) $(out_files) npm_build
+all: $(out_dir) $(out_files) doc/about.md npm_build
 
-.PHONY: setup
-setup:
-	cp -f README.md doc/about.md
+# readme and about: same thing
+doc/about.md: README.md
+	cp -f README.md doc/about.md 
 
 # Build doc pages
 # targets: target-pattern: prereq-patterns
@@ -50,8 +53,7 @@ $(out_dir):
 	mkdir -p $(out_dir)
 
 
-.PHONY: npm_build
-npm_build:
+npm_build: $(fe_files)
 	npm install
 	npm run build
 
