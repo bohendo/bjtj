@@ -9,18 +9,27 @@ import {Hit, Stay} from './buttons.jsx';
 
 export default class BJVM extends React.Component { 
   render() { 
+
+    let height = 500;
+    let width = 500;
+    let depth = 25;
+
+    let top_panel = `0,${depth} ${depth},0
+                     ${width+depth},0 ${width},${depth}`
+
+    let right_panel = `${width+depth},0 ${width+depth},${height}
+                     ${width},${height+depth} ${width},${depth}`
+
     return (
 
 <div class="center canvas">
 
-  <svg height="525" width="525" id="bjvm">
+  <svg height={height+depth} width={height+depth} id="bjvm-svg">
 
-    <rect x="0" y="25" height="500" width="500"
+    <rect x="0" y={depth} height={height} width={width}
           fill="#171" stroke="white"/>
-    <polygon points="0,25 25,0 525,0 500,25"
-             fill="#171" stroke="white"/>
-    <polygon points="525,0 525,500 500,525 500,25"
-             fill="#171" stroke="white"/>
+    <polygon points={top_panel} fill="#171" stroke="white"/>
+    <polygon points={right_panel} fill="#171" stroke="white"/>
 
     <Dealer />
 
