@@ -5,9 +5,9 @@
 SHELL=/bin/bash
 
 # VPATH defines the search path for prerequisites
-VPATH=doc
+VPATH=docs
 
-in_dir=doc
+in_dir=docs
 in_files=$(wildcard $(in_dir)/*.md)
 
 out_dir=dist
@@ -24,20 +24,22 @@ body=$(in_dir)/body.html
 drfrank=bash drfrank.sh
 pandoc=pandoc -f markdown -t html
 
+about=docs/about.md
+
 
 ##### RULES #####
 
 # remake everything that needs to be updated frequently
-default: $(out_dir) $(out_files) doc/about.md
+default: $(out_dir) $(out_files) $(about)
 
 # remake everything
-all: $(out_dir) $(out_files) doc/about.md npm_build
+all: $(out_dir) $(out_files) $(about) npm_build
 
 # readme and about: same thing
-doc/about.md: README.md
-	cp -f README.md doc/about.md 
+$(about): README.md
+	cp -f README.md $(about)
 
-# Build doc pages
+# Build docs pages
 # targets: target-pattern: prereq-patterns
 # $< is an auto var for the first prereq
 # $* is an auto var for the stem ie %
