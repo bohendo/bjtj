@@ -2,6 +2,8 @@
 import React from 'react';
 import style from './svg.scss';
 
+
+import Hand from './hand.jsx';
 import Card from './card.jsx';
 import Dealer from './dealer.jsx';
 import Payment from './payment.jsx';
@@ -22,6 +24,20 @@ export default class BJVM extends React.Component {
     let depth = 25;
     let fill = "#171";
     let stroke = "#eee";
+
+    let dealerHand = [{ rank: "8", suit: "S" },
+                      { rank: "A", suit: "C" },
+                      { rank: "5", suit: "D" },
+                      { rank: "2", suit: "H" },
+                      { rank: "2", suit: "S" },
+                      { rank: "6", suit: "C" }]
+
+    let playerHand = [{ rank: "2", suit: "C" },
+                      { rank: "3", suit: "S" },
+                      { rank: "4", suit: "H" },
+                      { rank: "A", suit: "D" },
+                      { rank: "J", suit: "H" },
+                      { rank: "A", suit: "H" }]
 
     ////////////////////////////////////////
     // Calculations
@@ -55,41 +71,33 @@ export default class BJVM extends React.Component {
            chips={chips} bet={bet} />
 
     {/* Deck */}
-    <Card x="315" y="125" w="70" suit="hidden" rank="hidden" />
+    <Card x="305" y="100" w="80" suit="?" rank="?" />
+    <Card x="305" y="105" w="80" suit="?" rank="?" />
+    <Card x="305" y="110" w="80" suit="?" rank="?" />
+    <Card x="305" y="115" w="80" suit="?" rank="?" />
+    <Card x="305" y="120" w="80" suit="?" rank="?" />
+    <Card x="305" y="125" w="80" suit="?" rank="?" />
+    <Card x="305" y="130" w="80" suit="?" rank="?" />
+    <Card x="305" y="135" w="80" suit="?" rank="?" />
 
-    {/* Dealer's Hand */}
-    <Card x="125" y="120" w="50" suit="spades" rank="8" />
-    <Card x="165" y="120" w="50" suit="spades" rank="8" />
-    <Card x="205" y="120" w="50" suit="diamonds" rank="A" />
-    <Card x="245" y="120" w="50" suit="clubs" rank="5" />
-    <Card x="135" y="180" w="50" suit="spades" rank="2" />
-    <Card x="175" y="180" w="50" suit="spades" rank="2" />
-    <Card x="215" y="180" w="50" suit="clubs" rank="2" />
-    <Card x="255" y="180" w="50" suit="hearts" rank="6" />
 
-    {/* Player's Hand */}
-    <Card x="20"  y="280" w="80" suit="clubs" rank="A" />
-    <Card x="80"  y="280" w="80" suit="hearts" rank="7" />
-    <Card x="140" y="280" w="80" suit="diamonds" rank="7" />
-    <Card x="200" y="280" w="80" suit="spades" rank="7" />
+    <Hand x="120" y="110" w="180"
+          who="dealer" cards={dealerHand} />
 
-    <Card x="40"  y="370" w="80" suit="clubs" rank="A" />
-    <Card x="100" y="370" w="80" suit="hearts" rank="7" />
-    <Card x="160" y="370" w="80" suit="diamonds" rank="7" />
-    <Card x="220" y="370" w="80" suit="spades" rank="7" />
+    <Hand x="20" y="280" w="280"
+          who="player" cards={playerHand} />
 
     <Button x="315" y="260" w="150" h="50"
             type="deal" />
 
     <Button x="315" y="320" w="150" h="50"
-            type="double" />
+            type="hit" />
 
     <Button x="315" y="380" w="150" h="50"
-            type="stand" />
+            type="double" />
 
     <Button x="315" y="440" w="150" h="50"
             type="stand" />
-
 
   </svg> 
 

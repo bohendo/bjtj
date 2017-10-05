@@ -25,13 +25,12 @@ export default class Card extends React.Component {
 
     let shape;
 
-    if (suit === "clubs") { shape = this.renderClub; }
-    else if (suit === "diamonds") { shape = this.renderDiamond; }
-    else if (suit === "hearts") { shape = this.renderHeart; }
-    else if (suit === "spades") { shape = this.renderSpade; }
-
-    // Render back of the card if this card is facedown
-    else { return(this.renderBack(x, y, w)); }
+    if (suit === "C") { shape = this.renderClub; }
+    else if (suit === "D") { shape = this.renderDiamond; }
+    else if (suit === "H") { shape = this.renderHeart; }
+    else if (suit === "S") { shape = this.renderSpade; }
+    else if (suit === "?") { return(this.renderBack(x, y, w)); }
+    else { return(<g/>); }
  
     // tr_ for Top Right
     let tr_x = x + (w * 0.25);
@@ -151,7 +150,7 @@ export default class Card extends React.Component {
   renderRank(x, y, w, rank) {
 
     // Don't render text if this card is facedown
-    if (rank === 'hidden') { return(<g/>); }
+    if (rank === '?') { return(<g/>); }
 
     return (
 <g>
@@ -167,6 +166,11 @@ export default class Card extends React.Component {
 
 
   render() {
+
+    if (!this.props.rank || !this.props.suit) {
+      return(<g/>);
+    }
+
     const n = Number;
     return (
 <g>
