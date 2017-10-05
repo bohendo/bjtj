@@ -8,20 +8,20 @@ let ratio = 7/5; // card height/width
 
 export default class Card extends React.Component {
 
-  renderBack(x, y, s) {
+  renderBack(x, y, w) {
 
-    let m = s * 0.1; // m for margin
+    let m = w * 0.1; // m for margin
 
     return (
 <g>
-   <rect x={x+m} y={y+m} width={s-2*m} height={1.4*s-2*m} rx="3" ry="3"
+   <rect x={x+m} y={y+m} width={w-2*m} height={1.4*w-2*m} rx="3" ry="3"
          fill="blue" fill-opacity="0.5" stroke="blue"/>
 </g>
     );
    }
 
   ////////////////////////////////////////
-  renderSuit(x, y, s, suit) {
+  renderSuit(x, y, w, suit) {
 
     let shape;
 
@@ -31,20 +31,20 @@ export default class Card extends React.Component {
     else if (suit === "spades") { shape = this.renderSpade; }
 
     // Render back of the card if this card is facedown
-    else { return(this.renderBack(x, y, s)); }
+    else { return(this.renderBack(x, y, w)); }
  
     // tr_ for Top Right
-    let tr_x = x + (s * 0.25);
-    let tr_y = y + (s * 0.25);
+    let tr_x = x + (w * 0.25);
+    let tr_y = y + (w * 0.25);
 
     // bl_ for Bottom Left
-    let bl_x = x + (s * 0.75);
-    let bl_y = y + (s * 0.82) * ratio;
+    let bl_x = x + (w * 0.75);
+    let bl_y = y + (w * 0.82) * ratio;
 
     return (
 <g>
-    {shape(tr_x, tr_y, s/5)}
-    {shape(bl_x, bl_y, s/5)}
+    {shape(tr_x, tr_y, w/5)}
+    {shape(bl_x, bl_y, w/5)}
 </g>
     );
   }
@@ -148,16 +148,16 @@ export default class Card extends React.Component {
     );
   }
 
-  renderRank(x, y, size, rank) {
+  renderRank(x, y, w, rank) {
 
     // Don't render text if this card is facedown
     if (rank === 'hidden') { return(<g/>); }
 
     return (
 <g>
-      <text x={x + size/3.5}
-            y={y + size/1.05}
-            font-size={size/1.5}>
+      <text x={x + w/3.5}
+            y={y + w/1.05}
+            font-size={w/1.5}>
         {rank}
       </text>
 
@@ -171,14 +171,14 @@ export default class Card extends React.Component {
     return (
 <g>
       <rect x={this.props.x} y={this.props.y} rx="10" ry="10"
-            width={this.props.size} height={this.props.size*ratio}
+            width={this.props.w} height={this.props.w*ratio}
             stroke="black" fill="white"/>
 
       {this.renderRank(n(this.props.x), n(this.props.y),
-                       n(this.props.size), this.props.rank)}
+                       n(this.props.w), this.props.rank)}
 
       {this.renderSuit(n(this.props.x), n(this.props.y),
-                       n(this.props.size), this.props.suit)}
+                       n(this.props.w), this.props.suit)}
 </g>
     );
   }
