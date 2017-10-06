@@ -5,9 +5,9 @@ import { createStore } from 'redux'
 // const crypto = require('crypto');
 
 ////////////////////////////////////////
-// Reducers
+// Helpers
 
-const shuffle = (state) => {
+const shuffle = () => {
   const ranks = ['A', '2', '3', '4', '5', '6', '7',
                  '8', '9', 'T', 'J', 'Q', 'K'];
   const suits = ['C', 'D', 'H', 'S'];
@@ -22,14 +22,18 @@ const shuffle = (state) => {
     [deck[i-1], deck[j]] = [deck[j], deck[i-1]];
   }
   // assign state & deck to empty object (new state)
-  return Object.assign({}, state, {
-    deck, dealerHand: [], playerHand: []
-  });
+  return(deck)
 }
 
+////////////////////////////////////////
+// Reducers
 
 const deal = (state) => {
-  const newState = Object.assign({}, state);
+  const newState = {
+    dealerHand: [],
+    playerHand: [],
+    deck: shuffle()
+  }
 
   // Deal 4 cards to the dealer and player
   newState.dealerHand.push(newState.deck.pop());
@@ -37,7 +41,7 @@ const deal = (state) => {
   newState.dealerHand.push(newState.deck.pop());
   newState.playerHand.push(newState.deck.pop());
 
-  return(newState);
+  return(Object.assign({}, state, newState));
 }
 
 const initialState = {

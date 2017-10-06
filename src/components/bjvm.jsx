@@ -23,19 +23,8 @@ export default class BJVM extends React.Component {
     let fill = "#171";
     let stroke = "#eee";
 
-    let dealerHand = [{ rank: "8", suit: "S" },
-                      { rank: "A", suit: "C" },
-                      { rank: "5", suit: "D" },
-                      { rank: "2", suit: "H" },
-                      { rank: "2", suit: "S" },
-                      { rank: "6", suit: "C" }]
-
-    let playerHand = [{ rank: "2", suit: "C" },
-                      { rank: "3", suit: "S" },
-                      { rank: "4", suit: "H" },
-                      { rank: "A", suit: "D" },
-                      { rank: "J", suit: "H" },
-                      { rank: "A", suit: "H" }]
+    let dealerHand = this.props.dealerHand;
+    let playerHand = this.props.playerHand;
 
     ////////////////////////////////////////
     // Calculations
@@ -81,7 +70,8 @@ export default class BJVM extends React.Component {
     <Hand x="120" y="110" w="180" who="dealer" cards={dealerHand} />
     <Hand x="20" y="280" w="280" who="player" cards={playerHand} />
 
-    <Button x="310" y="260" w="175" h="50" type="deal" />
+    <Button x="311" y="260" w="175" h="50" type="deal"
+            fn={this.props.deal}/>
     <Button x="310" y="320" w="175" h="50" type="hit" />
     <Button x="310" y="380" w="175" h="50" type="double" />
     <Button x="310" y="440" w="175" h="50" type="stand" />

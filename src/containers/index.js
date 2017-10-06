@@ -8,10 +8,10 @@ const mapStateToProps = state => state
 const mapDispatchToProps = dispatch => {
   return {
     deal: () => {
-      dispatch(DEAL);
+      dispatch(DEAL());
     },
     shuffle: () => {
-      dispatch(SHUFFLE);
+      dispatch(SHUFFLE());
     }
   }
 }

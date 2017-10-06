@@ -24,24 +24,21 @@ export default class Button extends React.Component {
     const bg = '#cc4';
     const fg = '#ffc'
 
-    let handle
+    const handle = this.props.onClick;
+
     let txt;
     if (this.props.type === 'deal') {
-      handle = this.handleDeal;
       txt = 'Deal me in';
     } else if (this.props.type === 'hit') {
-      handle = this.handleHit;
       txt = 'Hit me';
     } else if (this.props.type === 'double') {
-      handle = this.handleDouble;
       txt = 'Double down';
     } else if (this.props.type === 'stand') {
-      handle = this.handleStand;
       txt = 'Stand';
     }
 
     return (
-<g onClick={handle}>
+<g onClick={()=>this.props.fn()}>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke="black"/>
