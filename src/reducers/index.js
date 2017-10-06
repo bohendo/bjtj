@@ -117,10 +117,9 @@ const deal = (state) => {
 
   if (ns.bet*2<=ns.chips) {
     moves.push('double')
-  }
-
-  if (ns.playerHand[0].rank === ns.playerHand[1].rank) {
-    moves.push('split')
+    if (ns.playerHand[0].rank === ns.playerHand[1].rank) {
+      moves.push('split')
+    }
   }
 
   ns.message = "Make your move..."
@@ -242,10 +241,16 @@ const split = (state) => {
   }
   const ns = {
     moves: state.moves.slice()
+    playerHand: state.playerHand.slice(),
+    bet: state.bet,
+    chips: state.chips
   }
+
+
+
   // haven't implemented split yet..
   ns.moves = ['hit', 'stand', 'double']
-  ns.message = 'Split does not work yet, sorry!'
+  ns.message = 'Split! Make a move for your top hand'
   return(Object.assign({}, state, ns));
 }
 
@@ -253,7 +258,8 @@ const initialState = {
   message: 'Click "Deal" when you\'re ready to go',
   moves: ['deal', 'bet'],
   deck: shuffle(),
-  playerHand: [],
+  playerHand: [{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},{rank:'2',suit:'C'},],
+  playerSplitHand: [],
   dealerHand: [],
   bet: 1,
   baseBet: 1,

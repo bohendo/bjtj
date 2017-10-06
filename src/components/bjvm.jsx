@@ -19,13 +19,14 @@ export default class BJVM extends React.Component {
     let bet = Number(this.props.bet)
     let address="0x09eb5799ff31d198ebe1e0124f981cbb688149d9"
     let height = 500
-    let width = 500
+    let width = 600
     let depth = 25
     let fill = "#171"
     let stroke = "#eee"
 
     let dealerHand = this.props.dealerHand
     let playerHand = this.props.playerHand
+    let playerSplitHand = this.props.playerSplitHand
 
     ////////////////////////////////////////
     // Calculations
@@ -43,7 +44,7 @@ export default class BJVM extends React.Component {
 
 <div class="center canvas">
 
-  <svg height={height+depth} width={height+depth} id="bjvm-svg">
+  <svg height={height+depth} width={width+depth} id="bjvm-svg">
 
     <rect x="0" y={depth} height={height} width={width}
           fill={fill} stroke={stroke} />
@@ -55,31 +56,33 @@ export default class BJVM extends React.Component {
     {/*<Payment x="10" y="35" w="480" h="50" address={address} />*/}
     <text x="20" y="75" font-size="25">{this.props.message}</text>
 
-    <Chips x="390" y="100" h="150" w="100"
+    <Chips x="410" y="100" h="150" w="175"
            chips={chips} bet={bet} />
 
     {/* Deck */}
-    <Card x="305" y="100" w="80" suit="?" rank="?" />
-    <Card x="305" y="105" w="80" suit="?" rank="?" />
-    <Card x="305" y="110" w="80" suit="?" rank="?" />
-    <Card x="305" y="115" w="80" suit="?" rank="?" />
-    <Card x="305" y="120" w="80" suit="?" rank="?" />
-    <Card x="305" y="125" w="80" suit="?" rank="?" />
-    <Card x="305" y="130" w="80" suit="?" rank="?" />
-    <Card x="305" y="135" w="80" suit="?" rank="?" />
+    <Card x="325" y="100" w="80" suit="?" rank="?" />
+    <Card x="325" y="105" w="80" suit="?" rank="?" />
+    <Card x="325" y="110" w="80" suit="?" rank="?" />
+    <Card x="325" y="115" w="80" suit="?" rank="?" />
+    <Card x="325" y="120" w="80" suit="?" rank="?" />
+    <Card x="325" y="125" w="80" suit="?" rank="?" />
+    <Card x="325" y="130" w="80" suit="?" rank="?" />
+    <Card x="325" y="135" w="80" suit="?" rank="?" />
 
-    <Hand x="120" y="110" w="180" who="dealer" cards={dealerHand} />
-    <Hand x="20" y="280" w="280" who="player" cards={playerHand} />
+    <Hand x="130" y="115" w="180" who="dealer"
+          cards={dealerHand} />
+    <Hand x="20" y="280" w="375" who="player"
+          cards={playerHand} split={playerSplitHand} />
 
-    <Button x="311" y="260" w="175" h="45" type="deal"
+    <Button x="410" y="260" w="175" h="45" type="deal"
             fn={this.props.deal} moves={this.props.moves}/>
-    <Button x="310" y="310" w="175" h="45" type="hit"
+    <Button x="410" y="310" w="175" h="45" type="hit"
             fn={this.props.hit} moves={this.props.moves}/>
-    <Button x="310" y="360" w="175" h="45" type="double"
+    <Button x="410" y="360" w="175" h="45" type="double"
             fn={this.props.double} moves={this.props.moves}/>
-    <Button x="310" y="410" w="175" h="45" type="stand"
+    <Button x="410" y="410" w="175" h="45" type="stand"
             fn={this.props.stand} moves={this.props.moves}/>
-    <Button x="310" y="460" w="175" h="45" type="split"
+    <Button x="410" y="460" w="175" h="45" type="split"
             fn={this.props.split} moves={this.props.moves}/>
 
   </svg> 
