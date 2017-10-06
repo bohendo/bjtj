@@ -1,7 +1,5 @@
 
 import React from 'react';
-import style from './svg.scss';
-
 
 import Hand from './hand.jsx';
 import Card from './card.jsx';

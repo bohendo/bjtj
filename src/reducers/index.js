@@ -22,7 +22,9 @@ const shuffle = (state) => {
     [deck[i-1], deck[j]] = [deck[j], deck[i-1]];
   }
   // assign state & deck to empty object (new state)
-  return Object.assign({}, state, { deck, dealerHand: [], playerHand: [] });
+  return Object.assign({}, state, {
+    deck, dealerHand: [], playerHand: []
+  });
 }
 
 
@@ -38,21 +40,6 @@ const deal = (state) => {
   return(newState);
 }
 
-////////////////////////////////////////
-// Master Reducer
-
-const BJapp = (state = {}, action) => {
-  switch (action.type) {
-    case 'SHUFFLE':
-      return shuffle(state);
-    case 'DEAL':
-      return deal(state);
-    default:
-      return state;
-  }
-}
-
-
 const initialState = {
   deck: shuffle(),
   playerHand: [],
@@ -60,15 +47,26 @@ const initialState = {
   bet: 0
 }
 
-let store = createStore(BJapp, initialState);
+////////////////////////////////////////
+// Master Reducer
 
-// print every state change
-let unsubscribe = store.subscribe(() =>
-  console.log(store.getState())
-)
+const blackjack = (state = initialState, action) => {
+  switch (action.type) {
+    case 'SHUFFLE':
+      return shuffle(state);
+    case 'DEAL':
+      return deal(state);
+    case 'HIT':
+      return state;
+    case 'STAND':
+      return state;
+    case 'DOUBLE':
+      return state;
+    case 'SPLIT':
+      return state;
+    default:
+      return state;
+  }
+}
 
-store.dispatch({ type: 'SHUFFLE' });
-store.dispatch({ type: 'DEAL' });
-store.dispatch({ type: 'SHUFFLE' });
-
-
+export default blackjack;

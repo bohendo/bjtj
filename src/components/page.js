@@ -1,8 +1,8 @@
 
 import React from 'react';
-import BJVM from './bjvm.jsx';
+import Container from '../containers'
 
-export default class Index extends React.Component { render() { return (
+const Page = () => (
 <div>
 
     <div class="container">
@@ -20,7 +20,7 @@ export default class Index extends React.Component { render() { return (
         <h3 class="text-muted">BlackJack Vending Machine</h3>
       </div>
 
-      <BJVM />
+      <Container />
 
       <div class="row marketing">
         <div class="col-lg-6">
@@ -57,4 +57,6 @@ export default class Index extends React.Component { render() { return (
     </div>
 
 </div>
-); } }
+)
+
+export default Page

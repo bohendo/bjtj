@@ -5,7 +5,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 module.exports = {
 
   entry: {
-    bjvm: './src/entry.js',
+    bjvm: './src/index.js',
   },
 
   output: {

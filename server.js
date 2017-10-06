@@ -24,13 +24,13 @@ const db = require('monk')(
 //////////////////////////////
 // Express pipeline
 
-const distDir = path.join(__dirname, '/dist/');
+const distDir = path.join(__dirname, '/dist');
 
 app.use(express.static(distDir));
 
 // Serve homepage
 app.get('/', (req, res) => {
-  res.sendFile(path.join(`${distDir}index.html`));
+  res.sendFile(path.join(${distDir}, 'index.html'));
 });
 
 app.use((err, req, res, next) => {
@@ -40,7 +40,7 @@ app.use((err, req, res, next) => {
 
 // error handler goes at the end of our pipe
 app.use((req, res) => {
-  res.sendFile(path.join(distDir, 'error.html'));
+  res.status(404).send('This page doesn\'t exist. Well THIS one does but whichever one you were looking for doesn\'t unless you were looking for this one in which case here it is');
 });
 
 //////////////////////////////
