@@ -1,8 +1,7 @@
 
-export const SHUFFLE = () => { type: 'SHUFFLE' };
-export const DEAL = () => {return({ type: 'DEAL' });};
-export const HIT = () => { type: 'HIT' };
-export const STAND = () => { type: 'STAND' };
-export const DOUBLE = () => { type: 'DOUBLE' };
-export const SPLIT = () => { type: 'SPLIT' };
+export const DEAL = () => {return({ type: 'DEAL' })}
+export const HIT = () => {return({ type: 'HIT' })}
+export const STAND = () => {return({ type: 'STAND' })}
+export const DOUBLE = () => {return({ type: 'DOUBLE' })}
+export const SPLIT = () => {return({ type: 'SPLIT' })}
 

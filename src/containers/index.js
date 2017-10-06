@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux'
-import { DEAL, SHUFFLE } from '../actions'
+import { DEAL, HIT, STAND, DOUBLE, SPLIT } from '../actions'
 import BJVM from '../components/bjvm.jsx'
 
 const mapStateToProps = state => state
@@ -10,9 +10,18 @@ const mapDispatchToProps = dispatch => {
     deal: () => {
       dispatch(DEAL());
     },
-    shuffle: () => {
-      dispatch(SHUFFLE());
-    }
+    hit: () => {
+      dispatch(HIT());
+    },
+    stand: () => {
+      dispatch(STAND());
+    },
+    double: () => {
+      dispatch(DOUBLE());
+    },
+    split: () => {
+      dispatch(SPLIT());
+    },
   }
 }
 

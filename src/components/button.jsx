@@ -6,11 +6,6 @@ let width = "150";
 
 export default class Button extends React.Component { 
 
-  handleDeal() { console.log('deal'); }
-  handleHit() { console.log('hit'); }
-  handleDouble() { console.log('double'); }
-  handleStand() { console.log('stand'); }
-
   render() {
 
     ////////////////////////////////////////
@@ -21,7 +16,7 @@ export default class Button extends React.Component {
     const w = (n) => Number(this.props.w)*n/100;
     const h = (n) => Number(this.props.h)*n/100;
 
-    const bg = '#cc4';
+    const bg = '#ff2';
     const fg = '#ffc'
 
     const handle = this.props.onClick;
@@ -35,6 +30,13 @@ export default class Button extends React.Component {
       txt = 'Double down';
     } else if (this.props.type === 'stand') {
       txt = 'Stand';
+    } else if (this.props.type === 'split') {
+      txt = 'Split';
+    }
+
+    let isEnabled = "0.8"
+    if (this.props.moves.includes(this.props.type)) {
+      isEnabled = "0.0"
     }
 
     return (
@@ -45,6 +47,9 @@ export default class Button extends React.Component {
   <rect x={x(5)} y={y(10)} width={w(90)} height={h(80)}
         rx="5" ry="5" fill={fg} stroke="black"/>
   <text x={x(10)} y={y(65)} font-size='20'>{txt}</text>
+
+  <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
+        rx="5" ry="5" fill="black" fill-opacity={isEnabled} stroke="black"/>
 
 </g>
     );
