@@ -14,19 +14,20 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // Magic Numbers & Strings
 
-    let moves = this.props.moves
-    let chips = Number(this.props.chips)
-    let bet = Number(this.props.bet)
-    let address="0x09eb5799ff31d198ebe1e0124f981cbb688149d9"
     let height = 500
     let width = 600
     let depth = 25
+
+    let address="0x09eb5799ff31d198ebe1e0124f981cbb688149d9"
+
+    let moves = this.props.moves
+    let chips = Number(this.props.chips)
+    let bet = Number(this.props.defaultBet)
+    let dealerHand = [{ cards: this.props.dealerCards }]
+    let playerHand = this.props.playerHands
+
     let fill = "#171"
     let stroke = "#eee"
-
-    let dealerHand = this.props.dealerHand
-    let playerHand = this.props.playerHand
-    let playerSplitHand = this.props.playerSplitHand
 
     ////////////////////////////////////////
     // Calculations
@@ -69,10 +70,8 @@ export default class BJVM extends React.Component {
     <Card x="325" y="130" w="80" suit="?" rank="?" />
     <Card x="325" y="135" w="80" suit="?" rank="?" />
 
-    <Hand x="130" y="115" w="180" who="dealer"
-          cards={dealerHand} />
-    <Hand x="20" y="280" w="375" who="player"
-          cards={playerHand} split={playerSplitHand} />
+    <Hand x="130" y="115" w="180" hand={dealerHand} />
+    <Hand x="20"  y="280" w="375" hand={playerHand} />
 
     <Button x="410" y="260" w="175" h="45" type="deal"
             fn={this.props.deal} moves={this.props.moves}/>
