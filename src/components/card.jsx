@@ -171,6 +171,13 @@ export default class Card extends React.Component {
       return(<g/>);
     }
 
+    let deact
+    if (this.props.deact) {
+      deact = 0.8
+    } else {
+      deact = 0.0
+    }
+
     const n = Number;
     return (
 <g>
@@ -183,6 +190,11 @@ export default class Card extends React.Component {
 
       {this.renderSuit(n(this.props.x), n(this.props.y),
                        n(this.props.w), this.props.suit)}
+
+      <rect x={this.props.x} y={this.props.y} rx="10" ry="10"
+            width={this.props.w} height={this.props.w*ratio}
+            stroke="black" fill="black" fillOpacity={deact}/>
+
 </g>
     );
   }

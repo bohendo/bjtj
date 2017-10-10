@@ -23,7 +23,8 @@ export default class BJVM extends React.Component {
     let moves = this.props.moves
     let chips = Number(this.props.chips)
     let bet = Number(this.props.defaultBet)
-    let dealerHand = [{ cards: this.props.dealerCards }]
+    let dealerHand = [{ cards: this.props.dealerCards,
+                        isActive: true}]
     let playerHand = this.props.playerHands
 
     let fill = "#171"
