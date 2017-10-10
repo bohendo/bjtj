@@ -13,8 +13,8 @@ const initialState = {
   playerHands: [],
   dealerCards: [],
   deck: shuffle(),
-  defaultBet: 1,
-  chips: 5,
+  defaultBet: Number(1),
+  chips: Number(5),
 }
 
 ////////////////////////////////////////

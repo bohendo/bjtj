@@ -3,6 +3,7 @@ import assert from 'assert'
 import { score } from './utils'
 
 const sync = (state) => {
+  // Gather data from state
   const playerHands = state.playerHands.map((h) => {
     // if not done but over 20 then we actually are done
     if (!h.isDone && score(h.cards).n >= 21) {
@@ -22,28 +23,57 @@ const sync = (state) => {
     return (h)
   })
 
+  let chips = Number(state.chips)
+  const moves = []
+
+  // warning: shallow copies
+  const deck = state.deck.slice()
+  const dealerCards = state.dealerCards.slice()
+
+  let message
+
+  // Syncing the initial state..
+  if (playerHands.length === 0) {
+    if (chips >= state.defaultBet) {
+      moves.push('deal')
+    }
+    return (Object.assign({}, state, { playerHands, moves }))
+  }
+
   // Count how many active cards the player has in their hand
   const nActive = playerHands.reduce((sum, h) => (
     h.isActive ? sum + 1 : sum
   ), 0)
 
-  console.log(`There are ${nActive} active hands atm`)
+  // Count how many active cards the player has in their hand
+  const nTodo = playerHands.reduce((sum, h) => (
+    h.isDone ? sum : sum + 1
+  ), 0)
 
   assert(nActive === 0 || nActive === 1,
     `Expected 0 or 1 active cards, got ${nActive}`,
   )
 
-  let chips = Number(state.chips)
-  const moves = []
+  // if we still have un-finished hands then the round continues
+  if (nTodo !== 0) {
 
-  // if we have an active card then the round continues
-  if (nActive === 1) {
+    // if no cards are active, activate one
+    let ah // ah for Active Hand
+    if (nActive === 0) {
+      for (let i=0; i<playerHands.length; i++) {
+        if (!playerHands[i].isActive && !playerHands[i].isDone) {
+          playerHands[i].isActive = true;
+          ah = playerHands[i]
+          break
+        }
+      }
+    } else {
+      ah = playerHands.find(h => h.isActive)
+    }
+
     // these are always valid moves if the round is in progress
     moves.push('stand')
     moves.push('hit')
-
-    // ah for Active Hand
-    const ah = playerHands.find(h => h.isActive)
 
     // can we double down?
     if (ah.cards.length === 2 && chips >= ah.bet) {
@@ -61,12 +91,8 @@ const sync = (state) => {
 
   // No active cards, time for the dealer to go & payout
 
-  // warning: shallow copies
-  const deck = state.deck.slice()
-  const dealerCards = state.dealerCards.slice()
-
   // make sure dealer's hand is played out
-  while (score(dealerCards).n > 17 ||
+  while (score(dealerCards).n < 17 ||
          (score(dealerCards).n === 17 &&
           score(dealerCards).isSoft)) {
     dealerCards.push(deck.pop())
@@ -74,32 +100,36 @@ const sync = (state) => {
   // ds for Dealer's Score
   const ds = score(dealerCards)
 
-  let message
   for (let h=0; h<playerHands.length; h++) {
     // ps for Player's Score
     const ps = score(playerHands[h].cards)
+    const bet = playerHands[h].bet
 
     if (ps.bj && !ds.bj) {
       message = 'Blackjack! Congrats'
-      chips += h.bet * 1.5
+      chips += bet * 2.5
     } else if (ps.bj && ds.bj) {
       message = 'Blackjack! But the dealer also blackjacked..'
+      chips += bet
     } else if (ps.n > 21) {
       message = 'Bust!'
     } else if (ds.n > 21) {
       message = 'Dealer Bust!'
-      chips += h.bet
+      chips += bet
     } else if (ps.n > ds.n) {
       message = 'Well played!'
-      chips += h.bet
+      chips += 2 * bet
     } else if (ps.n === ds.n) {
       message = 'Tie...'
+      chips += bet
     } else if (ps.n < ds.n) {
       message = 'Better luck next time'
     }
   }
   
-  moves.push('deal')
+  if (chips >= state.defaultBet) {
+    moves.push('deal')
+  }
   return (Object.assign({}, state, {
     chips, playerHands, deck, dealerCards, message, moves,
   }))

@@ -8,7 +8,7 @@ const split = (state) => {
 
   const deck = state.deck.slice()
 
-  const playerHands = state.playerHands.filter(h => h.isActive)
+  const playerHands = state.playerHands.filter(h => !h.isActive)
 
   const hand = state.playerHands.find(h => h.isActive)
 

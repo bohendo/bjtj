@@ -7,6 +7,7 @@ const deal = (state, deck) => {
   const playerHands = [{
     isActive: true,
     isDone: false,
+    bet: state.defaultBet,
     cards: [],
   }]
 
@@ -16,16 +17,13 @@ const deal = (state, deck) => {
   dealerCards.push(deck.pop());
   playerHands[0].cards.push(deck.pop());
 
-  // initialize flags for player's hand
-  playerHands[0].isActive = true
-  playerHands[0].isDone = false
-  playerHands[0].bet = state.defaultBet
-
   // move player's chips to this hand's bet
   const chips = state.chips - state.defaultBet
 
+  const message = 'Make your move..'
+
   return (Object.assign({}, state, {
-    playerHands, dealerCards, chips,
+    playerHands, dealerCards, chips, message,
   }))
 }
 
