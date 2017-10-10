@@ -26,26 +26,26 @@ export default class Chips extends React.Component {
   {/* Chips */}
   <rect x={x(5)} y={y(3)} width={w(90)} height={h(25)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(20)} y={y(20)} font-size={fs}>
+  <text x={x(20)} y={y(20)} fontSize={fs}>
     Chips
   </text>
-  <text x={x(43)} y={y(45)} font-size={fs}>
+  <text x={x(43)} y={y(45)} fontSize={fs}>
     {this.props.chips}
   </text>
 
   {/* Bet */}
   <rect x={x(5)} y={y(50)} width={w(90)} height={h(25)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(35)} y={y(68)} font-size={fs}>
+  <text x={x(35)} y={y(68)} fontSize={fs}>
     Bet
   </text>
-  <text x={x(43)} y={y(91)} font-size={fs}>
+  <text x={x(43)} y={y(91)} fontSize={fs}>
     {this.props.bet}
   </text>
 
-  <text x={x(20)} y={y(91)} font-size={fs}>-</text>
+  <text x={x(20)} y={y(91)} fontSize={fs}>-</text>
 
-  <text x={x(70)} y={y(91)} font-size={fs}>+</text>
+  <text x={x(70)} y={y(91)} fontSize={fs}>+</text>
 
 </g>
     );

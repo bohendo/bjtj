@@ -156,7 +156,7 @@ export default class Card extends React.Component {
 <g>
       <text x={x + w/3.5}
             y={y + w/1.05}
-            font-size={w/1.5}>
+            fontSize={w/1.5}>
         {rank}
       </text>
 
