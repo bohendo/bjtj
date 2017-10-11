@@ -49,7 +49,7 @@ export default class Button extends React.Component {
   <text x={x(10)} y={y(65)} fontSize='20'>{txt}</text>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
-        rx="5" ry="5" fill="black" fill-opacity={isEnabled} stroke="black"/>
+        rx="5" ry="5" fill="black" fillOpacity={isEnabled} stroke="black"/>
 
 </g>
     );

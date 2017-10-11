@@ -36,11 +36,11 @@ export default class Hand extends React.Component {
     if (this.props.hand.length === 1) {
 
       for (let i=0; i<4; i++) {
-        output.push(<Card x={x(0+i*22)}  y={y(0)}  w={w(30)}
+        output.push(<Card key={i} x={x(0+i*22)}  y={y(0)}  w={w(30)}
           suit={suits[0][i]} rank={ranks[0][i]} deact={deact[0]}/>)
       }
       for (let i=4; i<8; i++) {
-        output.push(<Card x={x(4+(i-4)*22)}  y={y(40)}  w={w(30)}
+        output.push(<Card key={i} x={x(4+(i-4)*22)}  y={y(40)}  w={w(30)}
           suit={suits[0][i]} rank={ranks[0][i]} deact={deact[0]}/>)
       }
     }
@@ -48,19 +48,19 @@ export default class Hand extends React.Component {
     // two hands aka player who split
     if (this.props.hand.length === 2) {
       for (let i=0; i<8; i++) {
-        output.push(<Card x={x(0+i*12)}  y={y(0)}  w={w(16)}
+        output.push(<Card key={i} x={x(0+i*12)}  y={y(0)}  w={w(16)}
           suit={suits[0][i]} rank={ranks[0][i]} deact={deact[0]} />)
       }
       for (let i=8; i<15; i++) {
-        output.push(<Card x={x(3+(i-8)*12)}  y={y(20)}  w={w(16)}
+        output.push(<Card key={i} x={x(3+(i-8)*12)}  y={y(20)}  w={w(16)}
           suit={suits[0][i]} rank={ranks[0][i]} deact={deact[0]}/>)
       }
       for (let i=0; i<8; i++) {
-        output.push(<Card x={x(0+i*12)}  y={y(40)}  w={w(16)}
+        output.push(<Card key={15+i} x={x(0+i*12)}  y={y(40)}  w={w(16)}
           suit={suits[1][i]} rank={ranks[1][i]} deact={deact[1]}/>)
       }
       for (let i=8; i<15; i++) {
-        output.push(<Card x={x(3+(i-8)*12)}  y={y(60)}  w={w(16)}
+        output.push(<Card key={15+i} x={x(3+(i-8)*12)}  y={y(60)}  w={w(16)}
           suit={suits[1][i]} rank={ranks[1][i]} deact={deact[1]}/>)
       }
     }

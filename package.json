@@ -2,13 +2,15 @@
   "name": "blackjack-vending-machine",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "build": "webpack --config webpack.prod.js || true",
-    "start": "webpack-dev-server --config webpack.dev.js"
+    "build-cp": "webpack --config webpack/client.prod.js || true",
+    "build-sp": "webpack --config webpack/server.prod.js || true",
+    "start": "node dist/server.bundle.js",
+    "dev": "webpack-dev-server --config webpack/client.dev.js"
   },
   "keywords": [],
-  "author": "Bo Henderson et al",
+  "author": "Bo Henderson",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^7.1.4",
@@ -22,6 +24,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",
+    "nodemon": "^1.12.1",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "postcss-loader": "^2.0.6",
     "precss": "^2.0.0",
@@ -31,6 +34,7 @@
     "style-loader": "^0.18.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0",
+    "webpack-dev-middleware": "^1.12.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
   },
@@ -42,6 +46,7 @@
     "monk": "^6.0.4",
     "node-sass": "^4.5.3",
     "path": "^0.12.7",
+    "qs": "^6.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",

@@ -5,11 +5,11 @@ const HtmlPlugin = require('html-webpack-plugin');
 module.exports = {
 
   entry: {
-    bjvm: './src/index.js',
+    client: './client.js',
   },
 
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, './dist/client'),
     filename: '[name].bundle.js',
   },
 
@@ -17,16 +17,16 @@ module.exports = {
     rules: [
       {
         test: /\.woff2?$|\.ttf$|\.eot$|\.svg$/,
-        loader: "file-loader"
+        loader: 'file-loader',
       },
-    ]
+    ],
   },
 
   plugins: [
     new HtmlPlugin({
       template: './src/index.html',
       filename: 'index.html',
-      inject: 'body'
+      inject: 'body',
     }),
   ],
 

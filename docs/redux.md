@@ -30,4 +30,6 @@ Container components are responsible for managing data flow and giving presentat
 
 The presentational/container separation is not a strict rule, early in an app's life or in simple cases, these two functionalities will blur together and that's fine. This is a strategy to manage complexity, not dogma.
 
+## Asynchronous Actions
+
 

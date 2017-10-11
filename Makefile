@@ -1,22 +1,18 @@
 
-##### VARIABLES #####
+##### MAGIC VARIABLES #####
 
-# SHELL defines the shell to use while executing recipes (default: /bin/sh)
+# SHELL defines the shell to use while executing recipes
+# (default: /bin/sh)
 SHELL=/bin/bash
 
-# VPATH defines the search path for prerequisites
+# VPATH = search path for prerequisites
 VPATH=docs
 
 in_dir=docs
-in_files=$(wildcard $(in_dir)/*.md)
 
-out_dir=dist
-out_files=$(subst $(in_dir)/,$(out_dir)/,$(subst .md,.html,$(in_files)))
-
+out_dir=dist/static
 fe_dir=src
-fe_files=$(wildcard $(fe_dir)/*) package.json
 
-# Templates & Temp files
 template=$(in_dir)/template.html
 body=$(in_dir)/body.html
 
@@ -26,6 +22,11 @@ pandoc=pandoc -f markdown -t html
 
 about=docs/about.md
 
+##### CALCULATED VARIABLES #####
+
+in_files=$(wildcard $(in_dir)/*.md)
+out_files=$(subst $(in_dir)/,$(out_dir)/,$(subst .md,.html,$(in_files)))
+fe_files=$(wildcard $(fe_dir)/*) package.json
 
 ##### RULES #####
 
@@ -62,7 +63,4 @@ npm_build: $(fe_files)
 .PHONY: clean
 clean:
 	rm -rf $(out_dir)/*
-
-
-
 

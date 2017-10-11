@@ -6,19 +6,19 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyCssPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = merge(require('./webpack.common.js'), {
+module.exports = merge(require('./client.common.js'), {
 
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.scss$/,
         use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'sass-loader']
+          use: ['css-loader', 'sass-loader'],
         }),
       },
     ],
@@ -27,10 +27,10 @@ module.exports = merge(require('./webpack.common.js'), {
   plugins: [
     new ExtractTextPlugin('style.css'),
     new webpack.DefinePlugin({
-      'process.env': { 'NODE_ENV': JSON.stringify('production') }
+      'process.env': { NODE_ENV: JSON.stringify('production') },
     }),
     new UglifyCssPlugin({
-      cssProcessorOptions: { discardComments: { removeAll: true } }
+      cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new UglifyJSPlugin(),
   ],

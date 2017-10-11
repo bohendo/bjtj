@@ -1,8 +1,10 @@
 
-const merge = require('webpack-merge');
-const webpack = require('webpack');
+const merge = require('webpack-merge')
+const webpack = require('webpack')
+const precss = require('precss')
+const autoprefixer = require('autoprefixer')
 
-module.exports = merge(require('./webpack.common.js'), {
+module.exports = merge(require('./client.common.js'), {
 
   // https://webpack.js.org/configuration/devtool/
   devtool: 'cheap-eval-source-map',
@@ -35,7 +37,7 @@ module.exports = merge(require('./webpack.common.js'), {
             loader: 'postcss-loader',
             options: {
               plugins: () => [
-                require('precss'), require('autoprefixer'),
+                precss, autoprefixer,
               ],
             },
           },

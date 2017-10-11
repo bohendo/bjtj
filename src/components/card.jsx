@@ -15,7 +15,7 @@ export default class Card extends React.Component {
     return (
 <g>
    <rect x={x+m} y={y+m} width={w-2*m} height={1.4*w-2*m} rx="3" ry="3"
-         fill="blue" fill-opacity="0.5" stroke="blue"/>
+         fill="blue" fillOpacity="0.5" stroke="blue"/>
 </g>
     );
    }

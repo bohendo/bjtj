@@ -40,6 +40,17 @@ const sync = (state) => {
     return (Object.assign({}, state, { playerHands, moves }))
   }
 
+  // Cut things off if the dealer has a blackjack
+  if (score(dealerCards).bj) {
+    message = 'Dealer got a blackjack'
+    playerHands[0].isDone = true
+    playerHands[0].isActive = false
+    if (chips >= state.defaultBet) {
+      moves.push('deal')
+    }
+    return (Object.assign({}, state, { playerHands, moves, message }))
+   }
+
   // Count how many active cards the player has in their hand
   const nActive = playerHands.reduce((sum, h) => (
     h.isActive ? sum + 1 : sum
