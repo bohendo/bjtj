@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 
 import blackjack from './src/reducers'
-import Page from './src/components/page'
+import Index from './src/components/index'
 import logger from './src/middleware/logger'
 
 import theme from './src/style.scss'
@@ -18,7 +18,7 @@ const store = createStore(blackjack, preloadedState, applyMiddleware(logger))
 
 render(
   <Provider store={store}>
-    <Page />
+    <Index />
   </Provider>,
   document.getElementById('root'),
 )

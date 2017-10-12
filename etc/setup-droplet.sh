@@ -89,9 +89,10 @@ then
 
   echo '#!/bin/bash' > hooks/post-receive
   echo 'git --work-tree=/var/git/live --git-dir=/var/git/live.git checkout -f' >> hooks/post-receive
-  echo 'ln -sfT /var/www/live /var/git/live/dist' >> hooks/post-receive
+  echo 'mkdir -p /var/git/live/build/public' >> hooks/post-receive
+  echo 'ln -sfT /var/www/live /var/git/live/build/public' >> hooks/post-receive
   echo 'cd /var/git/live' >> hooks/post-receive
-  echo 'make all' >> hooks/post-receive
+  echo 'npm run deploy' >> hooks/post-receive
 
   chmod 755 hooks/post-receive
 

@@ -1,4 +1,5 @@
 
+const path = require('path')
 const merge = require('webpack-merge')
 const webpack = require('webpack')
 const precss = require('precss')
@@ -9,21 +10,16 @@ module.exports = merge(require('./server.common.js'), {
   // https://webpack.js.org/configuration/devtool/
   devtool: 'cheap-eval-source-map',
 
-  devServer: {
-    // folder to serve files out of
-    contentBase: 'dist',
-    hot: true,
-    port: 3000,
-  },
-
   // location of files according to our browser
   output: { publicPath: '/' },
+
+  recordsPath: path.join(__dirname, '../build/records'),
 
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        use: ['react-hot-loader/webpack', 'babel-loader'],
+        use: ['babel-loader'],
         exclude: /node_modules/,
       },
     ],

@@ -1,4 +1,5 @@
 
+const path = require('path')
 const merge = require('webpack-merge')
 const webpack = require('webpack')
 const precss = require('precss')
@@ -11,13 +12,15 @@ module.exports = merge(require('./client.common.js'), {
 
   devServer: {
     // folder to serve files out of
-    contentBase: 'dist',
+    contentBase: './build/public',
     hot: true,
     port: 3000,
   },
 
   // location of files according to our browser
-  output: { publicPath: '/' },
+  output: {
+    publicPath: 'static'
+  },
 
   module: {
     rules: [

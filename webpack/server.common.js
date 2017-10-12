@@ -1,33 +1,44 @@
 
-const fs = require('fs');
-const path = require('path');
-const webpack = require('webpack');
+const fs = require('fs')
+const path = require('path')
+const webpack = require('webpack')
 
-const node_modules = {}
+const nodeModules = {}
 fs.readdirSync('node_modules')
   .filter(function(x) {
     return ['.bin'].indexOf(x) === -1
   })
   .forEach(function(mod) {
-    node_modules[mod] = 'commonjs ' + mod
+    nodeModules[mod] = 'commonjs ' + mod
   })
 
 module.exports = {
 
-  entry: { server: './server.js', },
+  entry: {
+    server: './server.js',
+  },
 
   output: {
-    path: path.join(__dirname, './dist'),
+    path: path.join(__dirname, '../build'),
     filename: '[name].bundle.js',
   },
 
-  devtool: 'cheap-eval-source-map',
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+  },
+
   target: 'node',
-  externals: node_modules,
+
+  externals: nodeModules,
+
+  node: {
+    __dirname: true,
+    console: true,
+  },
 
   plugins: [
-    new webpack.IgnorePlugin(/\.s?css)$/),
+    new webpack.IgnorePlugin(/\.s?css$/),
   ],
 
-};
+}
 

@@ -2,7 +2,7 @@
 import React from 'react';
 import Container from '../containers'
 
-const Page = () => (
+const Index = () => (
 <div>
 
     <div class="container">
@@ -59,4 +59,4 @@ const Page = () => (
 </div>
 )
 
-export default Page
+export default Index

@@ -9,8 +9,12 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, './dist/client'),
+    path: path.join(__dirname, '../build/public'),
     filename: '[name].bundle.js',
+  },
+
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
   },
 
   module: {
