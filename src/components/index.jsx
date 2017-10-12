@@ -2,7 +2,27 @@
 import React from 'react';
 import Container from '../containers'
 
-const Index = () => (
+import fetch from 'isomorphic-fetch';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies()
+
+class Index extends React.Component {
+
+  componentDidMount() {
+    document.getElementById('inj-cookie').replaceWith(document.cookie)
+
+    const options = { credentials: 'include' };
+    fetch('/api/newuser', options).then((res) => {
+      res.text().then((data) => { console.log(data) })
+    })
+
+  }
+
+  render () {
+
+    // if (typeof window === undefined) { let window = {} }
+
+    return (
 <div>
 
     <div class="container">
@@ -21,6 +41,8 @@ const Index = () => (
       </div>
 
       <Container />
+
+      <p>Cookies: <span id="inj-cookie"/></p>
 
       <div class="row marketing">
         <div class="col-lg-6">
@@ -57,6 +79,6 @@ const Index = () => (
     </div>
 
 </div>
-)
+) } }
 
 export default Index

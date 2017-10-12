@@ -1,15 +1,16 @@
 
+// Node built-ins
 import path from 'path'
 import fs from 'fs'
+import crypto from 'crypto'
 
 import express from 'express'
 
-import cookiesMW from 'universal-cookie-express'
-
+// 3rd party express middleware
 import helmet from 'helmet'
+import cookieMW from 'universal-cookie-express'
 
-const crypto = require('crypto')
-
+// My express middleware
 import ssr from './src/server/ssr'
 
 const production = process.env.NODE_ENV === 'production'
@@ -25,18 +26,26 @@ app.use('/static', express.static(
   path.join(__dirname, './build/public'),
 ))
 
-app.use(cookiesMW())
+app.use(cookieMW())
 
 app.get('/api/newuser', (req, res, next) => {
 
-  const hash = crypto.createHash('sha256');
+  const id = req.universalCookies.get('id')
 
-  hash.update(req.headers['user-agent'].toString())
-  hash.update(Date.now().toString())
+  if (!id) {
+    const hash = crypto.createHash('sha256');
+    hash.update(req.headers['user-agent'].toString())
+    hash.update(Date.now().toString())
+    const newId = hash.digest('hex')
 
-  console.log(hash.digest('hex'))
+    res.cookie('id', newId)
 
-  res.send('new user remembered!')
+    res.send('Hello nice to meet you')
+    console.log(`New user registered with with id ${newId}`)
+  } else {
+    res.send('Hey I know you! Hello again')
+    console.log(`Old user detected with id ${id}`)
+  }
 
 })
 

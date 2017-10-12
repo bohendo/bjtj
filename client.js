@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { render } from 'react-dom'
+import { hydrate } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 
@@ -16,7 +16,7 @@ delete window.__PRELOADED_STATE__
 
 const store = createStore(blackjack, preloadedState, applyMiddleware(logger))
 
-render(
+hydrate(
   <Provider store={store}>
     <Index />
   </Provider>,

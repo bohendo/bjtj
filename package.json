@@ -6,9 +6,11 @@
   "scripts": {
     "watch-server": "webpack --watch --config webpack/server.dev.js",
     "watch-client": "webpack --watch --config webpack/client.dev.js",
+    "watch": "npm run watch-server & npm run watch-client",
     "start-client": "webpack-dev-server --config webpack/client.dev.js",
-    "start-server": "npm run watch-client & npm run watch-server & nodemon build/server.bundle.js",
+    "start-server": "npm run watch & nodemon build/server.bundle.js",
     "start": "npm run start-server",
+    "serve": "nodemon build/server.bundle.js",
     "deploy": "NODE_ENV=production make prod && forever build/server.bundle.js &"
   },
   "author": "Bo Henderson",
@@ -51,6 +53,7 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
+    "universal-cookie": "^2.1.0",
     "universal-cookie-express": "^2.1.0"
   }
 }
