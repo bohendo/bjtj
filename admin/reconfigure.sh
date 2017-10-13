@@ -41,7 +41,10 @@ else
 fi
 
 # restart mongod
+chown -v mongodb:mongodb /etc/mongod.conf
+chmod -v 600 /etc/mongod.conf
 systemctl restart mongod
 systemctl status mongod
+
 `EOF`
 

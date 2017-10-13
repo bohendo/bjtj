@@ -1,0 +1,71 @@
+
+// Node built-ins
+import path from 'path'
+import fs from 'fs'
+import crypto from 'crypto'
+
+import express from 'express'
+const router = express.Router()
+
+import blackjack from '../reducers'
+import db from './mongo'
+
+
+//////////////////////////////
+// Setup router pipeline
+
+router.get('/hello', (req, res, next) => {
+
+  let id = req.universalCookies.get('id')
+  if (!id) {
+    const hash = crypto.createHash('sha256');
+    hash.update(req.headers['user-agent'].toString())
+    hash.update(Date.now().toString())
+    hash.update(crypto.randomBytes(16))
+    id = hash.digest('hex')
+
+    // save a bj doc in mongo for this user
+    const newState = blackjack(undefined, { type: 'HELLO' })
+    db.actions.insert({ cookie: id, action: { type: 'HELLO' }})
+    db.states.insert({
+      cookie: id,
+      state: newState,
+    })
+
+    res.cookie('id', id)
+    res.json(newState)
+    console.log(`New user registered with with id ${id}`)
+  } else {
+
+    db.states.find({ cookie: id }).then((data) => {
+      res.json(data)
+    }).catch((e) => { console.error(e) })
+    console.log(`Old user detected with id ${id}`)
+  }
+
+})
+
+router.get('/deal', (req, res, next) => {
+  let id = req.universalCookies.get('id')
+  if (!id) {
+    res.send('Who in tarnation do you think you are?!')
+  } else {
+
+    db.actions.insert({ cookie: id, action: { type: 'DEAL' } })
+
+    db.states.findOne({ cookie: id }).then((oldState) => {
+      const newState = blackjack(oldState.state, { type: 'DEAL' })
+      db.states.update(
+        { cookie: id },
+        { cookie: id, state: newState }
+      ).then(() => {
+        res.json(newState)
+      }).catch((e) => { console.error(e) })
+
+    }).catch((e) => { console.error(e) })
+  }
+
+})
+
+
+export default router

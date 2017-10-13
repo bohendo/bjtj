@@ -12,21 +12,9 @@ import cookieMW from 'universal-cookie-express'
 
 // My express middleware
 import ssr from './src/server/ssr'
+import api from './src/server/api'
 
 const production = process.env.NODE_ENV === 'production'
-
-//////////////////////////////
-// setup Mongo connection
-
-const auth = fs.readFileSync('./.mongo.secret', 'utf8')
-const db = require('monk')(
-
-  // 'mongodb://user:password@host:port/database'
-  `mongodb://bohendo:${auth}@127.0.0.1:27017/bohendo`,
-
-  // monk arg2: error callback
-  (err) => { if (err) console.error(err); }
-);
 
 //////////////////////////////
 // Express Pipeline
@@ -35,35 +23,15 @@ const app = express()
 
 app.use(helmet())
 
+app.use(cookieMW())
+
 app.use('/static', express.static(
   path.join(__dirname, './build/public'),
 ))
 
-app.use(cookieMW())
-
-app.get('/api/newuser', (req, res, next) => {
-
-  const id = req.universalCookies.get('id')
-
-  if (!id) {
-    const hash = crypto.createHash('sha256');
-    hash.update(req.headers['user-agent'].toString())
-    hash.update(Date.now().toString())
-    const newId = hash.digest('hex')
-
-    res.cookie('id', newId)
-
-    res.send('Hello nice to meet you')
-    console.log(`New user registered with with id ${newId}`)
-  } else {
-    res.send('Hey I know you! Hello again')
-    console.log(`Old user detected with id ${id}`)
-  }
-
-})
-
 // ssr for Server-side rendering
 app.get('/', ssr)
+app.use('/api', api)
 
 app.use((err, req, res, next) => {
   console.error(err.stack)

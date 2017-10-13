@@ -1,26 +1,26 @@
 #!/bin/bash
 
 ########################################
-# Sanity Check: can we ssh to bjvm?
+# Sanity Check: can we ssh to the given hostname?
 
 # define a clean error handler
 function err { >&2 echo "Error: $1"; exit 1; }
 
-# Sanity check, were we given a domain name?
+# Sanity check, were we given a hostname?
 if [[ ! $1 || $2 ]]; then err "Provide droplet's domain name as the first & only arg"; fi
-DN=$1
+hostname=$1
 
-ssh -q bjvm exit
-if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to bjvm (have you run setup-droplet.sh?)"; fi
+ssh -q $hostname exit
+if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to $hostname (have you run setup-droplet.sh?)"; fi
 
 email=`git config user.email`
 
-ssh bjvm "bash -s" <<EOF
+ssh $hostname "bash -s" <<EOF
 
-sed -i 's/server_name .*;/server_name '$DN';/' /etc/nginx/nginx.conf
+sed -i 's/server_name .*;/server_name '$hostname';/' /etc/nginx/nginx.conf
 
 # Request and install an https certificate
-certbot --nginx -d $DN -m $email --agree-tos --no-eff-email -n
+certbot --nginx -d $hostname -m $email --agree-tos --no-eff-email -n
 
 if [[ ! -f /etc/ssl/certs/dhparam.pem ]]
 then

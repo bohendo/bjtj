@@ -8,6 +8,10 @@ const mapStateToProps = state => state
 const mapDispatchToProps = dispatch => {
   return {
     deal: () => {
+      console.log('recording move...')
+      fetch('api/deal', { credentials: 'include' }).then((res) => {
+        res.json().then((data) => { console.log(data) })
+      })
       dispatch(DEAL());
     },
     hit: () => {

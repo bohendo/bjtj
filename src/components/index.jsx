@@ -12,7 +12,7 @@ class Index extends React.Component {
     document.getElementById('inj-cookie').replaceWith(document.cookie)
 
     const options = { credentials: 'include' };
-    fetch('/api/newuser', options).then((res) => {
+    fetch('/api/hello', options).then((res) => {
       res.text().then((data) => { console.log(data) })
     })
 

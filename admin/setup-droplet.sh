@@ -26,6 +26,14 @@ fi
 
 hostname=`ssh root@$IP hostname`
 
+# Generate some secrets
+if [[ ! -f .mongo.secret ]]
+then
+  head -c33 /dev/random | base64 > .mongo.secret
+  chmod 600 .mongo.secret
+  mongopwd=`cat .mongo.secret`
+fi
+
 ####################
 # Begin main heredoc
 ssh root@$IP "bash -s" <<EOF
@@ -54,6 +62,11 @@ echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb
 apt-get update -y
 apt-get install -y git nginx nodejs make pandoc software-properties-common python-certbot-nginx mongodb-org
 
+systemctl enable nginx
+systemctl status nginx
+
+systemctl enable mongod
+systemctl status mongod
 
 ########################################
 # Firewalls
@@ -119,7 +132,31 @@ chmod -v 775 /var/www/live
 ########################################
 # Setup Mongo
 
+mongo <<EOIF
+use admin
 
+db.createUser(
+  {
+    user: 'admin',
+    pwd: '$mongopwd',
+    roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ]
+  }
+)
+
+use bjvm
+
+db.createUser(
+  {
+    user: 'bjvm',
+    pwd: '$mongopwd',
+    roles: [ { role: 'readWrite', db: 'bjvm' } ]
+  }
+)
+EOIF
+
+chown -v mongodb:mongodb /etc/mongod.conf
+chown -v mongodb:mongodb -R /var/lib/mongodb
+chown -v mongodb:mongodb -R /var/log/mongodb
 
 ########################################
 # Restart to finish updates

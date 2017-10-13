@@ -22,6 +22,8 @@ const initialState = {
 
 const blackjack = (state = initialState, action) => {
   switch (action.type) {
+    case 'HELLO':
+      return sync(state)
     case 'DEAL':
       return sync(deal(state, shuffle()))
     case 'HIT':
