@@ -117,6 +117,11 @@ chmod -v 775 /var/www
 chmod -v 775 /var/www/live
 
 ########################################
+# Setup Mongo
+
+
+
+########################################
 # Restart to finish updates
 
 apt-get update -y
@@ -135,7 +140,7 @@ then
 fi
 
 # Add bjvm to our ssh/config
-if grep -Fxq $hostname ~/.ssh/config
+if ! grep -Fxq $hostname ~/.ssh/config
 then
   echo "Updating ~/.ssh/config.."
   echo | tee -a ~/.ssh/config
@@ -147,7 +152,7 @@ fi
 
 echo "Waiting for server to finish rebooting..."
 sleep 15
-bash reconfigure.sh
+bash reconfigure.sh $hostname
 
 echo;
 echo "If you didn't see any errors above, we're good to go."
