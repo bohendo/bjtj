@@ -21,6 +21,7 @@ if [[ $? -ne 0 ]]; then err "Couldn't open an ssh connection to $hostname (have 
 
 scp nginx.conf $hostname:/etc/nginx/nginx.conf
 scp mongod.conf $hostname:/etc/mongod.conf
+scp .mongo.secret $hostname:/var/git/live/admin/.mongo.secret
 
 ########################################
 # Tweak config files and reload services

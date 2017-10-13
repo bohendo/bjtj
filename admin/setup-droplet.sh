@@ -29,10 +29,10 @@ hostname=`ssh root@$IP hostname`
 # Generate some secrets
 if [[ ! -f .mongo.secret ]]
 then
-  head -c33 /dev/random | base64 > .mongo.secret
+  head -c33 /dev/random | base64 | tr -d '\n\r' > .mongo.secret
   chmod 600 .mongo.secret
-  mongopwd=`cat .mongo.secret`
 fi
+mongopwd=`cat .mongo.secret`
 
 ####################
 # Begin main heredoc
@@ -58,14 +58,19 @@ add-apt-repository ppa:certbot/certbot -y
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
 echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
-# Update & install stuff
+# Update & install stuff from apt
 apt-get update -y
 apt-get install -y git nginx nodejs make pandoc software-properties-common python-certbot-nginx mongodb-org
 
+# Update & install stuff from npm
+npm install -g forever
+
 systemctl enable nginx
+systemctl restart mongod
 systemctl status nginx
 
 systemctl enable mongod
+systemctl restart mongod
 systemctl status mongod
 
 ########################################
@@ -98,7 +103,8 @@ fi
 # Remote repo setup
 
 mkdir -vp /var/git/live.git
-mkdir -vp /var/git/live
+mkdir -vp /var/git/live/admin
+echo $mongopwd > /var/git/live/admin/.mongo.secret
 
 cd /var/git/live.git
 
@@ -109,9 +115,11 @@ then
   echo "Writing to hooks/post-receive..."
   echo '#!/bin/bash' | tee hooks/post-receive
   echo 'git --work-tree=/var/git/live --git-dir=/var/git/live.git checkout -f' | tee -a hooks/post-receive
-  echo 'mkdir -p /var/git/live/build/public' | tee -a hooks/post-receive
+  echo 'mkdir -p /var/git/live/build' | tee -a hooks/post-receive
+  echo 'rm -rf /var/git/live/build/public' | tee -a hooks/post-receive
   echo 'ln -sfT /var/www/live /var/git/live/build/public' | tee -a hooks/post-receive
   echo 'cd /var/git/live' | tee -a hooks/post-receive
+  echo 'npm install' | tee -a hooks/post-receive
   echo 'npm run deploy' | tee -a hooks/post-receive
 
   chmod -v 755 hooks/post-receive
@@ -121,11 +129,10 @@ fi
 ########################################
 # Set appropriate ownership/permissions
 
-mkdir -vp /var/www/live
-
 chown -vR www-data:www-data /var/www
 chown -vR git:git /var/git
 
+mkdir -vp /var/www/live
 chmod -v 775 /var/www
 chmod -v 775 /var/www/live
 
@@ -177,7 +184,7 @@ then
 fi
 
 # Add bjvm to our ssh/config
-if ! grep -Fxq $hostname ~/.ssh/config
+if ! grep $hostname ~/.ssh/config
 then
   echo "Updating ~/.ssh/config.."
   echo | tee -a ~/.ssh/config
@@ -193,6 +200,6 @@ bash reconfigure.sh $hostname
 
 echo;
 echo "If you didn't see any errors above, we're good to go."
-echo "  ssh to your droplet with: ssh bjvm"
-echo "  push to your droplet with: git push -u live master";
+echo "  ssh to your droplet with: ssh $hostname"
+echo "  push to your droplet with: git push -u $hostname master";
 
