@@ -10,6 +10,30 @@ const router = express.Router()
 import blackjack from '../reducers'
 import db from './mongo'
 
+const handleMove = (req, res, move) => {
+
+  let id = req.universalCookies.get('id')
+  if (!id) {
+    res.send('Who in tarnation do you think you are?!')
+  } else {
+
+    db.actions.insert({ cookie: id, action: { type: move } })
+
+    db.states.findOne({ cookie: id }).then((doc) => {
+
+      const newState = blackjack(doc.state, { type: move })
+
+      db.states.update(
+        { cookie: id },
+        { cookie: id, state: newState }
+      ).then(() => {
+        res.json(newState)
+      }).catch((e) => { console.error(e) })
+
+    }).catch((e) => { console.error(e) })
+  }
+
+}
 
 //////////////////////////////
 // Setup router pipeline
@@ -37,8 +61,8 @@ router.get('/hello', (req, res, next) => {
     console.log(`New user registered with with id ${id}`)
   } else {
 
-    db.states.find({ cookie: id }).then((data) => {
-      res.json(data)
+    db.states.findOne({ cookie: id }).then((doc) => {
+      res.json(doc.state)
     }).catch((e) => { console.error(e) })
     console.log(`Old user detected with id ${id}`)
   }
@@ -46,26 +70,23 @@ router.get('/hello', (req, res, next) => {
 })
 
 router.get('/deal', (req, res, next) => {
-  let id = req.universalCookies.get('id')
-  if (!id) {
-    res.send('Who in tarnation do you think you are?!')
-  } else {
-
-    db.actions.insert({ cookie: id, action: { type: 'DEAL' } })
-
-    db.states.findOne({ cookie: id }).then((oldState) => {
-      const newState = blackjack(oldState.state, { type: 'DEAL' })
-      db.states.update(
-        { cookie: id },
-        { cookie: id, state: newState }
-      ).then(() => {
-        res.json(newState)
-      }).catch((e) => { console.error(e) })
-
-    }).catch((e) => { console.error(e) })
-  }
-
+  handleMove(req, res, 'DEAL')
 })
 
+router.get('/hit', (req, res, next) => {
+  handleMove(req, res, 'HIT')
+})
+
+router.get('/double', (req, res, next) => {
+  handleMove(req, res, 'DOUBLE')
+})
+
+router.get('/stand', (req, res, next) => {
+  handleMove(req, res, 'STAND')
+})
+
+router.get('/split', (req, res, next) => {
+  handleMove(req, res, 'SPLIT')
+})
 
 export default router

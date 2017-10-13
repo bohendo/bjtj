@@ -15,20 +15,15 @@ import db from './mongo'
 const serverSideRender = (req, res) =>{
 
   const id = req.universalCookies.get('id')
-  console.log(id)
 
   if (!id) {
     res.send(renderIndex(createStore(blackjack)))
   }
 
-  db.states.find({ cookie: id }).then((doc) => {
-    doc = doc[0]
-    console.log('found:', doc)
+  db.states.findOne({ cookie: id }).then((doc) => {
     if (doc.state) {
-      console.log('Rendering old state')
       res.send(renderIndex(createStore(blackjack, doc.state)))
     } else {
-      console.log('Rendering new state')
       res.send(renderIndex(createStore(blackjack)))
     }
   }).catch((e) => { console.error(e) })
@@ -37,8 +32,6 @@ const serverSideRender = (req, res) =>{
 
 
 const renderIndex = store => {
-
-  console.log('rendering index..')
 
   const html = renderToString(
     <Provider store={store}>
@@ -76,8 +69,6 @@ const renderIndex = store => {
     /<div id="root">/,
     `$&${html}`,
   )
-
-  console.log('onwards')
 
   return (index)
 }

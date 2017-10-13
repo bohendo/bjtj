@@ -5,25 +5,33 @@ import BJVM from '../components/bjvm.jsx'
 
 const mapStateToProps = state => state
 
+// This should probably be react middleware...
+const pingServer = move => {
+  fetch(`api/${move}`, { credentials: 'include' }).then((res) => {
+    res.json().then((data) => { console.log(data) })
+  })
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     deal: () => {
-      console.log('recording move...')
-      fetch('api/deal', { credentials: 'include' }).then((res) => {
-        res.json().then((data) => { console.log(data) })
-      })
+      pingServer('deal')
       dispatch(DEAL());
     },
     hit: () => {
+      pingServer('hit')
       dispatch(HIT());
     },
     stand: () => {
+      pingServer('stand')
       dispatch(STAND());
     },
     double: () => {
+      pingServer('double')
       dispatch(DOUBLE());
     },
     split: () => {
+      pingServer('split')
       dispatch(SPLIT());
     },
   }
