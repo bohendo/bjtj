@@ -16,6 +16,19 @@ import ssr from './src/server/ssr'
 const production = process.env.NODE_ENV === 'production'
 
 //////////////////////////////
+// setup Mongo connection
+
+const auth = fs.readFileSync('./.mongo.secret', 'utf8')
+const db = require('monk')(
+
+  // 'mongodb://user:password@host:port/database'
+  `mongodb://bohendo:${auth}@127.0.0.1:27017/bohendo`,
+
+  // monk arg2: error callback
+  (err) => { if (err) console.error(err); }
+);
+
+//////////////////////////////
 // Express Pipeline
 
 const app = express()
@@ -73,3 +86,4 @@ app.use((req, res) => {
 app.listen(3000, () => {
   console.log('Listening on port 3000')
 })
+
