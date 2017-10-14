@@ -94,16 +94,15 @@ if ! getent passwd git
 then
   adduser --disabled-password --gecos "" git
   cp -vr /root/.ssh /home/git/.ssh
-  chown -vR git:git /home/git/.ssh
-  # git will be the one who deploys so give them permission to
-  usermod -aG www-data git
 fi
 
 ########################################
 # Remote repo setup
 
+mkdir -vp /var/www/live
 mkdir -vp /var/git/live.git
 mkdir -vp /var/git/live/admin
+
 echo $mongopwd > /var/git/live/admin/.mongo.secret
 
 cd /var/git/live.git
@@ -123,19 +122,7 @@ then
   echo 'npm run build' | tee -a hooks/post-receive
   echo 'npm run deploy' | tee -a hooks/post-receive
 
-  chmod -v 755 hooks/post-receive
-
 fi
-
-########################################
-# Set appropriate ownership/permissions
-
-chown -vR www-data:www-data /var/www
-chown -vR git:git /var/git
-
-mkdir -vp /var/www/live
-chmod -v 775 /var/www
-chmod -v 775 /var/www/live
 
 ########################################
 # Setup Mongo
@@ -162,9 +149,24 @@ db.createUser(
 )
 EOIF
 
+
+########################################
+# Set appropriate ownership/permissions
+
+# git will be the one who deploys so give them permission to
+usermod -aG www-data git
+
+chown -vR www-data:www-data /var/www
+chown -vR git:git /var/git
 chown -v mongodb:mongodb /etc/mongod.conf
 chown -v mongodb:mongodb -R /var/lib/mongodb
 chown -v mongodb:mongodb -R /var/log/mongodb
+chown -vR git:git /home/git/.ssh
+
+chmod -v 775 /var/www
+chmod -v 775 /var/www/live
+chmod -v 755 hooks/post-receive
+
 
 ########################################
 # Restart to finish updates
