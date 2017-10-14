@@ -42,8 +42,8 @@ else
 fi
 
 # restart mongod
-chown -v mongodb:mongodb /etc/mongod.conf
-chmod -v 600 /etc/mongod.conf
+chown -v git:git /var/git/live/admin/.mongo.secret
+chmod -v 600 /var/git/live/admin/.mongo.secret
 systemctl restart mongod
 systemctl status mongod
 

@@ -31,6 +31,7 @@ app.use('/static', express.static(
 
 // ssr for Server-side rendering
 app.get('/', ssr)
+
 app.use('/api', api)
 
 app.use((err, req, res, next) => {

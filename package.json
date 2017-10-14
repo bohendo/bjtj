@@ -11,7 +11,8 @@
     "start-server": "npm run watch & nodemon build/server.bundle.js",
     "start": "npm run start-server",
     "serve": "nodemon build/server.bundle.js",
-    "deploy": "NODE_ENV=production make prod && forever build/server.bundle.js &"
+    "build": "NODE_ENV=production make prod",
+    "deploy": "pm2 start build/server.bundle.js"
   },
   "author": "Bo Henderson",
   "license": "MIT",

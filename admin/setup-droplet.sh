@@ -47,7 +47,7 @@ apt-get update -y
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
 # Add node repo: https://github.com/nodesource/distributions#debinstall
-curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 echo "deb https://deb.nodesource.com/node_6.x xenial main" > /etc/apt/sources.list.d/nodesource.list
 echo "deb-src https://deb.nodesource.com/node_6.x xenial main" >> /etc/apt/sources.list.d/nodesource.list
 
@@ -55,15 +55,15 @@ echo "deb-src https://deb.nodesource.com/node_6.x xenial main" >> /etc/apt/sourc
 add-apt-repository ppa:certbot/certbot -y
 
 # Add mongo repo
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 # Update & install stuff from apt
 apt-get update -y
 apt-get install -y git nginx nodejs make pandoc software-properties-common python-certbot-nginx mongodb-org
 
 # Update & install stuff from npm
-npm install -g forever
+npm install pm2 -g
 
 systemctl enable nginx
 systemctl restart mongod
@@ -120,6 +120,7 @@ then
   echo 'ln -sfT /var/www/live /var/git/live/build/public' | tee -a hooks/post-receive
   echo 'cd /var/git/live' | tee -a hooks/post-receive
   echo 'npm install' | tee -a hooks/post-receive
+  echo 'npm run build' | tee -a hooks/post-receive
   echo 'npm run deploy' | tee -a hooks/post-receive
 
   chmod -v 755 hooks/post-receive
