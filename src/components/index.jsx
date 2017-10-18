@@ -9,7 +9,6 @@ const cookies = new Cookies()
 class Index extends React.Component {
 
   componentDidMount() {
-    document.getElementById('inj-cookie').replaceWith(document.cookie)
 
     const options = { credentials: 'include' };
     fetch('/api/hello', options).then((res) => {
@@ -41,8 +40,6 @@ class Index extends React.Component {
       </div>
 
       <Container />
-
-      <p>Cookies: <span id="inj-cookie"/></p>
 
       <div class="row marketing">
         <div class="col-lg-6">
