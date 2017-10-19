@@ -5,7 +5,7 @@ const webpack = require('webpack')
 const precss = require('precss')
 const autoprefixer = require('autoprefixer')
 
-module.exports = merge(require('./server.common.js'), {
+module.exports = merge(require('./server.prod.js'), {
 
   // https://webpack.js.org/configuration/devtool/
   devtool: 'cheap-eval-source-map',
@@ -14,16 +14,6 @@ module.exports = merge(require('./server.common.js'), {
   output: { publicPath: '/' },
 
   recordsPath: path.join(__dirname, '../built/records'),
-
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/,
-      },
-    ],
-  },
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
