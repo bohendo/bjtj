@@ -30,9 +30,6 @@ hostname=`ssh root@$IP hostname`
 # Begin main heredoc
 ssh root@$IP "bash -s" <<EOF
 
-## Remove that silly motd
-rm -rf /etc/update-motd.d/99-one-click
-
 ########################################
 # Upgrade Everything
 
@@ -68,6 +65,9 @@ apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 ## For some reason, gotta upgrade multiple times to get it all
 apt-get update -y && apt-get upgrade -y && apt-get autoremove -y
 apt-get update -y && apt-get upgrade -y && apt-get autoremove -y
+
+## Remove that silly motd
+rm -rf /etc/update-motd.d/99-one-click
 
 echo "Restarting remote server..."
 sleep 3 && reboot &
