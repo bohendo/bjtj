@@ -2,9 +2,6 @@ version: '3'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: ops/nginx.Dockerfile
     image: bohendo/nginx
     deploy:
       replicas: 3

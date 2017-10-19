@@ -2,12 +2,11 @@
 ##### MAGIC VARIABLES #####
 
 SHELL=/bin/bash # default: /bin/sh
-VPATH=docs:src:webpack:ops # search path for prereqs
-out_dir=built/static
-source=src
-md_dir=docs
-md_template=$(md_dir)/template.html
-md_body=$(md_dir)/body.html
+
+VPATH=docs:src:webpack:ops:built:built/static # search path for prereqs & targets
+
+md_template=./docs/template.html
+md_body=./docs/body.html
 drfrank=bash drfrank.sh
 pandoc=pandoc -f markdown -t html
 webpack=node_modules/.bin/webpack
@@ -15,56 +14,52 @@ about=docs/about.md
 
 ##### CALCULATED VARIABLES #####
 
-md=$(shell find $(md_dir) -type f -name "*.md")
-js=$(shell find $(source) -type f -name "*.js")
-css=$(shell find $(source) -type f -name "*.s?css")
+md=$(shell find docs -type f -name "*.md")
+js=$(shell find src -type f -name "*.jsx?")
+css=$(shell find src -type f -name "*.s?css")
 
-md_out=$(subst $(md_dir)/,$(out_dir)/,$(subst .md,.html,$(md)))
+md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 
 ##### RULES #####
 # first rule is the default
 
-prod: node_modules client-prod server-prod $(md_out)
-  
-client-prod: $(js) $(css)
-	$(webpack) --config webpack/client.prod.js
+all: nginx node
 
-server-prod: $(js)
+nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css src/index.html
+	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .
+
+node: node.Dockerfile server.bundle.js
+	docker build -f ops/node.Dockerfile -t bohendo/node .
+
+server.bundle.js: node_modules webpack/server.prod.js $(js)
 	$(webpack) --config webpack/server.prod.js
 
-dev: node_modules client-dev server-dev $(md_out)
+client.bundle.js: node_modules webpack/client.common.js webpack/client.prod.js $(js)
+	$(webpack) --config webpack/client.prod.js
 
-client-dev: $(js) $(css)
-	$(webpack) --config webpack/client.dev.js
+style.css: node_modules $(css)
+	$(webpack) --config webpack/client.prod.js
 
-server-dev: $(js)
-	$(webpack) --config webpack/server.dev.js
-# readme and about: same thing
-$(about): README.md
-	cp -f README.md $(about)
+node_modules: package.json package-lock.json
+	npm install
 
 # Build docs pages
 # targets: target-pattern: prereq-patterns
 # $< is an auto var for the first prereq
 # $* is an auto var for the stem ie %
-$(md_out): $(out_dir)/%.html: $(md_dir)/%.md $(about) $(md_template)
+$(md_out): built/static/%.html: docs/%.md $(about) $(md_template)
 
-	mkdir -p $(out_dir)
+	mkdir -p built/static/
 	$(pandoc) $< > $(md_body)
-	cp -f $(md_template) $(out_dir)/$*.html
-	sed -i '/<!--#include body-->/r '"$(md_body)" "$(out_dir)/$*.html"
-	sed -i '/<!--#include body-->/d' "$(out_dir)/$*.html"
+	cp -f $(md_template) built/static/$*.html
+	sed -i '/<!--#include body-->/r '"$(md_body)" "$(static)/$*.html"
+	sed -i '/<!--#include body-->/d' "built/static/$*.html"
 	rm $(md_body)
 
-node_modules: package.json
-	npm install
+# readme and about: same thing
+$(about): README.md
+	cp -f README.md $(about)
 
 clean:
-	rm -rf $(out_dir)/*
-
-nginx: nginx.Dockerfile nginx.conf
-	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .
-
-node: node.Dockerfile
-	docker build -f ops/node.Dockerfile -t bohendo/node .
+	rm -rf built/*
 
