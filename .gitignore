@@ -2,7 +2,7 @@
 node_modules
 
 # Generated
-build
+built
 dist
 
 # Secret

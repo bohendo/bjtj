@@ -13,7 +13,7 @@ module.exports = merge(require('./server.common.js'), {
   // location of files according to our browser
   output: { publicPath: '/' },
 
-  recordsPath: path.join(__dirname, '../build/records'),
+  recordsPath: path.join(__dirname, '../built/records'),
 
   module: {
     rules: [

@@ -5,11 +5,11 @@ const HtmlPlugin = require('html-webpack-plugin');
 module.exports = {
 
   entry: {
-    client: './client.js',
+    client: './src/client.js',
   },
 
   output: {
-    path: path.join(__dirname, '../build/public'),
+    path: path.join(__dirname, '../built/static'),
     filename: '[name].bundle.js',
   },
 

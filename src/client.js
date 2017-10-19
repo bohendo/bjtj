@@ -4,11 +4,11 @@ import { hydrate } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 
-import blackjack from './src/reducers'
-import Index from './src/components/index'
-import logger from './src/middleware/logger'
+import blackjack from './reducers'
+import Index from './components/index'
+import logger from './middleware/logger'
 
-import theme from './src/style.scss'
+import theme from './style.scss'
 
 const preloadedState = window.__PRELOADED_STATE__
 

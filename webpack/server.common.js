@@ -15,11 +15,11 @@ fs.readdirSync('node_modules')
 module.exports = {
 
   entry: {
-    server: './server.js',
+    server: './src/server.js',
   },
 
   output: {
-    path: path.join(__dirname, '../build'),
+    path: path.join(__dirname, '../built'),
     filename: '[name].bundle.js',
   },
 

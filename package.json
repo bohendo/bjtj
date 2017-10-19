@@ -2,17 +2,17 @@
   "name": "bjvm",
   "version": "1.0.0",
   "description": "",
-  "main": "build/server.bundle.js",
+  "main": "built/server.bundle.js",
   "scripts": {
     "watch-server": "webpack --watch --config webpack/server.dev.js",
     "watch-client": "webpack --watch --config webpack/client.dev.js",
     "watch": "npm run watch-server & npm run watch-client",
     "start-client": "webpack-dev-server --config webpack/client.dev.js",
-    "start-server": "npm run watch & nodemon build/server.bundle.js",
+    "start-server": "npm run watch & nodemon built/server.bundle.js",
     "start": "npm run start-server",
-    "serve": "nodemon build/server.bundle.js",
+    "serve": "nodemon built/server.bundle.js",
     "build": "NODE_ENV=production make prod",
-    "deploy": "pm2 start build/server.bundle.js"
+    "deploy": "pm2 start built/server.bundle.js"
   },
   "author": "Bo Henderson",
   "license": "MIT",
