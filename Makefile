@@ -2,7 +2,7 @@
 ##### MAGIC VARIABLES #####
 
 SHELL=/bin/bash # default: /bin/sh
-VPATH=docs:src:webpack:admin # search path for prereqs
+VPATH=docs:src:webpack:ops # search path for prereqs
 out_dir=built/static
 source=src
 md_dir=docs
@@ -63,8 +63,8 @@ clean:
 	rm -rf $(out_dir)/*
 
 nginx: nginx.Dockerfile nginx.conf
-	docker build -f admin/nginx.Dockerfile -t bohendo/nginx .
+	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .
 
 node: node.Dockerfile
-	docker build -f admin/node.Dockerfile -t bohendo/node .
+	docker build -f ops/node.Dockerfile -t bohendo/node .
 
