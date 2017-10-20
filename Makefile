@@ -14,9 +14,9 @@ about=docs/about.md
 
 ##### CALCULATED VARIABLES #####
 
-md=$(shell find docs -type f -name "*.md")
-js=$(shell find src -type f -name "*.jsx?")
-css=$(shell find src -type f -name "*.s?css")
+md=$(shell find ./docs -type f -name "*.md")
+js=$(shell find ./src -type f -name "*.js*")
+css=$(shell find ./src -type f -name "*.scss")
 
 md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 
@@ -25,7 +25,7 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 
 all: nginx node
 
-nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css src/index.html
+nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css
 	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .
 
 node: node.Dockerfile server.bundle.js
