@@ -25,6 +25,7 @@ then
 fi
 
 hostname=`ssh root@$IP hostname`
+internal_ip=`ssh root@$IP ifconfig eth1 | grep 'inet addr' | awk '{print $2;exit}' | sed 's/addr://'`
 
 ####################
 # Begin main heredoc
@@ -59,6 +60,7 @@ add-apt-repository \
 apt-get update -y
 apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 
+docker swarm init --advertise-addr $internal_ip 2> /dev/null
 
 ########################################
 # Setup git repo & deployment machine
@@ -66,6 +68,7 @@ apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 if ! getent passwd git
 then
   adduser --disabled-password --gecos "" git
+  usermod -aG docker git
   cp -vr /root/.ssh /home/git/.ssh
 fi
 
@@ -78,11 +81,10 @@ if [[ ! -d hooks ]]
 then
   git init --bare
 
-  hooks/post-receive <<EOIF
+  tee hooks/post-receive <<EOIF
 #!/bin/bash
 git --work-tree=/var/git/bjvm --git-dir=/var/git/bjvm.git checkout -f
 cd /var/git/bjvm
-docker swarm init 2> /dev/null
 docker stack deploy -c docker-compose.yml bjvm
 EOIF
 
@@ -110,10 +112,8 @@ exit
 EOF
 
 # Add a remote git repo to push to
-if ! git ls-remote $hostname 2> /dev/null
-then
-  git remote add $hostname ssh://git@$IP:/var/git/bjvm.git
-fi
+git remote remove $hostname 2> /dev/null
+git remote add $hostname ssh://git@$IP:/var/git/bjvm.git
 
 # Add this host to our ssh/config
 if ! grep $hostname ~/.ssh/config
