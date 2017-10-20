@@ -15,6 +15,19 @@ services:
       - bjvm-net
     ports:
       - "80:80"
-
+      - "443:443"
+  app:
+    image: bohendo/node:1.0
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      update_config:
+        parallelism: 1
+        delay: 3s
+    networks:
+      - bjvm-net
+ 
 networks:
   bjvm-net:

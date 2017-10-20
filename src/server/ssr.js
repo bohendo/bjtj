@@ -42,7 +42,7 @@ const renderIndex = store => {
   const finalState = store.getState()
 
   // load my index.html template
-  let index = fs.readFileSync('src/index.html', 'utf8')
+  let index = fs.readFileSync('./index.html', 'utf8')
 
   // inject my stylesheet
   index = index.replace(

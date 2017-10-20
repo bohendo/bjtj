@@ -4,15 +4,10 @@
   "description": "",
   "main": "built/server.bundle.js",
   "scripts": {
-    "watch-server": "webpack --watch --config webpack/server.dev.js",
-    "watch-client": "webpack --watch --config webpack/client.dev.js",
-    "watch": "npm run watch-server & npm run watch-client",
     "start-client": "webpack-dev-server --config webpack/client.dev.js",
-    "start-server": "npm run watch & nodemon built/server.bundle.js",
-    "start": "npm run start-server",
-    "serve": "nodemon built/server.bundle.js",
-    "build": "NODE_ENV=production make prod",
-    "deploy": "pm2 start built/server.bundle.js"
+    "watch": "webpack --watch --config webpack/server.dev.js && webpack --watch --config webpack/client.dev.js",
+    "start": "npm run watch & nodemon built/server.bundle.js",
+    "build-node": "docker build -f ops/node.Dockerfile ."
   },
   "author": "Bo Henderson",
   "license": "MIT",
