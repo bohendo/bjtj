@@ -59,6 +59,40 @@ add-apt-repository \
 apt-get update -y
 apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 
+
+########################################
+# Setup git repo & deployment machine
+
+if ! getent passwd git
+then
+  adduser --disabled-password --gecos "" git
+  cp -vr /root/.ssh /home/git/.ssh
+fi
+
+mkdir -vp /var/git/bjvm
+mkdir -vp /var/git/bjvm.git
+
+cd /var/git/bjvm.git
+
+if [[ ! -d hooks ]]
+then
+  git init --bare
+
+  hooks/post-receive <<EOIF
+#!/bin/bash
+git --work-tree=/var/git/bjvm --git-dir=/var/git/bjvm.git checkout -f
+cd /var/git/bjvm
+docker swarm init 2> /dev/null
+docker stack deploy -c docker-compose.yml bjvm
+EOIF
+
+fi
+
+chmod -v 755 hooks/post-receive
+chown -vR git:git /var/git
+chown -vR git:git /home/git
+
+
 ########################################
 # Double-check upgrades & reboot
 
@@ -74,6 +108,12 @@ sleep 3 && reboot &
 exit
 
 EOF
+
+# Add a remote git repo to push to
+if ! git ls-remote $hostname 2> /dev/null
+then
+  git remote add $hostname ssh://git@$IP:/var/git/bjvm.git
+fi
 
 # Add this host to our ssh/config
 if ! grep $hostname ~/.ssh/config
