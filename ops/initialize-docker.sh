@@ -40,6 +40,15 @@ apt-get update -y
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
 ########################################
+# Setup firewall
+
+ufw --force reset
+ufw allow 22 &&\
+ufw allow 80 &&\
+ufw allow 443 &&\
+ufw --force enable
+
+########################################
 # Install Docker
 
 # Make sure no old versions are installed
@@ -59,6 +68,8 @@ add-apt-repository \
 
 apt-get update -y
 apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
+
+systemctl enable docker
 
 docker swarm init --advertise-addr $internal_ip 2> /dev/null
 

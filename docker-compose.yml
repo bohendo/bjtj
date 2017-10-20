@@ -1,10 +1,10 @@
 version: '3'
 
 services:
-  web:
-    image: bohendo/nginx:1.0
+  nginx:
+    image: bohendo/nginx
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -13,21 +13,28 @@ services:
         delay: 3s
     networks:
       - bjvm-net
+    volumes:
+      - letsencrypt:/etc/letsencrypt/
+      - webroot:/var/www/letsencrypt/
     ports:
       - "80:80"
       - "443:443"
-  app:
-    image: bohendo/node:1.0
+  certbot:
+    image: certbot/certbot
+    command: renew --webroot -m bohende@gmail.com --agree-tos --no-eff-email -d dev.bohendo.com -w /var/www/letsencrypt -n
     deploy:
-      replicas: 2
       restart_policy:
-        condition: on-failure
-        delay: 5s
-      update_config:
-        parallelism: 1
-        delay: 3s
+        condition: none
+        max_attempts: 1
+    volumes:
+      - letsencrypt:/etc/letsencrypt/
+      - webroot:/var/www/letsencrypt/
     networks:
       - bjvm-net
  
 networks:
   bjvm-net:
+
+volumes:
+  letsencrypt:
+  webroot:
