@@ -23,7 +23,10 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 ##### RULES #####
 # first rule is the default
 
-all: nginx node
+all: bootstrap nginx node
+
+bootstrap: 
+	docker build -f ops/bootstrap.Dockerfile -t bohendo/bootstrap .
 
 nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css
 	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .

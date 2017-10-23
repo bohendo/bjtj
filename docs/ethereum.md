@@ -1,6 +1,12 @@
 
 # Ethereum
 
+## Basics
+
+2 Types of accounts:
+ - normal accounts are defined by a public key and are controlled by it's private key
+ - contract accounts are defined by the hash of their signature and are controlled by a snippet of code that takes incoming transactions as input.
+
 ## Build a private testnet blockchain
 
 Installation:
