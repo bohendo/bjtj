@@ -8,20 +8,17 @@ RUN apk add --update nginx openssl
 RUN openssl dhparam -out /etc/ssl/dhparam.pem 4096
 
 RUN mkdir -p /etc/certs && \
-  # initialize a self-signed placeholder cert
+  # initialize a placeholder cert
   openssl req \
-    -newkey rsa:2048 -nodes -keyout /etc/certs/privkey.pem \
-    -x509 -days 365 -out /etc/certs/fullchain.pem \
+    -newkey rsa:2048 -nodes -keyout /etc/certs/backup.key \
+    -x509 -days 365 -out /etc/certs/backup.crt \
     -subj "/C=CA/ST=Ontario/L=Toronto/O=Org/OU=IT/CN=example.com" && \
   # Link the logs to something docker can collect automatically
-  ln -fs /var/log/nginx/error.log /dev/stderr && \
-  ln -fs /var/log/nginx/access.log /dev/stdout
-
+  ln -fs /dev/stderr /var/log/nginx/error.log && \
+  ln -fs /dev/stdout /var/log/nginx/access.log
 
 COPY ./ops/nginx.conf /etc/nginx/nginx.conf
-
 COPY ./built/static /var/www/static
-
 COPY ./ops/nginx.entry.sh /root/nginx.entry.sh
 
 EXPOSE 80
