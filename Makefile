@@ -22,13 +22,19 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 ##### RULES #####
 # first rule is the default
 
-all: certbot nginx
+all: certbot nginx node mongo
 
 certbot: certbot.Dockerfile
 	docker build -f ops/certbot.Dockerfile -t bjvm-certbot .
 
 nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css $(md_out)
 	docker build -f ops/nginx.Dockerfile -t bjvm-nginx .
+
+node: node.Dockerfile server.bundle.js
+	docker build -f ops/node.Dockerfile -t bjvm-node .
+
+mongo: mongo.Dockerfile
+	docker build -f ops/mongo.Dockerfile -t bjvm-mongo .
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)
 	$(webpack) --config webpack/server.prod.js

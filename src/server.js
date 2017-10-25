@@ -12,7 +12,7 @@ import cookieMW from 'universal-cookie-express'
 
 // My express middleware
 import ssr from './server/ssr'
-// import api from './server/api'
+import api from './server/api'
 
 const production = process.env.NODE_ENV === 'production'
 

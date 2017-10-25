@@ -12,7 +12,7 @@ RUN mkdir -p /etc/certs && \
   openssl req \
     -newkey rsa:2048 -nodes -keyout /etc/certs/backup.key \
     -x509 -days 365 -out /etc/certs/backup.crt \
-    -subj "/C=CA/ST=Ontario/L=Toronto/O=Org/OU=IT/CN=example.com" && \
+    -subj "/C=/ST=/L=/O=/OU=/CN=/" && \
   # Link the logs to something docker can collect automatically
   ln -fs /dev/stderr /var/log/nginx/error.log && \
   ln -fs /dev/stdout /var/log/nginx/access.log
