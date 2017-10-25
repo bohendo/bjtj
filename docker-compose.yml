@@ -1,43 +1,43 @@
 version: '3'
 
-services:
-
-  bootstrap:
-    image: bohendo/bjvm-bootstrap
-    volumes:
-      - letsencrypt:/opt/letsencrypt/
-      - webroot:/opt/webroot/
-
-  nginx:
-    hostname: dev.bohendo.com
-    image: bohendo/nginx
-    deploy:
-      restart: always
-    networks:
-      - bjvm-net
-    volumes:
-      - letsencrypt:/etc/letsencrypt/
-      - webroot:/var/www/letsencrypt/
-    ports:
-      - "80:80"
-      - "443:443"
-
-  certbot:
-    image: certbot/certbot
-    command: certonly --webroot -m bohende@gmail.com --agree-tos --no-eff-email -d dev.bohendo.com -w /var/www/letsencrypt -n
-    deploy:
-      restart_policy:
-        condition: none
-        max_attempts: 1
-    volumes:
-      - letsencrypt:/etc/letsencrypt/
-      - webroot:/var/www/letsencrypt/
-    networks:
-      - bjvm-net
- 
 networks:
-  bjvm-net:
+  front:
 
 volumes:
   letsencrypt:
   webroot:
+
+services:
+
+  certbot:
+    # image: bjvm-certbot # DEV
+    image: bohendo/bjvm-certbot:0.1
+    environment:
+      - BJVM_DOMAINNAME
+      - BJVM_EMAIL
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 48h
+    volumes:
+      - letsencrypt:/var/etc/letsencrypt
+      - webroot:/var/www/letsencrypt/
+    networks:
+      - front
+
+  nginx:
+    # image: bjvm-nginx # DEV
+    image: bohendo/bjvm-nginx:0.1
+    hostname: ${BJVM_DOMAINNAME}
+    deploy:
+      restart_policy:
+        condition: any
+    volumes:
+      - letsencrypt:/var/etc/letsencrypt
+      - webroot:/var/www/letsencrypt/
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - front
+

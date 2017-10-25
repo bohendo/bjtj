@@ -23,16 +23,13 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 ##### RULES #####
 # first rule is the default
 
-all: bootstrap nginx node
+all: certbot nginx
 
-bootstrap: 
-	docker build -f ops/bootstrap.Dockerfile -t bohendo/bootstrap .
+certbot: certbot.Dockerfile
+	docker build -f ops/certbot.Dockerfile -t bjvm-certbot .
 
 nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css
-	docker build -f ops/nginx.Dockerfile -t bohendo/nginx .
-
-node: node.Dockerfile server.bundle.js
-	docker build -f ops/node.Dockerfile -t bohendo/node .
+	docker build -f ops/nginx.Dockerfile -t bjvm-nginx .
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)
 	$(webpack) --config webpack/server.prod.js
