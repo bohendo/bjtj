@@ -1,5 +1,0 @@
-
-FROM alpine
-
-RUN ls
-
