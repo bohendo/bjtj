@@ -89,7 +89,7 @@ make
 echo "Waiting for bjvm stack to be fully removed.."
 while [[ \`docker network ls -f name=bjvm_front -q\` ]]; do sleep 1; done;
 docker stack deploy -c docker-compose.yml bjvm
-'EOIF'
+EOIF
 
 chmod -v 755 hooks/post-receive
 

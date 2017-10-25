@@ -5,7 +5,7 @@ MAINTAINER twitter.com/bohendo
 RUN apk add --update nginx openssl
 
 # initialize a stronger dhparam (separate RUN so it gets cached)
-RUN openssl dhparam -out /etc/ssl/dhparam.pem 4096
+RUN openssl dhparam -out /etc/ssl/dhparam.pem 2048
 
 RUN mkdir -p /etc/certs && \
   # initialize a placeholder cert
