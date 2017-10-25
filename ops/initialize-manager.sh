@@ -21,8 +21,33 @@ fi
 internal_ip=`ssh $1 ifconfig eth1 | grep 'inet addr' | awk '{print $2;exit}' | sed 's/addr://'`
 
 ####################
+# Get data for setting environment vars
+
+if [[ $BJVM_DOMAINNAME != "" ]]
+then
+  domainname=$BJVM_DOMAINNAME
+else
+  echo "At which domain name will you be publishing this bjvm?"
+  read domainname
+fi
+
+if [[ $BJVM_EMAIL != "" ]]
+then
+  email=$BJVM_EMAIL
+else
+  echo "At which email do you want to receive alerts from certbot?"
+  read email
+fi
+
+####################
 # Begin main heredoc
 ssh $1 "bash -s" <<EOF
+
+########################################
+# Set env vars
+
+echo "BJVM_EMAIL=\"$email\"" >> /etc/environment
+echo "BJVM_DOMAINNAME=\"$domainname\"" >> /etc/environment
 
 ########################################
 # Upgrade Everything
@@ -46,7 +71,7 @@ ufw --force enable
 # Install Docker & Node
 
 # Install docker dependencies
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common make
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common make pandoc
 
 # Add the node repo
 curl -sL https://deb.nodesource.com/setup_8.x | bash -

@@ -19,7 +19,7 @@ services:
         condition: any
         delay: 48h
     volumes:
-      - letsencrypt:/var/etc/letsencrypt
+      - letsencrypt:/etc/letsencrypt
       - webroot:/var/www/letsencrypt/
     networks:
       - front
@@ -27,11 +27,13 @@ services:
   nginx:
     image: bjvm-nginx:latest
     hostname: ${BJVM_DOMAINNAME}
+    environment:
+      - BJVM_DOMAINNAME
     deploy:
       restart_policy:
         condition: any
     volumes:
-      - letsencrypt:/var/etc/letsencrypt
+      - letsencrypt:/etc/letsencrypt
       - webroot:/var/www/letsencrypt/
     ports:
       - 80:80

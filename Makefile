@@ -7,7 +7,6 @@ VPATH=docs:src:webpack:ops:built:built/static # search path for prereqs & target
 
 md_template=./docs/template.html
 md_body=./docs/body.html
-drfrank=bash drfrank.sh
 pandoc=pandoc -f markdown -t html
 webpack=node_modules/.bin/webpack
 about=docs/about.md
@@ -28,7 +27,7 @@ all: certbot nginx
 certbot: certbot.Dockerfile
 	docker build -f ops/certbot.Dockerfile -t bjvm-certbot .
 
-nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css
+nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css $(md_out)
 	docker build -f ops/nginx.Dockerfile -t bjvm-nginx .
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)
@@ -52,7 +51,7 @@ $(md_out): built/static/%.html: docs/%.md $(about) $(md_template)
 	mkdir -p built/static/
 	$(pandoc) $< > $(md_body)
 	cp -f $(md_template) built/static/$*.html
-	sed -i '/<!--#include body-->/r '"$(md_body)" "$(static)/$*.html"
+	sed -i '/<!--#include body-->/r '"$(md_body)" "built/static/$*.html"
 	sed -i '/<!--#include body-->/d' "built/static/$*.html"
 	rm $(md_body)
 
