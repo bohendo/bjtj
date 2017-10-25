@@ -25,12 +25,6 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 
 all: certbot nginx
 
-deploy:
-	docker build -f ops/certbot.Dockerfile -t bohendo/bjvm-certbot:0.1 .
-	docker push bohendo/bjvm-certbot:0.1
-	docker build -f ops/nginx.Dockerfile -t bohendo/bjvm-nginx:0.1 .
-	docker push bohendo/bjvm-nginx:0.1
-
 certbot: certbot.Dockerfile
 	docker build -f ops/certbot.Dockerfile -t bjvm-certbot .
 

@@ -10,8 +10,7 @@ volumes:
 services:
 
   certbot:
-    # image: bjvm-certbot # DEV
-    image: bohendo/bjvm-certbot:0.1
+    image: bjvm-certbot:latest
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
@@ -26,8 +25,7 @@ services:
       - front
 
   nginx:
-    # image: bjvm-nginx # DEV
-    image: bohendo/bjvm-nginx:0.1
+    image: bjvm-nginx:latest
     hostname: ${BJVM_DOMAINNAME}
     deploy:
       restart_policy:

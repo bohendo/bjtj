@@ -43,10 +43,13 @@ ufw allow 443 &&\
 ufw --force enable
 
 ########################################
-# Install Docker
+# Install Docker & Node
 
 # Install docker dependencies
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common make
+
+# Add the node repo
+curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 # Get the docker team's official gpg key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -54,11 +57,11 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 # Add the docker repo
 add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
+   \`lsb_release -cs\` \
    stable"
 
 apt-get update -y
-apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
+apt-get install -y docker-ce=17.09.0~ce-0~ubuntu nodejs
 
 systemctl enable docker
 
@@ -77,12 +80,16 @@ then
   git init --bare
 fi
 
-tee hooks/post-receive <<EOIF
+tee hooks/post-receive <<'EOIF'
 #!/bin/bash
 git --work-tree=/var/bjvm --git-dir=/var/bjvm.git checkout -f
 cd /var/bjvm
+docker stack rm bjvm
+make
+echo "Waiting for bjvm stack to be fully removed.."
+while [[ \`docker network ls -f name=bjvm_front -q\` ]]; do sleep 1; done;
 docker stack deploy -c docker-compose.yml bjvm
-EOIF
+'EOIF'
 
 chmod -v 755 hooks/post-receive
 
@@ -106,5 +113,5 @@ git remote add $1 ssh://$1:/var/bjvm.git
 
 echo;
 echo "If you didn't see any errors above, we're good to go."
-echo "  push to your droplet with: git push $hostname"
+echo "  push to your droplet with: git push $1"
 

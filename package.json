@@ -1,13 +1,12 @@
 {
   "name": "bjvm",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "built/server.bundle.js",
   "scripts": {
     "start-client": "webpack-dev-server --config webpack/client.dev.js",
     "watch": "webpack --watch --config webpack/server.dev.js && webpack --watch --config webpack/client.dev.js",
-    "start": "npm run watch & nodemon built/server.bundle.js",
-    "build-node": "docker build -f ops/node.Dockerfile ."
+    "start": "npm run watch & nodemon built/server.bundle.js"
   },
   "author": "Bo Henderson",
   "license": "MIT",
