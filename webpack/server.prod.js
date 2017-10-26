@@ -30,6 +30,11 @@ module.exports = {
         use: ['babel-loader'],
         exclude: /node_modules/,
       },
+      {
+        test: /\.html$/,
+        use: {loader: 'html-loader'},
+        exclude: /node_modules/,
+      },
     ],
   },
 

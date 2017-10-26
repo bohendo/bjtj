@@ -1,5 +1,4 @@
 
-import fs from 'fs'
 import path from 'path'
 
 import React from 'react'
@@ -10,6 +9,8 @@ import { renderToString } from 'react-dom/server'
 import Index from '../components/index'
 import blackjack from '../reducers'
 //import db from './mongo'
+
+import template from '../index.html'
 
 
 const serverSideRender = (req, res) =>{
@@ -45,7 +46,7 @@ const renderIndex = store => {
   const finalState = store.getState()
 
   // load my index.html template
-  let index = fs.readFileSync('./index.html', 'utf8')
+  let index = template
 
   // inject my stylesheet
   index = index.replace(
