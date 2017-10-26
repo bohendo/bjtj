@@ -9,7 +9,7 @@ import { renderToString } from 'react-dom/server'
 
 import Index from '../components/index'
 import blackjack from '../reducers'
-import db from './mongo'
+//import db from './mongo'
 
 
 const serverSideRender = (req, res) =>{
@@ -20,6 +20,7 @@ const serverSideRender = (req, res) =>{
     res.send(renderIndex(createStore(blackjack)))
   }
 
+/*
   db.states.findOne({ cookie: id }).then((doc) => {
     if (doc.state) {
       res.send(renderIndex(createStore(blackjack, doc.state)))
@@ -27,6 +28,8 @@ const serverSideRender = (req, res) =>{
       res.send(renderIndex(createStore(blackjack)))
     }
   }).catch((e) => { console.error(e) })
+*/
+  res.send(renderIndex(createStore(blackjack)))
 
 }
 

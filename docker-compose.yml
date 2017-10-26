@@ -41,7 +41,15 @@ services:
     networks:
       - front
 
-  node:
+  node1:
+    image: bjvm-node:latest
+    deploy:
+      restart_policy:
+        condition: any
+    networks:
+      - front
+
+  node2:
     image: bjvm-node:latest
     deploy:
       restart_policy:
