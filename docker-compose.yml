@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 
 networks:
   front:
@@ -6,6 +6,7 @@ networks:
 volumes:
   letsencrypt:
   webroot:
+  fallback:
 
 services:
 
@@ -19,7 +20,7 @@ services:
         condition: any
         delay: 48h
     volumes:
-      - letsencrypt:/etc/letsencrypt
+      - letsencrypt:/etc/letsencrypt/
       - webroot:/var/www/letsencrypt/
     networks:
       - front
@@ -33,7 +34,8 @@ services:
       restart_policy:
         condition: any
     volumes:
-      - letsencrypt:/etc/letsencrypt
+      - fallback:/etc/fallback/
+      - letsencrypt:/etc/letsencrypt/
       - webroot:/var/www/letsencrypt/
     ports:
       - 80:80
