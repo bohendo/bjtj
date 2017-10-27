@@ -22,19 +22,24 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 ##### RULES #####
 # first rule is the default
 
-all: certbot nginx nodejs mongo
+all: mongo nodejs certbot nginx
+	@true
 
-certbot: certbot.Dockerfile
-	docker build -f ops/certbot.Dockerfile -t bjvm-certbot .
+mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
+	docker build -f ops/mongo.Dockerfile -t bjvm_mongo .
+	touch built/mongo
 
-nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css $(md_out)
-	docker build -f ops/nginx.Dockerfile -t bjvm-nginx .
+nodejs: nodejs.Dockerfile nodejs.entry.sh server.bundle.js
+	docker build -f ops/nodejs.Dockerfile -t bjvm_nodejs .
+	touch built/nodejs
 
-nodejs: nodejs.Dockerfile server.bundle.js
-	docker build -f ops/nodejs.Dockerfile -t bjvm-nodejs .
+certbot: certbot.Dockerfile certbot.entry.sh
+	docker build -f ops/certbot.Dockerfile -t bjvm_certbot .
+	touch built/certbot
 
-mongo: mongo.Dockerfile mongo.conf
-	docker build -f ops/mongo.Dockerfile -t bjvm-mongo .
+nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
+	docker build -f ops/nginx.Dockerfile -t bjvm_nginx .
+	touch built/nginx
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)
 	$(webpack) --config webpack/server.prod.js

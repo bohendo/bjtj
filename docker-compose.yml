@@ -2,24 +2,50 @@ version: '3.1'
 
 networks:
   front:
+  back:
 
 volumes:
   letsencrypt:
   webroot:
   fallback:
+  mongodb:
+
+secrets:
+  mongo_admin:
+    external: true
+  mongo_user:
+    external: true
 
 services:
 
+  mongo:
+    image: bjvm_mongo:latest
+    networks:
+      - back
+    volumes:
+      - mongodb:/data/db
+    secrets:
+      - mongo_admin
+      - mongo_user
+
   nodejs:
-    image: bjvm-nodejs:latest
+    image: bjvm_nodejs:latest
     deploy:
+      replicas: 1
       restart_policy:
         condition: any
+    depends_on:
+      - mongo
     networks:
       - front
+      - back
+    volumes:
+      - ./built/server.bundle.js:/root/server.bundle.js
+    secrets:
+      - mongo_user
 
   certbot:
-    image: bjvm-certbot:latest
+    image: bjvm_certbot:latest
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
@@ -33,14 +59,15 @@ services:
     networks:
       - front
 
+
   nginx:
-    image: bjvm-nginx:latest
+    image: bjvm_nginx:latest
     hostname: ${BJVM_DOMAINNAME}
+    depends_on:
+      - certbot
+      - nodejs
     environment:
       - BJVM_DOMAINNAME
-    depends_on:
-      - nodejs
-      - certbot
     deploy:
       restart_policy:
         condition: any

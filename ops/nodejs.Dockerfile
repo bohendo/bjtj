@@ -6,6 +6,7 @@ MAINTAINER Bo Henderson <twitter.com/bohendo>
 RUN apk add --update nodejs
 
 COPY ./built/server.bundle.js /root/server.bundle.js
+COPY ./ops/nodejs.entry.sh /root/entry.sh
 
-ENTRYPOINT ["node", "/root/server.bundle.js"]
+ENTRYPOINT ["sh", "/root/entry.sh"]
 

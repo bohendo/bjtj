@@ -3,15 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 
-const nodeModules = {}
-fs.readdirSync('node_modules')
-  .filter(function(x) {
-    return ['.bin'].indexOf(x) === -1
-  })
-  .forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod
-  })
-
 module.exports = {
 
   entry: {
@@ -44,7 +35,7 @@ module.exports = {
 
   target: 'node',
 
-//  externals: nodeModules,
+  devtool: 'cheap-eval-source-map',
 
   node: {
     __dirname: true,

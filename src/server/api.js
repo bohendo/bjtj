@@ -17,9 +17,15 @@ const handleMove = (req, res, move) => {
     res.send('Who in tarnation do you think you are?!')
   } else {
 
+    console.log("got move", move, "for id", id)
+
     db.actions.insert({ cookie: id, action: { type: move } })
 
     db.states.findOne({ cookie: id }).then((doc) => {
+
+      if (!doc) {
+        res.json({ message: "ERROR: id ${id} not found in db" })
+      }
 
       const newState = blackjack(doc.state, { type: move })
 
