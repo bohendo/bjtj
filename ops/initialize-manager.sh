@@ -109,6 +109,7 @@ tee hooks/post-receive <<'EOIF'
 #!/bin/bash
 git --work-tree=/var/bjvm --git-dir=/var/bjvm.git checkout -f
 cd /var/bjvm
+bash ops/secret-init.sh
 npm run deploy
 EOIF
 
