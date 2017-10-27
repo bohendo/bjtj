@@ -10,6 +10,14 @@ volumes:
 
 services:
 
+  nodejs:
+    image: bjvm-nodejs:latest
+    deploy:
+      restart_policy:
+        condition: any
+    networks:
+      - front
+
   certbot:
     image: bjvm-certbot:latest
     environment:
@@ -30,6 +38,9 @@ services:
     hostname: ${BJVM_DOMAINNAME}
     environment:
       - BJVM_DOMAINNAME
+    depends_on:
+      - nodejs
+      - certbot
     deploy:
       restart_policy:
         condition: any
@@ -40,22 +51,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    networks:
-      - front
-
-  node1:
-    image: bjvm-node:latest
-    deploy:
-      restart_policy:
-        condition: any
-    networks:
-      - front
-
-  node2:
-    image: bjvm-node:latest
-    deploy:
-      restart_policy:
-        condition: any
     networks:
       - front
 
