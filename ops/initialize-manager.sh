@@ -46,8 +46,17 @@ ssh $1 "bash -s" <<EOF
 ########################################
 # Set env vars
 
-echo "BJVM_EMAIL=\"$email\"" >> /etc/environment
-echo "BJVM_DOMAINNAME=\"$domainname\"" >> /etc/environment
+if ! grep BJVM_EMAIL /etc/environment
+then
+  echo "Initializing server with email: $email"
+  echo "BJVM_EMAIL=\"$email\"" >> /etc/environment
+fi
+
+if ! grep BJVM_DOMAINNAME /etc/environment
+then
+  echo "Initializing server with domain name: $domainname"
+  echo "BJVM_DOMAINNAME=\"$domainname\"" >> /etc/environment
+fi
 
 ########################################
 # Upgrade Everything
