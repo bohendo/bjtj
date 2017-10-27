@@ -33,7 +33,7 @@ nginx: nginx.Dockerfile nginx.conf client.bundle.js style.css $(md_out)
 nodejs: nodejs.Dockerfile server.bundle.js
 	docker build -f ops/nodejs.Dockerfile -t bjvm-nodejs .
 
-mongo: mongo.Dockerfile
+mongo: mongo.Dockerfile mongo.conf
 	docker build -f ops/mongo.Dockerfile -t bjvm-mongo .
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)

@@ -12,7 +12,7 @@ import cookieMW from 'universal-cookie-express'
 
 // My express middleware
 import ssr from './server/ssr'
-//import api from './server/api'
+import api from './server/api'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -31,7 +31,7 @@ app.use('/static', express.static(
 
 // ssr for Server-side rendering
 app.get('/', ssr)
-// app.use('/api', api)
+app.use('/api', api)
 
 app.use((err, req, res, next) => {
   console.error(err.stack)

@@ -12,9 +12,9 @@ RUN mkdir -p /etc/certs && \
   ln -fs /dev/stderr /var/log/nginx/error.log && \
   ln -fs /dev/stdout /var/log/nginx/access.log
 
+COPY ./ops/nginx.entry.sh /root/nginx.entry.sh
 COPY ./ops/nginx.conf /etc/nginx/nginx.conf
 COPY ./built/static /var/www/static
-COPY ./ops/nginx.entry.sh /root/nginx.entry.sh
 
 EXPOSE 80
 EXPOSE 443

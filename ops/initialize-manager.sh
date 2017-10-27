@@ -109,11 +109,7 @@ tee hooks/post-receive <<'EOIF'
 #!/bin/bash
 git --work-tree=/var/bjvm --git-dir=/var/bjvm.git checkout -f
 cd /var/bjvm
-docker stack rm bjvm
-make
-echo "Waiting for bjvm stack to be fully removed.."
-while [[ \`docker network ls -f name=bjvm_front -q\` ]]; do sleep 1; done;
-docker stack deploy -c docker-compose.yml bjvm
+npm run deploy
 EOIF
 
 chmod -v 755 hooks/post-receive

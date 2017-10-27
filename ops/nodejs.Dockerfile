@@ -1,9 +1,11 @@
 
 FROM alpine:3.6
 
-RUN apk --update add nodejs
+MAINTAINER Bo Henderson <twitter.com/bohendo>
 
-COPY built/server.bundle.js /root
+RUN apk add --update nodejs
+
+COPY ./built/server.bundle.js /root/server.bundle.js
 
 ENTRYPOINT ["node", "/root/server.bundle.js"]
 

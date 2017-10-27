@@ -5,6 +5,10 @@ then
   echo "Found HTTPS certs for $BJVM_DOMAINNAME, renewing if necessary..."
   certbot renew
 
+elif [ $BJVM_DOMAINNAME == 'localhost' ]
+then
+  echo "Exiting, no certs needed for $BJVM_DOMAINNAME..."
+
 else
   echo "No HTTPS certs found, initializing certs for $BJVM_DOMAINNAME..."
   certbot certonly --webroot -m $BJVM_EMAIL --agree-tos --no-eff-email -w /var/www/letsencrypt/ -d $BJVM_DOMAINNAME
