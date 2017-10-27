@@ -10,7 +10,7 @@
     "deploy": "make && docker stack deploy -c docker-compose.yml bjvm"
   },
   "author": "Bo Henderson",
-  "license": "MIT",
+  "license": "GPLv3",
   "devDependencies": {
     "autoprefixer": "^7.1.4",
     "babel": "^6.23.0",
