@@ -41,8 +41,8 @@ nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(m
 	docker build -f ops/nginx.Dockerfile -t bjvm_nginx .
 	mkdir -p built && touch built/nginx
 
-server.bundle.js: node_modules webpack/server.prod.js $(js)
-	$(webpack) --config webpack/server.prod.js
+server.bundle.js: node_modules webpack/server.config.js $(js)
+	$(webpack) --config webpack/server.config.js
 
 client.bundle.js: node_modules webpack/client.common.js webpack/client.prod.js $(js)
 	$(webpack) --config webpack/client.prod.js

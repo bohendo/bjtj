@@ -5,6 +5,8 @@ const webpack = require('webpack')
 
 module.exports = {
 
+  target: 'node',
+
   entry: {
     server: './src/server.js',
   },
@@ -12,6 +14,10 @@ module.exports = {
   output: {
     path: path.join(__dirname, '../built'),
     filename: '[name].bundle.js',
+  },
+
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
   },
 
   module: {
@@ -23,27 +29,16 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        use: {loader: 'html-loader'},
+        use: ['html-loader'],
         exclude: /node_modules/,
       },
     ],
   },
 
-  resolve: {
-    extensions: ['.js', '.jsx', '.json'],
-  },
-
-  target: 'node',
-
-  devtool: 'cheap-eval-source-map',
-
-  node: {
-    __dirname: true,
-    console: true,
-  },
-
   plugins: [
-    new webpack.IgnorePlugin(/\.s?css$/),
+    new webpack.IgnorePlugin(
+      /\.s?css$/
+    ),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
     }),
