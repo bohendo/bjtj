@@ -16,10 +16,6 @@ const bjdb = monk(
 const states = bjdb.get('states')
 const actions = bjdb.get('actions')
 
-actions.find({}).then((doc) => {
-  console.log("DB LOADED: ", doc)
-})
-
 const db = { states, actions }
 
 export default db

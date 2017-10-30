@@ -1,11 +1,8 @@
 
-// Node built-ins
-import path from 'path'
-import fs from 'fs'
+// Node built-in
 import crypto from 'crypto'
 
-import express from 'express'
-const router = express.Router()
+const router = require('express').Router()
 
 import blackjack from '../reducers'
 import db from './mongo'
@@ -45,7 +42,7 @@ const handleMove = (req, res, move) => {
 // Setup router pipeline
 
 router.get('/hello', (req, res, next) => {
-
+  
   let id = req.universalCookies.get('id')
   if (!id) {
     const hash = crypto.createHash('sha256');
