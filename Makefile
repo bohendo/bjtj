@@ -27,19 +27,19 @@ all: mongo nodejs certbot nginx
 
 mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
 	docker build -f ops/mongo.Dockerfile -t bjvm_mongo .
-	touch built/mongo
+	mkdir -p built && touch built/mongo
 
 nodejs: nodejs.Dockerfile nodejs.entry.sh server.bundle.js
 	docker build -f ops/nodejs.Dockerfile -t bjvm_nodejs .
-	touch built/nodejs
+	mkdir -p built && touch built/nodejs
 
 certbot: certbot.Dockerfile certbot.entry.sh
 	docker build -f ops/certbot.Dockerfile -t bjvm_certbot .
-	touch built/certbot
+	mkdir -p built && touch built/certbot
 
 nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
 	docker build -f ops/nginx.Dockerfile -t bjvm_nginx .
-	touch built/nginx
+	mkdir -p built && touch built/nginx
 
 server.bundle.js: node_modules webpack/server.prod.js $(js)
 	$(webpack) --config webpack/server.prod.js

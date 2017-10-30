@@ -18,6 +18,40 @@ then
   err "Couldn't open an ssh connection to $1"
 fi
 
+####################
+# Get data to set as environment vars
+
+if [[ $BJVM_DOMAINNAME == "" ]]
+then
+  echo "At which domain name will you be publishing this bjvm?"
+  read domainname
+else
+  echo "At which domain name will you be publishing this bjvm? [default: $BJVM_DOMAINNAME]"
+  read domainname
+  if [[ $domainname == "" ]]
+  then
+    domainname=$BJVM_DOMAINNAME
+  fi
+fi
+
+if [[ $BJVM_EMAIL == "" ]]
+then
+  echo "At which email do you want to receive alerts from certbot?"
+  read email
+else
+  echo "At which email do you want to receive alerts from certbot? [default: $BJVM_EMAIL]"
+  read email
+  if [[ $email == "" ]]
+  then
+    email=$BJVM_EMAIL
+  fi
+fi
+
+echo "Proceeding with email=$email and domainname=$domainname"
+
+####################
+# little more setup before main here doc
+
 if [ -f ~/.bash_aliases ]
 then
   scp ~/.bash_aliases $1:/root/.bash_aliases
@@ -26,26 +60,8 @@ fi
 internal_ip=`ssh $1 ifconfig eth1 | grep 'inet addr' | awk '{print $2;exit}' | sed 's/addr://'`
 
 ####################
-# Get data for setting environment vars
+# main heredoc
 
-if [[ $BJVM_DOMAINNAME != "" ]]
-then
-  domainname=$BJVM_DOMAINNAME
-else
-  echo "At which domain name will you be publishing this bjvm?"
-  read domainname
-fi
-
-if [[ $BJVM_EMAIL != "" ]]
-then
-  email=$BJVM_EMAIL
-else
-  echo "At which email do you want to receive alerts from certbot?"
-  read email
-fi
-
-####################
-# Begin main heredoc
 ssh $1 "bash -s" <<EOF
 
 ########################################
@@ -61,6 +77,11 @@ if ! grep BJVM_DOMAINNAME /etc/environment
 then
   echo "Initializing server with domain name: $domainname"
   echo "BJVM_DOMAINNAME=\"$domainname\"" >> /etc/environment
+fi
+
+if ! grep NODE_ENV /etc/environment
+then
+  echo "NODE_ENV=\"production\"" >> /etc/environment
 fi
 
 ########################################
