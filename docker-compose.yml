@@ -30,6 +30,8 @@ services:
 
   nodejs:
     image: bjvm_nodejs:latest
+    environment:
+      - NODE_ENV
     deploy:
       replicas: 1
       restart_policy:
