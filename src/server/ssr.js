@@ -22,7 +22,7 @@ const serverSideRender = (req, res) =>{
   }
 
   db.states.findOne({ cookie: id }).then((doc) => {
-    if (doc.state) {
+    if (doc && doc.state) {
       res.send(renderIndex(createStore(blackjack, doc.state)))
     } else {
       res.send(renderIndex(createStore(blackjack)))
