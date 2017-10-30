@@ -1,4 +1,6 @@
 
+import payout from './payout'
+
 const double = (state) => {
   // don't do anything if deal isn't currently a valid move
   if (!state.moves.includes('double')) { return (state) }
@@ -18,7 +20,7 @@ const double = (state) => {
       Object.assign({}, h)
   ))
 
-  return (Object.assign({}, state, { deck, playerHands, chips }))
+  return (payout(Object.assign({}, state, { deck, playerHands, chips })))
 }
 
 export default double;

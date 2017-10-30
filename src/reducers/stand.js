@@ -1,4 +1,6 @@
 
+import payout from './payout'
+
 const stand = (state) => {
   // don't do anything if this isn't currently a valid move
   if (!state.moves.includes('stand')) { return (state) }
@@ -9,7 +11,7 @@ const stand = (state) => {
       Object.assign({}, h)
   ))
 
-  return (Object.assign({}, state, { playerHands }));
+  return (payout(Object.assign({}, state, { playerHands })))
 }
 
 export default stand

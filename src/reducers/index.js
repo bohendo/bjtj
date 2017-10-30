@@ -1,6 +1,5 @@
 
 import { shuffle } from './utils'
-import sync from './sync'
 import deal from './deal'
 import hit from './hit'
 import stand from './stand'
@@ -23,19 +22,19 @@ const initialState = {
 const blackjack = (state = initialState, action) => {
   switch (action.type) {
     case 'HELLO':
-      return sync(state)
+      return state
     case 'DEAL':
-      return sync(deal(state, shuffle()))
+      return deal(state, shuffle())
     case 'HIT':
-      return sync(hit(state))
+      return hit(state)
     case 'STAND':
-      return sync(stand(state))
+      return stand(state)
     case 'DOUBLE':
-      return sync(double(state))
+      return double(state)
     case 'SPLIT':
-      return sync(split(state))
+      return split(state)
     default:
-      return sync(state)
+      return state
   }
 }
 

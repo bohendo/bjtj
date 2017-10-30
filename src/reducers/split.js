@@ -1,4 +1,6 @@
 
+import payout from './payout'
+
 const split = (state) => {
   // don't do anything if deal isn't currently a valid move
   if (!state.moves.includes('split')) { return (state) }
@@ -26,7 +28,7 @@ const split = (state) => {
     cards: [hand.cards[1], deck.pop()],
   })
 
-  return (Object.assign({}, state, { deck, chips, playerHands }))
+  return (payout(Object.assign({}, state, { deck, chips, playerHands })))
 }
 
 export default split

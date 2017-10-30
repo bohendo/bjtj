@@ -1,4 +1,6 @@
 
+import payout from './payout'
+
 const deal = (state, deck) => {
   // don't do anything if this isn't currently a valid move
   if (!state.moves.includes('deal')) { return (state) }
@@ -22,9 +24,9 @@ const deal = (state, deck) => {
 
   const message = 'Make your move..'
 
-  return (Object.assign({}, state, {
+  return (payout(Object.assign({}, state, {
     playerHands, dealerCards, chips, message,
-  }))
+  })))
 }
 
 export default deal;
