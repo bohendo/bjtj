@@ -18,6 +18,11 @@ then
   err "Couldn't open an ssh connection to $1"
 fi
 
+if [ -f ~/.bash_aliases ]
+then
+  scp ~/.bash_aliases $1:/root/.bash_aliases
+fi
+
 internal_ip=`ssh $1 ifconfig eth1 | grep 'inet addr' | awk '{print $2;exit}' | sed 's/addr://'`
 
 ####################

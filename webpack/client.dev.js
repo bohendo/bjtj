@@ -52,6 +52,9 @@ module.exports = merge(require('./client.common.js'), {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify('development') },
+    }),
   ],
 
 });

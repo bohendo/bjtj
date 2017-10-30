@@ -1,11 +1,11 @@
 #!/bin/sh
 
-if [ ! -f /run/secrets/mongo_user ]
+echo "Starting node with NODE_ENV=$NODE_ENV"
+
+if [ $NODE_ENV == 'production' ]
 then
-  echo "OH NO CANT FIND MY SECRET"
-  ls /
-  ls /run
-  ls /run/secrets
+  exec node /root/server.bundle.js
+else
+  exec nodemon -w /root/server.bundle.js /root/server.bundle.js
 fi
 
-exec node /root/server.bundle.js

@@ -10,8 +10,6 @@ import cookieMW from 'universal-cookie-express'
 import api from './server/api'
 import ssr from './server/ssr'
 
-const production = process.env.NODE_ENV === 'production'
-
 // START express pipeline
 const app = express()
 
