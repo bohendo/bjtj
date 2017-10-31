@@ -10,7 +10,12 @@ const bjdb = monk(
   `mongodb://bjvm:${pwd}@mongo:27017/bjvm`,
 
   // monk arg2: error callback
-  (err) => { if (err) console.error(err); }
+  (err) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
+  }
 )
 
 const states = bjdb.get('states')
