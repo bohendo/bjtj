@@ -4,10 +4,10 @@
   "description": "",
   "main": "built/server.bundle.js",
   "scripts": {
-    "start-client": "webpack-dev-server --config webpack/client.dev.js",
     "watch": "webpack --watch --config webpack/server.config.js && webpack --watch --config webpack/client.dev.js",
-    "start": "npm run watch & nodemon built/server.bundle.js",
-    "deploy": "make && docker stack deploy -c docker-compose.yml bjvm"
+    "dev-server": "npm run watch & nodemon built/server.bundle.js",
+    "dev-client": "webpack-dev-server --config webpack/client.dev.js",
+    "deploy": "docker stack deploy -c docker-compose.yml bjvm"
   },
   "author": "Bo Henderson",
   "license": "GPLv3",
