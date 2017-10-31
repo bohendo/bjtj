@@ -1,4 +1,3 @@
-
 FROM alpine:3.6
 
 MAINTAINER Bo Henderson <twitter.com/bohendo>

@@ -13,6 +13,8 @@ about=docs/about.md
 
 ##### CALCULATED VARIABLES #####
 
+v=$(shell grep "\"version\"" ./package.json | egrep -o [0-9.]* | cut -d . -f 1-2)
+
 md=$(shell find ./docs -type f -name "*.md")
 js=$(shell find ./src -type f -name "*.js*")
 css=$(shell find ./src -type f -name "*.scss")
@@ -26,19 +28,19 @@ all: mongo nodejs certbot nginx
 	@true
 
 mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
-	docker build -f ops/mongo.Dockerfile -t bjvm_mongo .
+	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:$v .
 	mkdir -p built && touch built/mongo
 
 nodejs: nodejs.Dockerfile nodejs.entry.sh server.bundle.js
-	docker build -f ops/nodejs.Dockerfile -t bjvm_nodejs .
+	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v .
 	mkdir -p built && touch built/nodejs
 
 certbot: certbot.Dockerfile certbot.entry.sh
-	docker build -f ops/certbot.Dockerfile -t bjvm_certbot .
+	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:$v .
 	mkdir -p built && touch built/certbot
 
 nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
-	docker build -f ops/nginx.Dockerfile -t bjvm_nginx .
+	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:$v .
 	mkdir -p built && touch built/nginx
 
 server.bundle.js: node_modules webpack/server.config.js $(js)
