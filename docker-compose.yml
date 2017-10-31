@@ -19,7 +19,7 @@ secrets:
 services:
 
   mongo:
-    image: bohendo/bjvm_mongo:latest
+    image: bohendo/bjvm_mongo:0.2
     networks:
       - back
     volumes:
@@ -29,7 +29,7 @@ services:
       - mongo_user
 
   nodejs:
-    image: bohendo/bjvm_nodejs:latest
+    image: bohendo/bjvm_nodejs:0.2
     environment:
       - NODE_ENV
     deploy:
@@ -41,15 +41,13 @@ services:
     networks:
       - front
       - back
-    volumes:
-      - type: bind
-        source: ./built/server.bundle.js
-        target: /root/server.bundle.js
     secrets:
       - mongo_user
 
   certbot:
-    image: bohendo/bjvm_certbot:latest
+    image: bohendo/bjvm_certbot:0.2
+    depends_on:
+      - certbot
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
@@ -65,10 +63,9 @@ services:
 
 
   nginx:
-    image: bohendo/bjvm_nginx:latest
+    image: bohendo/bjvm_nginx:0.2
     hostname: ${BJVM_DOMAINNAME}
     depends_on:
-      - certbot
       - nodejs
     environment:
       - BJVM_DOMAINNAME
