@@ -9,6 +9,8 @@ import db from './mongo'
 
 const handleMove = (req, res, move) => {
 
+
+
   let id = req.universalCookies.get('id')
   if (!id) {
     res.send('Who in tarnation do you think you are?!')
@@ -44,32 +46,37 @@ const handleMove = (req, res, move) => {
 router.get('/hello', (req, res, next) => {
   
   let id = req.universalCookies.get('id')
-  if (!id) {
+
+  if (id) {
+    db.states.findOne({ cookie: id }).then((doc) => {
+      if (doc && doc.state) {
+        // Found an old user with saved state: return that and we're done
+        console.log(`Old user detected with id ${id}`)
+        res.json(doc.state)
+      } else {
+        // Found an old user WITHOUT saved state: continue
+        console.log(`Unregistered id detected: ${id}`)
+      }
+    }).catch((e) => { console.error(e) })
+
+  } else {
     const hash = crypto.createHash('sha256');
     hash.update(req.headers['user-agent'].toString())
     hash.update(Date.now().toString())
     hash.update(crypto.randomBytes(16))
     id = hash.digest('hex')
-
-    // save a bj doc in mongo for this user
-    const newState = blackjack(undefined, { type: 'HELLO' })
-    db.actions.insert({ cookie: id, action: { type: 'HELLO' }})
-    db.states.insert({
-      cookie: id,
-      state: newState,
-    })
-
-    res.cookie('id', id)
-    res.json(newState)
-    console.log(`New user registered with with id ${id}`)
-  } else {
-
-    db.states.findOne({ cookie: id }).then((doc) => {
-      res.json(doc.state)
-    }).catch((e) => { console.error(e) })
-    console.log(`Old user detected with id ${id}`)
   }
 
+  const newState = blackjack(undefined, { type: 'HELLO' })
+
+  // save a bj doc in mongo for this user
+  db.actions.insert({ cookie: id, action: { type: 'HELLO' }})
+  db.states.insert({ cookie: id, state: newState, })
+
+  // and send a copy to them
+  res.cookie('id', id)
+  res.send('New state generated')
+  console.log(`New user registered with with id ${id}`)
 })
 
 router.get('/deal', (req, res, next) => {
