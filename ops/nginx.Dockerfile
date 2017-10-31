@@ -12,11 +12,11 @@ RUN mkdir -p /etc/certs && \
   ln -fs /dev/stderr /var/log/nginx/error.log && \
   ln -fs /dev/stdout /var/log/nginx/access.log
 
-COPY ./ops/nginx.entry.sh /root/nginx.entry.sh
+COPY ./ops/nginx.entry.sh /root/entry.sh
 COPY ./ops/nginx.conf /etc/nginx/nginx.conf
 COPY ./built/static /var/www/static
 
 EXPOSE 80
 EXPOSE 443
 
-ENTRYPOINT ["sh", "/root/nginx.entry.sh"]
+ENTRYPOINT ["sh", "/root/entry.sh"]
