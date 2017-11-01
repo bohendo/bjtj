@@ -1,23 +1,20 @@
 
-import fs from 'fs'
-import express from 'express'
+// My express middleware
+import auth from './server/auth'
+import api  from './server/api'
+import ssr  from './server/ssr'
+import { err }  from './utils'
+
+////////////////////////////////////////
+// START express pipeline
+const app = require('express')()
 
 // 3rd party express middleware
-import helmet from 'helmet'
-import cookieMW from 'universal-cookie-express'
+app.use(require('helmet')())
+app.use(require('universal-cookie-express')())
 
-// My express middleware
-import api from './server/api'
-import ssr from './server/ssr'
-
-// START express pipeline
-const app = express()
-
-// good security-minded defaults
-app.use(helmet())
-
-// cookie parser
-app.use(cookieMW())
+// initialize id or check for id in db
+app.use(auth)
 
 // vending machine buttons
 app.use('/api', api)
@@ -34,11 +31,13 @@ app.use((req, res) => {
   `)
 })
 // END express pipeline
+////////////////////////////////////////
 
 // express pipeline error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack)
   res.status(500).send('Something broke!')
+  console.error(err)
+  process.exit(1)
 })
 
 // start http server

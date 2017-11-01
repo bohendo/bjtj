@@ -2,24 +2,9 @@
 import React from 'react';
 import Container from '../containers'
 
-import fetch from 'isomorphic-fetch';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies()
-
 class Index extends React.Component {
 
-  componentDidMount() {
-
-    const options = { credentials: 'include' };
-    fetch('/api/hello', options).then((res) => {
-      res.text().then((data) => { console.log(data) })
-    })
-
-  }
-
   render () {
-
-    // if (typeof window === undefined) { let window = {} }
 
     return (
 <div>

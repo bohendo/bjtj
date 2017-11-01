@@ -4,80 +4,43 @@ import crypto from 'crypto'
 
 const router = require('express').Router()
 
-import blackjack from '../reducers'
+import { err } from '../utils'
+import bj from '../reducers'
 import db from './mongo'
+
+//////////////////////////////
+// Generic function to handle each move
 
 const handleMove = (req, res, move) => {
 
+  if (!req.id) { err('API: no req.id') }
+  if (!req.state) { err('API: no req.state') }
 
+  console.log(`API: Handling ${move} for id ${req.id.substring(0,8)}`)
 
-  let id = req.universalCookies.get('id')
-  if (!id) {
-    res.send('Who in tarnation do you think you are?!')
-  } else {
+  // insert this move into our log of all actions taken
+  db.actions.insert({
+    cookie: req.id,
+    action: { type: move }
+  }).then(() => {
+    console.log(`API: inserted ${move} into db.actions`)
+  }).catch(err('API: actions.insert'))
 
-    console.log("got move", move, "for id", id)
+  const newState = bj(req.state, { type: move })
 
-    db.actions.insert({ cookie: id, action: { type: move } })
-
-    db.states.findOne({ cookie: id }).then((doc) => {
-
-      if (!doc) {
-        res.json({ message: "ERROR: id ${id} not found in db" })
-      }
-
-      const newState = blackjack(doc.state, { type: move })
-
-      db.states.update(
-        { cookie: id },
-        { cookie: id, state: newState }
-      ).then(() => {
-        res.json(newState)
-      }).catch((e) => { console.error(e) })
-
-    }).catch((e) => { console.error(e) })
-  }
+  // insert the result of this move into our states collection
+  db.states.update(
+    { cookie: req.id },
+    { cookie: req.id, state: newState }
+  ).then(() => {
+    console.log(`API: updated db.states for ${req.id.substring(0,8)}`)
+    res.send({ msg: `Recorded your ${move}`})
+  }).catch(err('API: states.update'))
 
 }
 
 //////////////////////////////
-// Setup router pipeline
-
-router.get('/hello', (req, res, next) => {
-  
-  let id = req.universalCookies.get('id')
-
-  if (id) {
-    db.states.findOne({ cookie: id }).then((doc) => {
-      if (doc && doc.state) {
-        // Found an old user with saved state: return that and we're done
-        console.log(`Old user detected with id ${id}`)
-        res.json(doc.state)
-      } else {
-        // Found an old user WITHOUT saved state: continue
-        console.log(`Unregistered id detected: ${id}`)
-      }
-    }).catch((e) => { console.error(e) })
-
-  } else {
-    const hash = crypto.createHash('sha256');
-    hash.update(req.headers['user-agent'].toString())
-    hash.update(Date.now().toString())
-    hash.update(crypto.randomBytes(16))
-    id = hash.digest('hex')
-  }
-
-  const newState = blackjack(undefined, { type: 'HELLO' })
-
-  // save a bj doc in mongo for this user
-  db.actions.insert({ cookie: id, action: { type: 'HELLO' }})
-  db.states.insert({ cookie: id, state: newState, })
-
-  // and send a copy to them
-  res.cookie('id', id)
-  res.send('New state generated')
-  console.log(`New user registered with with id ${id}`)
-})
+// Apply above function to each move
 
 router.get('/deal', (req, res, next) => {
   handleMove(req, res, 'DEAL')

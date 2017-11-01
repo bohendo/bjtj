@@ -2,25 +2,13 @@
 import fs from 'fs'
 import monk from 'monk'
 
-const pwd = fs.readFileSync('/run/secrets/mongo_user', 'utf8').replace(/\n/, '')
+const bjdb = monk(`mongodb://bjvm:${
+  fs.readFileSync('/run/secrets/mongo_user', 'utf8')
+}@mongo:27017/bjvm`)
 
-const bjdb = monk(
-
-  // 'mongodb://user:password@host:port/database'
-  `mongodb://bjvm:${pwd}@mongo:27017/bjvm`,
-
-  // monk arg2: error callback
-  (err) => {
-    if (err) {
-      console.error(err)
-      process.exit(1)
-    }
-  }
-)
-
-const states = bjdb.get('states')
-const actions = bjdb.get('actions')
-
-const db = { states, actions }
+const db = {
+  'states':  bjdb.get('states'),
+  'actions': bjdb.get('actions'),
+}
 
 export default db

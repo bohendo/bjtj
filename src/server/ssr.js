@@ -7,32 +7,19 @@ import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 
 import Index from '../components/index'
-import blackjack from '../reducers'
+import bj from '../reducers'
 import db from './mongo'
+import { err } from '../utils'
 
 import template from '../index.html'
 
 
 const serverSideRender = (req, res) =>{
 
-  const id = req.universalCookies.get('id')
+  if (!req.id) { err('SSR: no req.id') }
+  if (!req.state) { err('SSR: no req.state') }
 
-  if (!id) {
-    res.send(renderIndex(createStore(blackjack)))
-  }
-
-  db.states.findOne({ cookie: id }).then((doc) => {
-    if (doc && doc.state) {
-      res.send(renderIndex(createStore(blackjack, doc.state)))
-    } else {
-      res.send(renderIndex(createStore(blackjack)))
-    }
-  }).catch((e) => { console.error(e) })
-
-}
-
-
-const renderIndex = store => {
+  const store = createStore(bj, req.state)
 
   const html = renderToString(
     <Provider store={store}>
@@ -71,7 +58,8 @@ const renderIndex = store => {
     `$&${html}`,
   )
 
-  return (index)
+  console.log(`SSR: successful render for ${req.id.substring(0,8)}`)
+  res.send(index)
 }
 
 export default serverSideRender

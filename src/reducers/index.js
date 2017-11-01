@@ -19,10 +19,10 @@ const initialState = {
 ////////////////////////////////////////
 // Master Reducer
 
-const blackjack = (state = initialState, action) => {
+const blackjack = (state  = initialState,
+                   action = { type: 'NOOP' }) => {
+
   switch (action.type) {
-    case 'HELLO':
-      return state
     case 'DEAL':
       return deal(state, shuffle())
     case 'HIT':
@@ -36,6 +36,7 @@ const blackjack = (state = initialState, action) => {
     default:
       return state
   }
+
 }
 
 export default blackjack;
