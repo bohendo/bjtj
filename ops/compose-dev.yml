@@ -49,7 +49,7 @@ services:
     depends_on:
       - nodejs
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: any
     hostname: ${BJVM_DOMAINNAME}

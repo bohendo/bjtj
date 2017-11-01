@@ -13,7 +13,7 @@ about=docs/about.md
 
 ##### CALCULATED VARIABLES #####
 
-v=$(shell grep "\"version\"" ./package.json | egrep -o [0-9.]* | cut -d . -f 1-2)
+v=$(shell grep "\"version\"" ./package.json | egrep -o [0-9.]*)
 
 md=$(shell find ./docs -type f -name "*.md")
 js=$(shell find ./src -type f -name "*.js*")
@@ -27,7 +27,7 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 all: mongo nodejs nodemon nginx certbot
 	@true
 
-predeploy: mongo nodejs nodemon nginx certbot
+deploy: mongo nodejs nodemon nginx certbot
 	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:$v .
 	docker push `whoami`/bjvm_mongo:$v
 	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v .

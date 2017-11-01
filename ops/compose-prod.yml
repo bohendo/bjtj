@@ -18,7 +18,7 @@ secrets:
 services:
 
   mongo:
-    image: bohendo/bjvm_mongo:0.2
+    image: bohendo/bjvm_mongo:$v
     networks:
       - back
     volumes:
@@ -28,9 +28,9 @@ services:
       - mongo_user
 
   node:
-    image: bohendo/bjvm_nodejs:0.2
+    image: bohendo/bjvm_nodejs:$v
     environment:
-      - NODE_ENV
+      - NODE_ENV=production
     depends_on:
       - mongo
     deploy:
@@ -44,35 +44,35 @@ services:
       - mongo_user
 
   nginx:
-    image: bohendo/bjvm_nginx:0.2
+    image: bohendo/bjvm_nginx:$v
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
     depends_on:
       - nodejs
     deploy:
-      replicas: 2
+      mode: global
       restart_policy:
         condition: any
     hostname: ${BJVM_DOMAINNAME}
     volumes:
-      - devcerts:/etc/devcerts/
       - letsencrypt:/etc/letsencrypt/
       - webroot:/var/www/letsencrypt/
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     networks:
       - front
 
   certbot:
-    image: bohendo/bjvm_certbot:0.2
+    image: bohendo/bjvm_certbot:$v
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
     depends_on:
       - nginx
     deploy:
+      mode: global
       restart_policy:
         condition: any
         delay: 48h
