@@ -24,24 +24,43 @@ md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
 ##### RULES #####
 # first rule is the default
 
-all: mongo nodejs certbot nginx
+all: mongo nodejs nodemon nginx certbot
 	@true
 
-mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
+predeploy: mongo nodejs nodemon nginx certbot
 	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:$v .
+	docker push `whoami`/bjvm_mongo:$v
+	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v .
+	docker push `whoami`/bjvm_nodejs:$v
+	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:$v .
+	docker push `whoami`/bjvm_nginx:$v
+	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:$v .
+	docker push `whoami`/bjvm_certbot:$v
+
+mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
+	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:latest .
+	docker push `whoami`/bjvm_mongo:latest
 	mkdir -p built && touch built/mongo
 
-nodejs: nodejs.Dockerfile nodejs.entry.sh server.bundle.js
-	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v .
+nodejs: nodejs.Dockerfile server.bundle.js
+	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:latest .
+	docker push `whoami`/bjvm_nodejs:latest
 	mkdir -p built && touch built/nodejs
 
-certbot: certbot.Dockerfile certbot.entry.sh
-	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:$v .
-	mkdir -p built && touch built/certbot
+nodemon: nodemon.Dockerfile
+	docker build -f ops/nodemon.Dockerfile -t `whoami`/bjvm_nodemon:latest .
+	docker push `whoami`/bjvm_nodemon:latest
+	mkdir -p built && touch built/nodemon
 
 nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
-	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:$v .
+	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:latest .
+	docker push `whoami`/bjvm_nginx:latest
 	mkdir -p built && touch built/nginx
+
+certbot: certbot.Dockerfile certbot.entry.sh
+	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:latest .
+	docker push `whoami`/bjvm_certbot:latest
+	mkdir -p built && touch built/certbot
 
 server.bundle.js: node_modules webpack/server.config.js $(js)
 	$(webpack) --config webpack/server.config.js

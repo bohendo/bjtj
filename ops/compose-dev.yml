@@ -1,0 +1,66 @@
+version: '3.4'
+
+networks:
+  front:
+  back:
+
+volumes:
+  devcerts:
+  mongodb:
+
+secrets:
+  mongo_admin:
+    external: true
+  mongo_user:
+    external: true
+
+services:
+
+  mongo:
+    image: bohendo/bjvm_mongo:latest
+    networks:
+      - back
+    volumes:
+      - mongodb:/data/db
+    secrets:
+      - mongo_admin
+      - mongo_user
+
+  node:
+    image: bohendo/bjvm_nodemon:latest
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    networks:
+      - front
+      - back
+    secrets:
+      - mongo_user
+    volumes:
+      - type: bind
+        source: ../built/server.bundle.js
+        target: /root/server.bundle.js
+
+  nginx:
+    image: bohendo/bjvm_nginx:latest
+    depends_on:
+      - nodejs
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    hostname: ${BJVM_DOMAINNAME}
+    volumes:
+      - devcerts:/etc/devcerts/
+      - type: bind
+        source: ../built/static/client.bundle.js
+        target: /var/www/static/client.bundle.js
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - front
+

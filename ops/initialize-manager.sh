@@ -103,13 +103,10 @@ ufw allow 443 &&\
 ufw --force enable
 
 ########################################
-# Install Docker & Node
+# Install Docker
 
 # Install docker dependencies
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common make pandoc
-
-# Add the node repo
-curl -sL https://deb.nodesource.com/setup_8.x | bash -
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Get the docker team's official gpg key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -121,34 +118,11 @@ add-apt-repository \
    stable"
 
 apt-get update -y
-apt-get install -y docker-ce=17.09.0~ce-0~ubuntu nodejs
+apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
 
 systemctl enable docker
 
 docker swarm init --advertise-addr $internal_ip 2> /dev/null
-
-########################################
-# Setup git repo & deployment machine
-
-mkdir -vp /var/bjvm
-mkdir -vp /var/bjvm.git
-
-cd /var/bjvm.git
-
-if [[ ! -d hooks ]]
-then
-  git init --bare
-fi
-
-tee hooks/post-receive <<'EOIF'
-#!/bin/bash
-git --work-tree=/var/bjvm --git-dir=/var/bjvm.git checkout -f
-cd /var/bjvm
-bash ops/secret-init.sh
-npm run deploy
-EOIF
-
-chmod -v 755 hooks/post-receive
 
 ########################################
 # Double-check upgrades & reboot
@@ -163,12 +137,4 @@ sleep 3 && reboot &
 exit
 
 EOF
-
-# Add a remote git repo to push to
-git remote remove $1 2> /dev/null
-git remote add $1 ssh://$1:/var/bjvm.git
-
-echo;
-echo "If you didn't see any errors above, we're good to go."
-echo "  push to your droplet with: git push $1"
 

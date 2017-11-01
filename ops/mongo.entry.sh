@@ -1,23 +1,34 @@
 #!/bin/sh
 
-# a cleaner error handler
-function err { >&2 echo "Error: $1"; exit 1; }
-
+# Already initialized? Then we're good to go
 if [ -d /data/db/diagnostic.data ]
 then
   exec mongod -f /etc/mongo.conf
-  exit 1 # we shouldn't ever reach this exit
 fi
 
-[ -f /run/secrets/mongo_admin ] || err 'Need mongo_admin secret'
-[ -f /run/secrets/mongo_user ]  || err 'Need mongo_user secret'
-
+# Prepare to use our secrets in a here doc
 admin_pwd=`cat /run/secrets/mongo_admin`
 user_pwd=`cat /run/secrets/mongo_user`
 
-# Already initialized? No further action needed
 # Start mongod for the very first time w/out auth
-mongod & sleep 10 # give it a sec to get going
+mongod &
+
+# Wait until mongod is ready to roll
+cat > /root/wait_for_mongo.js <<EOF
+var conn;
+var startTime = new Date();
+while(conn === undefined) {
+  try {
+    print("Attempting to connect to mongo, elapsed: " + (new Date() - startTime)/1000 + "s");
+    conn = new Mongo();
+  } catch(error) {
+    print(error);
+    sleep(1000);
+  }
+}
+print("MongoDB connection established in " + (new Date() - startTime)/1000 + "s");
+EOF
+mongo --nodb /root/wait_for_mongo.js
 
 # Setup auth & our bjvm db/user
 mongo <<EOF
@@ -37,4 +48,4 @@ EOF
 
 # Alright, start mongod for real now
 exec mongod -f /etc/mongo.conf
-exit 1 # we shouldn't ever reach this exit
+

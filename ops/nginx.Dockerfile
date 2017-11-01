@@ -1,14 +1,13 @@
 FROM alpine:3.6
 
-MAINTAINER twitter.com/bohendo
+MAINTAINER Bo Henderson <twitter.com/bohendo>
 
-RUN apk add --update nginx openssl
-
-# initialize a stronger dhparam (separate RUN so it gets cached)
-RUN openssl dhparam -out /etc/ssl/dhparam.pem 2048
+# initialize a stronger dhparam (separate RUN so dhparam gets cached)
+RUN apk add --update openssl certbot nginx && \
+    openssl dhparam -out /etc/ssl/dhparam.pem 2048
 
 RUN mkdir -p /etc/certs && \
-  # Link the logs to something docker can collect automatically
+  # Link the logs to stdout so docker can collect them
   ln -fs /dev/stderr /var/log/nginx/error.log && \
   ln -fs /dev/stdout /var/log/nginx/access.log
 

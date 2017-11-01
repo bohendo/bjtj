@@ -7,7 +7,6 @@ networks:
 volumes:
   letsencrypt:
   webroot:
-  fallback:
   mongodb:
 
 secrets:
@@ -28,29 +27,51 @@ services:
       - mongo_admin
       - mongo_user
 
-  nodejs:
+  node:
     image: bohendo/bjvm_nodejs:0.2
     environment:
       - NODE_ENV
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: any
     depends_on:
       - mongo
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
     networks:
       - front
       - back
     secrets:
       - mongo_user
 
-  certbot:
-    image: bohendo/bjvm_certbot:0.2
-    depends_on:
-      - certbot
+  nginx:
+    image: bohendo/bjvm_nginx:0.2
     environment:
       - BJVM_DOMAINNAME
       - BJVM_EMAIL
+    depends_on:
+      - nodejs
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    hostname: ${BJVM_DOMAINNAME}
+    volumes:
+      - devcerts:/etc/devcerts/
+      - letsencrypt:/etc/letsencrypt/
+      - webroot:/var/www/letsencrypt/
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - front
+
+  certbot:
+    image: bohendo/bjvm_certbot:0.2
+    environment:
+      - BJVM_DOMAINNAME
+      - BJVM_EMAIL
+    depends_on:
+      - nginx
     deploy:
       restart_policy:
         condition: any
@@ -58,27 +79,6 @@ services:
     volumes:
       - letsencrypt:/etc/letsencrypt/
       - webroot:/var/www/letsencrypt/
-    networks:
-      - front
-
-
-  nginx:
-    image: bohendo/bjvm_nginx:0.2
-    hostname: ${BJVM_DOMAINNAME}
-    depends_on:
-      - nodejs
-    environment:
-      - BJVM_DOMAINNAME
-    deploy:
-      restart_policy:
-        condition: any
-    volumes:
-      - fallback:/etc/fallback/
-      - letsencrypt:/etc/letsencrypt/
-      - webroot:/var/www/letsencrypt/
-    ports:
-      - 80:80
-      - 443:443
     networks:
       - front
 
