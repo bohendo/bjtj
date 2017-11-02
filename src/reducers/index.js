@@ -7,13 +7,18 @@ import double from './double'
 import split from './split'
 
 const initialState = {
-  message: 'Click "Deal" when you\'re ready to go',
-  moves: ['deal'],
-  playerHands: [],
-  dealerCards: [],
-  deck: shuffle(),
-  defaultBet: Number(1),
-  chips: Number(5),
+  public: {
+    message: 'Click "Deal" when you\'re ready to go',
+    moves: ['deal'],
+    playerHands: [],
+    defaultBet: Number(1),
+    chips: Number(5),
+    dealerCards: [],
+  },
+  private: {
+    deck: shuffle(),
+    dealerHiddenCard: [],
+  }
 }
 
 ////////////////////////////////////////
