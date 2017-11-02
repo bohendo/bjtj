@@ -46,13 +46,14 @@ services:
 
   nginx:
     image: bohendo/bjvm_nginx:latest
+    environment:
+      - BJVM_DOMAINNAME
     depends_on:
       - nodejs
     deploy:
       replicas: 1
       restart_policy:
         condition: any
-    hostname: ${BJVM_DOMAINNAME}
     volumes:
       - devcerts:/etc/devcerts/
       - type: bind

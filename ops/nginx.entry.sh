@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -n $BJVM_DOMAINNAME ] || (echo 'Where is $BJVM_DOMAINNAME?' && sleep 9999)
+
 # If letsencrypt is providing certs, use those
 if ls /etc/letsencrypt/live/$BJVM_DOMAINNAME/privkey.pem 2> /dev/null
 then
@@ -29,6 +31,7 @@ else
 fi
 
 sed -i 's/$hostname/'"$BJVM_DOMAINNAME"'/' /etc/nginx/nginx.conf
+
 cat /etc/nginx/nginx.conf
 
 # TODO: wait until node is alive
