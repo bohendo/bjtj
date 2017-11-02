@@ -1,32 +1,45 @@
-
 import payout from './payout'
 
 const deal = (state, deck) => {
   // don't do anything if this isn't currently a valid move
-  if (!state.moves.includes('deal')) { return (state) }
+  if (!state.public.moves.includes('deal')) { return (state) }
 
-  const dealerCards = []
-  const playerHands = [{
-    isActive: true,
-    isDone: false,
-    bet: state.defaultBet,
-    cards: [],
-  }]
+  // ns for New State
+  const ns = {
+    public: {
+      message: 'Make your move...',
+      moves: [], // NOTE: payout() will set allowed moves
+      playerHands: [{
+        isActive: true,
+        isDone: false,
+        bet: state.public.bet,
+        cards: [],
+      }],
+      dealerCards: [],
+      chips: Number(state.public.chips),
+      bet: Number(state.public.bet),
+    },
+    private: {
+      deck: deck.slice(),
+      hiddenCard: {},
+    },
+  }
 
-  // deal 4 cards
-  dealerCards.push(deck.pop());
-  playerHands[0].cards.push(deck.pop());
-  dealerCards.push(deck.pop());
-  playerHands[0].cards.push(deck.pop());
+  // deal 2 cards to the player
+  ns.public.playerHands[0].cards.push(ns.private.deck.pop())
+  ns.public.playerHands[0].cards.push(ns.private.deck.pop())
 
-  // move player's chips to this hand's bet
-  const chips = state.chips - state.defaultBet
+  // publicly give the dealer a placeholder and a face-up card
+  ns.public.dealerCards.push({ rank: '?', suit: '?' })
+  ns.public.dealerCards.push(ns.private.deck.pop())
 
-  const message = 'Make your move..'
+  // privately, give the dealer one real card
+  ns.private.hiddenCard = ns.private.deck.pop()
 
-  return (payout(Object.assign({}, state, {
-    playerHands, dealerCards, chips, message,
-  })))
+  // move some of our player's chips to this round's betting pool
+  ns.public.chips -= ns.public.bet
+
+  return (payout(Object.assign({}, state, ns)))
 }
 
 export default deal;

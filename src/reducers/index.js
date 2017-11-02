@@ -1,24 +1,44 @@
 
-import { shuffle } from './utils'
 import deal from './deal'
 import hit from './hit'
 import stand from './stand'
 import double from './double'
 import split from './split'
 
+
+// () => [cards]
+const shuffle = () => {
+  const ranks = ['A', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'T', 'J', 'Q', 'K'];
+  const suits = ['C', 'D', 'H', 'S'];
+  const deck = [];
+  for (let r=0; r<ranks.length; r++) {
+    for (let s=0; s<suits.length; s++) {
+      deck.push({ rank: ranks[r], suit: suits[s] })
+    }
+  }
+  for (let i=deck.length; i; i--) {
+    const j = Math.floor(Math.random() * i);
+    [deck[i-1], deck[j]] = [deck[j], deck[i-1]];
+  }
+  // assign state & deck to empty object (new state)
+  return (deck)
+}
+
+
 const initialState = {
   public: {
-    message: 'Click "Deal" when you\'re ready to go',
+    message: 'Click Deal when you\'re ready to play!',
     moves: ['deal'],
     playerHands: [],
-    defaultBet: Number(1),
-    chips: Number(5),
     dealerCards: [],
+    bet: 1,
+    chips: 5,
   },
   private: {
     deck: shuffle(),
-    dealerHiddenCard: [],
-  }
+    hiddenCard: {},
+  },
 }
 
 ////////////////////////////////////////
@@ -41,7 +61,6 @@ const blackjack = (state  = initialState,
     default:
       return state
   }
-
 }
 
 export default blackjack;

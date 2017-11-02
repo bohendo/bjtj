@@ -1,26 +1,32 @@
-
 import payout from './payout'
 
 const double = (state) => {
   // don't do anything if deal isn't currently a valid move
-  if (!state.moves.includes('double')) { return (state) }
+  if (!state.public.moves.includes('double')) { return (state) }
 
-  const deck = state.deck.slice()
-  const chips = state.chips -
-    state.playerHands.find(h => h.isActive).bet
+  const ns = {
+    public: {
+      playerHands: state.public.playerHands.slice(),
+      bet: Number(state.public.chips),
+      chips: Number(state.public.chips - state.public.bet),
+    },
+    private: {
+      deck: state.private.deck.slice(),
+    },
+  }
 
-  const playerHands = state.playerHands.map(h => (
+  ns.public.playerHands = ns.public.playerHands.map(h => (
     h.isActive ?
       Object.assign({}, h, {
-        bet: h.bet * 2,
-        cards: h.cards.concat(deck.pop()),
+        bet: ns.public.bet * 2,
+        cards: h.cards.concat(ns.private.deck.pop()),
         isDone: true,
         isActive: false,
       }) :
       Object.assign({}, h)
   ))
 
-  return (payout(Object.assign({}, state, { deck, playerHands, chips })))
+  return (payout(Object.assign({}, state, ns)))
 }
 
 export default double;

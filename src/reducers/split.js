@@ -1,34 +1,41 @@
-
 import payout from './payout'
 
 const split = (state) => {
   // don't do anything if deal isn't currently a valid move
-  if (!state.moves.includes('split')) { return (state) }
+  if (!state.public.moves.includes('split')) { return (state) }
 
-  const chips = state.chips -
-    state.playerHands.find(h => h.isActive).bet
+  const ns = {
+    public: {
+      playerHands: state.public.playerHands.slice(),
+      bet: Number(state.public.bet),
+      chips: Number(state.public.chips - state.public.bet),
+    },
+    private: {
+      deck: state.private.deck.slice(),
+    },
+  }
 
-  const deck = state.deck.slice()
+  // get the hand we're going to split
+  const hand = ns.public.playerHands.find(h => h.isActive)
 
-  const playerHands = state.playerHands.filter(h => !h.isActive)
+  // remove the hand-to-split
+  ns.public.playerHands = ns.public.playerHands.filter(h => !h.isActive)
 
-  const hand = state.playerHands.find(h => h.isActive)
-
-  // add two new hands
-  playerHands.push({
+  // split the hand we removed into two
+  ns.public.playerHands.push({
     isActive: true,
     isDone: false,
-    bet: hand.bet,
-    cards: [hand.cards[0], deck.pop()],
+    bet: ns.public.bet,
+    cards: [hand.cards[0], ns.private.deck.pop()],
   })
-  playerHands.push({
+  ns.public.playerHands.push({
     isActive: false,
     isDone: false,
-    bet: hand.bet,
-    cards: [hand.cards[1], deck.pop()],
+    bet: ns.public.bet,
+    cards: [hand.cards[1], ns.private.deck.pop()],
   })
 
-  return (payout(Object.assign({}, state, { deck, chips, playerHands })))
+  return (payout(Object.assign({}, state, ns)))
 }
 
 export default split
