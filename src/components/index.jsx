@@ -43,13 +43,13 @@ class Index extends React.Component {
       <div class="row marketing">
         <div class="col-lg-6">
           <a href="mongo.html"><h4>Mongo</h4></a>
-          <p>This application doesn't use a database yet but I think it will soon. When it does, I'll set up mongo according to this guide.</p>
+          <p>This application uses Mongo to remember the state of your game, this guide will walk you through a secure mongo-setup</p>
 
         </div>
 
         <div class="col-lg-6">
           <a href="buying-crypto.html"><h4>Buying Cryptocurrecies</h4></a>
-          <p>Buying cryptocurrencies is intimidating the first time. This simple guide will walk you though some of your best options for trading in your USD.</p>
+          <p>(work in progress) Buying cryptocurrencies is intimidating the first time. This simple guide will walk you though some of your best options for trading in your USD.</p>
 
         </div>
       </div>

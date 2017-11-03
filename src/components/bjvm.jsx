@@ -20,12 +20,14 @@ export default class BJVM extends React.Component {
 
     let address="0x09eb5799ff31d198ebe1e0124f981cbb688149d9"
 
-    let moves = this.props.moves
-    let chips = Number(this.props.chips)
-    let bet = Number(this.props.defaultBet)
-    let dealerHand = [{ cards: this.props.dealerCards,
+    console.log(this.props)
+
+    let moves = this.props.public.moves
+    let chips = Number(this.props.public.chips)
+    let bet = Number(this.props.public.bet)
+    let dealerHand = [{ cards: this.props.public.dealerCards,
                         isActive: true}]
-    let playerHand = this.props.playerHands
+    let playerHand = this.props.public.playerHands
 
     let fill = "#171"
     let stroke = "#eee"
@@ -75,48 +77,19 @@ export default class BJVM extends React.Component {
     <Hand x="20"  y="280" w="375" hand={playerHand} />
 
     <Button x="410" y="260" w="175" h="45" type="deal"
-            fn={this.props.deal} moves={this.props.moves}/>
+            fn={this.props.deal} moves={moves}/>
     <Button x="410" y="310" w="175" h="45" type="hit"
-            fn={this.props.hit} moves={this.props.moves}/>
+            fn={this.props.hit} moves={moves}/>
     <Button x="410" y="360" w="175" h="45" type="double"
-            fn={this.props.double} moves={this.props.moves}/>
+            fn={this.props.double} moves={moves}/>
     <Button x="410" y="410" w="175" h="45" type="stand"
-            fn={this.props.stand} moves={this.props.moves}/>
+            fn={this.props.stand} moves={moves}/>
     <Button x="410" y="460" w="175" h="45" type="split"
-            fn={this.props.split} moves={this.props.moves}/>
+            fn={this.props.split} moves={moves}/>
 
   </svg> 
 
 </div>
 
 ) } }
-
-
-// For ease of development
-class Grid extends React.Component { render() { return (
-<g>
-
-  <line x1="50" x2="50" y1="25" y2="525" stroke="black"/>
-  <line x1="100" x2="100" y1="25" y2="525" stroke="black"/>
-  <line x1="150" x2="150" y1="25" y2="525" stroke="black"/>
-  <line x1="200" x2="200" y1="25" y2="525" stroke="black"/>
-  <line x1="250" x2="250" y1="25" y2="525" stroke="black"/>
-  <line x1="300" x2="300" y1="25" y2="525" stroke="black"/>
-  <line x1="350" x2="350" y1="25" y2="525" stroke="black"/>
-  <line x1="400" x2="400" y1="25" y2="525" stroke="black"/>
-  <line x1="450" x2="450" y1="25" y2="525" stroke="black"/>
-
-  <line x1="0" x2="500" y1="50" y2="50" stroke="black"/>
-  <line x1="0" x2="500" y1="100" y2="100" stroke="black"/>
-  <line x1="0" x2="500" y1="150" y2="150" stroke="black"/>
-  <line x1="0" x2="500" y1="200" y2="200" stroke="black"/>
-  <line x1="0" x2="500" y1="250" y2="250" stroke="black"/>
-  <line x1="0" x2="500" y1="300" y2="300" stroke="black"/>
-  <line x1="0" x2="500" y1="350" y2="350" stroke="black"/>
-  <line x1="0" x2="500" y1="400" y2="400" stroke="black"/>
-  <line x1="0" x2="500" y1="450" y2="450" stroke="black"/>
-
-</g>
-) } }
-
 

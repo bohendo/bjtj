@@ -27,7 +27,7 @@ const serverSideRender = (req, res) =>{
     </Provider>,
   )
 
-  const finalState = store.getState()
+  const publicState = store.getState()
 
   // load my index.html template
   let index = template
@@ -42,7 +42,7 @@ const serverSideRender = (req, res) =>{
   index = index.replace(
     /<\/body>/,
     `  <script>
-    window.__PRELOADED_STATE__ = ${JSON.stringify(finalState)}
+    window.__PRELOADED_STATE__ = ${JSON.stringify(publicState)}
   </script>\n$&`,
   )
 
