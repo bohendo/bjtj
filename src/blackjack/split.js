@@ -1,19 +1,14 @@
-import payout from './payout'
+import { payout } from './payout'
 
 const split = (state) => {
   // don't do anything if deal isn't currently a valid move
   if (!state.public.moves.includes('split')) { return (state) }
 
-  const ns = {
-    public: {
-      playerHands: state.public.playerHands.slice(),
-      bet: Number(state.public.bet),
-      chips: Number(state.public.chips - state.public.bet),
-    },
-    private: {
-      deck: state.private.deck.slice(),
-    },
-  }
+  // create a deep copy of our state (ns for New State)
+  const ns = JSON.parse(JSON.stringify(state))
+
+  // move a bet from the player's chips to the betting pool
+  ns.public.chips -= ns.public.bet
 
   // get the hand we're going to split
   const hand = ns.public.playerHands.find(h => h.isActive)
@@ -38,4 +33,4 @@ const split = (state) => {
   return (payout(Object.assign({}, state, ns)))
 }
 
-export default split
+export { split }

@@ -1,14 +1,11 @@
-import payout from './payout'
+import { payout } from './payout'
 
 const stand = (state) => {
   // don't do anything if this isn't currently a valid move
   if (!state.public.moves.includes('stand')) { return (state) }
 
-  const ns = {
-    public: {
-      playerHands: state.public.playerHands.slice(),
-    },
-  }
+  // create a deep copy of our state (ns for New State)
+  const ns = JSON.parse(JSON.stringify(state))
 
   ns.public.playerHands = ns.public.playerHands.map(h => (
     h.isActive ?
@@ -19,4 +16,4 @@ const stand = (state) => {
   return (payout(Object.assign({}, state, ns)))
 }
 
-export default stand
+export { stand }

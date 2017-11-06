@@ -1,4 +1,3 @@
-
 import assert from 'assert'
 
 // [cards] => { n, isSoft, bj }
@@ -44,38 +43,29 @@ const score = (cards, hiddenCard = false) => {
 }
 
 
+// { state } => { state }
 const payout = (state) => {
-  const ns = { // ns for New State
-    public: {
-      // loop through hands and make sure isDone/isActive are correct
-      playerHands: state.public.playerHands.map((h) => {
-        // if not done but over 20 then we actually are done
-        if (!h.isDone && score(h.cards).n >= 21) {
-          return (Object.assign({}, h, {
-            isDone: true,
-            isActive: false,
-          }))
-        // if done, ensure not active
-        } else if (h.isDone) {
-          return (Object.assign({}, h, {
-            isActive: false,
-          }))
-        }
-        // if not done then move on
-        return (h)
-      }),
-      dealerCards: state.public.dealerCards.split(),
-      bet: Number(state.public.bet),
-      chips: Number(state.public.chips),
-      moves: [],
-      message: '',
-    },
-    private: {
-      deck: state.private.deck.slice(),
-      hiddenCard: state.private.hiddenCard,
-    },
-  }
+  // create a deep copy of our state (ns for New State)
+  const ns = JSON.parse(JSON.stringify(state))
 
+  // Check & update all isDone/isActive values
+  ns.public.playerHands = ns.public.playerHands.map((h) => {
+    // if not done but over 20 then we actually are done
+    if (!h.isDone && score(h.cards).n >= 21) {
+      return (Object.assign({}, h, {
+        isDone: true,
+        isActive: false,
+      }))
+    // if done, ensure not active
+    } else if (h.isDone) {
+      return (Object.assign({}, h, {
+        isActive: false,
+      }))
+    }
+    // if not done then move on
+    return (h)
+  })
+ 
   // In case we call payout() on the initial state..
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
@@ -107,10 +97,6 @@ const payout = (state) => {
   const nTodo = ns.public.playerHands.reduce((sum, h) => (
     h.isDone ? sum : sum + 1
   ), 0)
-
-  assert(nActive === 0 || nActive === 1,
-    `Expected 0 or 1 active cards, got ${nActive}`,
-  )
 
   // if we still have un-finished hands then the round continues
   if (nTodo !== 0) {
@@ -209,4 +195,4 @@ assert.equal(false, score([{ rank: 'A' }, { rank: '9' }]).bj)
 assert.equal(true, score([{ rank: 'A' }, { rank: '9' }]).isSoft)
 assert.equal(false, score([{ rank: 'A' }, { rank: '9' }, { rank: '3' }]).isSoft)
 
-export default payout
+export { payout }

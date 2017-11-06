@@ -1,20 +1,16 @@
-import payout from './payout'
+import { payout } from './payout'
 
 const double = (state) => {
   // don't do anything if deal isn't currently a valid move
   if (!state.public.moves.includes('double')) { return (state) }
 
-  const ns = {
-    public: {
-      playerHands: state.public.playerHands.slice(),
-      bet: Number(state.public.chips),
-      chips: Number(state.public.chips - state.public.bet),
-    },
-    private: {
-      deck: state.private.deck.slice(),
-    },
-  }
+  // create a deep copy of our state (ns for New State)
+  const ns = JSON.parse(JSON.stringify(state))
 
+  // move another bet from the player's chips to the betting pool
+  ns.public.chips -= ns.public.bet
+
+  // double the active hand's payout
   ns.public.playerHands = ns.public.playerHands.map(h => (
     h.isActive ?
       Object.assign({}, h, {
@@ -29,4 +25,4 @@ const double = (state) => {
   return (payout(Object.assign({}, state, ns)))
 }
 
-export default double;
+export { double }
