@@ -10,6 +10,8 @@ then
   err "Couldn't open an ssh connection to $1"
 fi
 
+make && make deploy
+
 v=$(grep "\"version\"" ./package.json | egrep -o [0-9.]*)
 
 cat ops/compose-prod.yml | sed 's/$v/'"$v"'/g' | ssh $1 "cat - > ~/docker-compose.yml"

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if ls /etc/letsencrypt/live/$BJVM_DOMAINNAME 2> /dev/null
+if ls /etc/letsencrypt/live/$BJVM_DOMAINNAME 2>&1 > /dev/null
 then
   echo "Found HTTPS certs for $BJVM_DOMAINNAME, renewing if necessary..."
   exec certbot renew --webroot -w /var/www/letsencrypt/ -n

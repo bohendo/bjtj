@@ -55,10 +55,10 @@ const auth = (req, res, next) => {
 
     console.log(`AUTH: New friend ${req.id.substring(0,8)}`)
 
-    const spery = 365*24*60*60 // seconds per year
+    const mspery = 365*24*60*60*1000 // milliseconds per year
     res.cookie('id', req.id, {
-      'expires': new Date(Date.now() + spery*1000),
-      'maxAge': spery,
+      'expires': new Date(Date.now() + mspery),
+      'maxAge': mspery,
       'secure': true,
       'httpOnly': true,
       'sameSite': true,
