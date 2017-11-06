@@ -1,42 +1,47 @@
 
-import { shuffle } from './utils'
-import deal from './deal'
-import hit from './hit'
-import stand from './stand'
-import double from './double'
-import split from './split'
+import fetch from 'isomorphic-fetch'
+import { 
+  SELECT,
+  SUBMIT,
+  REFRESH,
+  SUCCESS,
+  FAILURE,
+} from '../actions'
 
+/* This is the client-side reducer. It doesn't contain any blackjack
+ * logic, instead it asyncronously asks the server to update our state
+ */
+
+// NOTE: The frontend state is the public half of the backend state
 const initialState = {
-  message: 'Click "Deal" when you\'re ready to go',
+  message: 'Click Deal when you\'re ready to play!',
   moves: ['deal'],
   playerHands: [],
   dealerCards: [],
-  deck: shuffle(),
-  defaultBet: Number(1),
-  chips: Number(5),
+  bet: 1,
+  chips: 5,
+  waiting: false,
 }
 
-////////////////////////////////////////
-// Master Reducer
-
-const blackjack = (state  = initialState,
-                   action = { type: 'NOOP' }) => {
+const reducer = (state = initialState, action) => {
 
   switch (action.type) {
-    case 'DEAL':
-      return deal(state, shuffle())
-    case 'HIT':
-      return hit(state)
-    case 'STAND':
-      return stand(state)
-    case 'DOUBLE':
-      return double(state)
-    case 'SPLIT':
-      return split(state)
+    case SUBMIT:
+      return (Object.assign({}, state, {
+        waiting: true
+      }))
+    case SUCCESS:
+      return Object.assign({}, action.state, {
+        waiting: false
+      })
+    case FAILURE:
+      return (Object.assign({}, state, {
+        message: action.error,
+      }))
     default:
       return state
   }
 
 }
 
-export default blackjack;
+export default reducer;

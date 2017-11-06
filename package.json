@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-node6": "^11.0.0",
     "bootstrap": "^4.0.0-beta",
     "es6-promise": "^4.1.1",
@@ -49,6 +50,7 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "universal-cookie": "^2.1.0",
     "universal-cookie-express": "^2.1.0"
   }

@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 
 import Index from '../components/index'
-import bj from '../reducers'
+import reducer from '../reducers'
 import db from './mongo'
 import { err } from '../utils'
 
@@ -19,7 +19,8 @@ const serverSideRender = (req, res) =>{
   if (!req.id) { err('SSR: no req.id') }
   if (!req.state) { err('SSR: no req.state') }
 
-  const store = createStore(bj, req.state)
+  // Only send the client the public part of our game state
+  const store = createStore(reducer, req.state.public)
 
   const html = renderToString(
     <Provider store={store}>
@@ -27,7 +28,7 @@ const serverSideRender = (req, res) =>{
     </Provider>,
   )
 
-  const finalState = store.getState()
+  const state = store.getState()
 
   // load my index.html template
   let index = template
@@ -42,7 +43,7 @@ const serverSideRender = (req, res) =>{
   index = index.replace(
     /<\/body>/,
     `  <script>
-    window.__PRELOADED_STATE__ = ${JSON.stringify(finalState)}
+    window.__BJVM_STATE__ = ${JSON.stringify(state)}
   </script>\n$&`,
   )
 

@@ -1,4 +1,6 @@
 
+import 'babel-polyfill'
+
 // My express middleware
 import auth from './server/auth'
 import api  from './server/api'
