@@ -18,6 +18,8 @@ services:
 
   mongo:
     image: bohendo/bjvm_mongo:latest
+    deploy:
+      mode: global
     networks:
       - back
     volumes:
@@ -51,7 +53,7 @@ services:
     depends_on:
       - nodejs
     deploy:
-      replicas: 1
+      mode: global
       restart_policy:
         condition: any
     volumes:
@@ -60,8 +62,8 @@ services:
         source: ../built/static/client.bundle.js
         target: /var/www/static/client.bundle.js
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     networks:
       - front
 

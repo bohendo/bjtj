@@ -5,8 +5,9 @@ let height = "50";
 let width = "150";
 
 export default class Button extends React.Component { 
-
   render() {
+
+    const { type, moves, fn } = this.props
 
     ////////////////////////////////////////
     // Props & Magic Numbers
@@ -19,28 +20,26 @@ export default class Button extends React.Component {
     const bg = '#ff2';
     const fg = '#ffc'
 
-    const handle = this.props.onClick;
-
     let txt;
-    if (this.props.type === 'deal') {
+    if (type === 'deal') {
       txt = 'Deal me in';
-    } else if (this.props.type === 'hit') {
+    } else if (type === 'hit') {
       txt = 'Hit me';
-    } else if (this.props.type === 'double') {
+    } else if (type === 'double') {
       txt = 'Double down';
-    } else if (this.props.type === 'stand') {
+    } else if (type === 'stand') {
       txt = 'Stand';
-    } else if (this.props.type === 'split') {
+    } else if (type === 'split') {
       txt = 'Split';
     }
 
     let isEnabled = "0.8"
-    if (this.props.moves.includes(this.props.type)) {
+    if (moves.includes(type)) {
       isEnabled = "0.0"
     }
 
     return (
-<g onClick={()=>this.props.fn()}>
+<g onClick={()=>fn(type)}>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke="black"/>
