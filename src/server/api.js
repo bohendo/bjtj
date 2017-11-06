@@ -5,7 +5,7 @@ import crypto from 'crypto'
 const router = require('express').Router()
 
 import { err } from '../utils'
-import bj from '../reducers'
+import bj from '../blackjack'
 import db from './mongo'
 
 //////////////////////////////
@@ -34,7 +34,8 @@ const handleMove = (req, res, move) => {
     { cookie: req.id, state: newState }
   ).then(() => {
     console.log(`API: updated db.states for ${req.id.substring(0,8)}`)
-    res.send({ msg: `Recorded your ${move}`})
+    // send the user the public part of our game state
+    res.json(newState.public)
   }).catch(err('API: states.update'))
 
 }
