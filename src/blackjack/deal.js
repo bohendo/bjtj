@@ -20,7 +20,7 @@ const deal = (state, deck) => {
 
   // Initialize an empty hand for the dealer (first public card will be hidden)
   ns.public.dealerCards = [{ rank: '?', suit: '?' }]
-  ns.hiddenCard = {}
+  ns.private.hiddenCard = {}
 
   // deal 2 cards to the player
   ns.public.playerHands[0].cards.push(ns.private.deck.pop())
