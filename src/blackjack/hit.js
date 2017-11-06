@@ -16,7 +16,7 @@ const hit = (state) => {
       Object.assign({}, h)
   ))
 
-  return (payout(Object.assign({}, state, ns)))
+  return (payout(ns))
 }
 
 export { hit }

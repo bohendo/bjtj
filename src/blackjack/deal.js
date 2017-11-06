@@ -35,7 +35,7 @@ const deal = (state, deck) => {
   // move some of our player's chips to this round's betting pool
   ns.public.chips -= ns.public.bet
 
-  return (payout(Object.assign({}, state, ns)))
+  return (payout(ns))
 }
 
 export { deal }

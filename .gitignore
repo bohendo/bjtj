@@ -3,7 +3,9 @@ node_modules
 
 # Generated
 built
-dist
+
+# Temporary
+*.swp
 
 # Secret
 *.secret

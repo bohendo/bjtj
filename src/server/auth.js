@@ -24,7 +24,7 @@ const stateInit = (req, res, next) => {
 
 const auth = (req, res, next) => {
 
-  console.log(`AUTH: new req received w headers: ${JSON.stringify(req.headers, null, 2)}`)
+  console.log(`=====\nAUTH: new req received for ${req.path}`)
 
   const id = req.universalCookies.get('id')
 

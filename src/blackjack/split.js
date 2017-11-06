@@ -30,7 +30,7 @@ const split = (state) => {
     cards: [hand.cards[1], ns.private.deck.pop()],
   })
 
-  return (payout(Object.assign({}, state, ns)))
+  return (payout(ns))
 }
 
 export { split }

@@ -17,7 +17,7 @@ secrets:
 services:
 
   mongo:
-    image: bohendo/bjvm_mongo:latest
+    image: bjvm_mongo:latest
     deploy:
       mode: global
     networks:
@@ -29,7 +29,7 @@ services:
       - mongo_user
 
   node:
-    image: bohendo/bjvm_nodemon:latest
+    image: bjvm_nodemon:latest
     depends_on:
       - mongo
     deploy:
@@ -47,7 +47,7 @@ services:
         target: /root/server.bundle.js
 
   nginx:
-    image: bohendo/bjvm_nginx:latest
+    image: bjvm_nginx:latest
     environment:
       - BJVM_DOMAINNAME
     depends_on:

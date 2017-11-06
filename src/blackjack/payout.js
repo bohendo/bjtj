@@ -48,6 +48,10 @@ const payout = (state) => {
   // create a deep copy of our state (ns for New State)
   const ns = JSON.parse(JSON.stringify(state))
 
+  // reset moves & message
+  ns.public.moves = []
+  ns.public.message = ''
+
   // Check & update all isDone/isActive values
   ns.public.playerHands = ns.public.playerHands.map((h) => {
     // if not done but over 20 then we actually are done
@@ -74,7 +78,8 @@ const payout = (state) => {
     } else {
       ns.public.message = 'Oh no! You\'re out of chips :('
     }
-    return (Object.assign({}, state, ns))
+    console.log(`PAYOUT init: ${JSON.stringify(ns.public)}`)
+    return (ns)
   }
 
   // Cut things off if the dealer has a blackjack
@@ -85,7 +90,8 @@ const payout = (state) => {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
-    return (Object.assign({}, state, ns))
+    console.log(`PAYOUT dealer bj: ${JSON.stringify(ns.public)}`)
+    return (ns)
   }
 
   // Count how many active hands the player has
@@ -100,6 +106,8 @@ const payout = (state) => {
 
   // if we still have un-finished hands then the round continues
   if (nTodo !== 0) {
+    ns.public.message = 'Make your move...'
+
     // if no cards are active, activate one
     let ah // ah for Active Hand
     if (nActive === 0) {
@@ -130,13 +138,14 @@ const payout = (state) => {
       ns.public.moves.push('split')
     }
 
-    return (Object.assign({}, state, ns))
+    console.log(`PAYOUT round continues: ${JSON.stringify(ns.public)}`)
+    return (ns)
   }
 
   // No active cards, time for the dealer to go
 
   // flip the dealer's hidden card
-  ns.public.dealerCards = [ns.private.hiddenCard].push(
+  ns.public.dealerCards = [ns.private.hiddenCard].concat(
     ns.public.dealerCards.filter(c => c.rank !== '?'),
   )
 
@@ -164,7 +173,7 @@ const payout = (state) => {
       ns.public.message = 'Bust!'
     } else if (ds.n > 21) {
       ns.public.message = 'Dealer Bust!'
-      ns.public.chips += bet
+      ns.public.chips += 2 * bet
     } else if (ps.n > ds.n) {
       ns.public.message = 'Well played!'
       ns.public.chips += 2 * bet
@@ -179,7 +188,9 @@ const payout = (state) => {
   if (ns.public.chips >= ns.public.bet) {
     ns.public.moves.push('deal')
   }
-  return (Object.assign({}, state, ns))
+
+  console.log(`PAYOUT round over: ${JSON.stringify(ns.public)}`)
+  return (ns)
 }
 
 // tests for score()

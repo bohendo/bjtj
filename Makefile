@@ -45,23 +45,23 @@ push: mongo nodejs nodemon nginx certbot
 	docker push `whoami`/bjvm_certbot:latest
 
 mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
-	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:latest .
+	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:latest -t bjvm_mongo:latest .
 	mkdir -p built && touch built/mongo
 
 nodejs: nodejs.Dockerfile server.bundle.js
-	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:latest .
+	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:latest -t bjvm_nodejs:latest .
 	mkdir -p built && touch built/nodejs
 
 nodemon: nodemon.Dockerfile
-	docker build -f ops/nodemon.Dockerfile -t `whoami`/bjvm_nodemon:latest .
+	docker build -f ops/nodemon.Dockerfile -t `whoami`/bjvm_nodemon:latest -t bjvm_nodemon:latest .
 	mkdir -p built && touch built/nodemon
 
 nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
-	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:latest .
+	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:latest -t bjvm_nginx:latest .
 	mkdir -p built && touch built/nginx
 
 certbot: certbot.Dockerfile certbot.entry.sh
-	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:latest .
+	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:latest -t bjvm_certbot:latest .
 	mkdir -p built && touch built/certbot
 
 server.bundle.js: node_modules webpack/server.config.js $(js)
