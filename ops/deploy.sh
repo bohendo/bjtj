@@ -2,9 +2,16 @@
 
 function err { >&2 echo "Error: $1"; exit 1; }
 
-# Expects cwd to be the project root
-[ -d ops ] && [ -f ops/deploy.sh ] || exit 1
+# Make sure the cwd is where it should be
+[ -d ops ] && [ -f package.json ] || err 'Deploy from the project root'
 
+# Don't deploy if there are uncommitted changes
+if [[ `git status --short | wc -l` -ne 0 ]]
+then
+  err "Commit your changes first"
+fi
+
+# Make sure we can ssh to the machine we're deploying to
 if ! ssh -q $1 exit 2> /dev/null
 then
   err "Couldn't open an ssh connection to $1"
