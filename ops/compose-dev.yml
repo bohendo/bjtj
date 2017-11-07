@@ -7,14 +7,23 @@ networks:
 volumes:
   devcerts:
   mongodb:
+  gethdb:
 
 secrets:
   mongo_admin:
     external: true
   mongo_user:
     external: true
+  eth_key:
+    external: true
 
 services:
+
+  geth:
+    image: ethereum/client-go
+    command: --syncmode light
+    volumes:
+      - gethdb:/root/.ethereum/geth
 
   mongo:
     image: bjvm_mongo:latest
@@ -42,6 +51,7 @@ services:
     secrets:
       - mongo_user
     volumes:
+      - gethdb:/root/.ethereum/geth
       - type: bind
         source: ../built/server.bundle.js
         target: /root/server.bundle.js
