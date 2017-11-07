@@ -134,7 +134,8 @@ const payout = (state) => {
 
     // can we split?
     if (ah.cards.length === 2 && ns.public.chips >= ah.bet &&
-        score([ah.cards[0]]).n === score([ah.cards[1]]).n) {
+        score([ah.cards[0]]).n === score([ah.cards[1]]).n &&
+        ns.public.playerHands.length === 1) {
       ns.public.moves.push('split')
     }
 
