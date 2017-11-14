@@ -3,7 +3,7 @@
 
 SHELL=/bin/bash # default: /bin/sh
 
-VPATH=docs:src:webpack:ops:built:built/static # search path for prereqs & targets
+VPATH=docs:src:webpack:ops:build:build/static # search path for prereqs & targets
 
 md_template=./docs/template.html
 md_body=./docs/body.html
@@ -19,7 +19,7 @@ md=$(shell find ./docs -type f -name "*.md")
 js=$(shell find ./src -type f -name "*.js*")
 css=$(shell find ./src -type f -name "*.scss")
 
-md_out=$(subst docs/,built/static/,$(subst .md,.html,$(md)))
+md_out=$(subst docs/,build/static/,$(subst .md,.html,$(md)))
 
 ##### RULES #####
 # first rule is the default
@@ -46,23 +46,23 @@ push: mongo nodejs nodemon nginx certbot
 
 mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
 	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:latest -t bjvm_mongo:latest .
-	mkdir -p built && touch built/mongo
+	mkdir -p build && touch build/mongo
 
 nodejs: nodejs.Dockerfile server.bundle.js
 	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:latest -t bjvm_nodejs:latest .
-	mkdir -p built && touch built/nodejs
+	mkdir -p build && touch build/nodejs
 
 nodemon: nodemon.Dockerfile
 	docker build -f ops/nodemon.Dockerfile -t `whoami`/bjvm_nodemon:latest -t bjvm_nodemon:latest .
-	mkdir -p built && touch built/nodemon
+	mkdir -p build && touch build/nodemon
 
 nginx: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js style.css $(md_out)
 	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:latest -t bjvm_nginx:latest .
-	mkdir -p built && touch built/nginx
+	mkdir -p build && touch build/nginx
 
 certbot: certbot.Dockerfile certbot.entry.sh
 	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:latest -t bjvm_certbot:latest .
-	mkdir -p built && touch built/certbot
+	mkdir -p build && touch build/certbot
 
 server.bundle.js: node_modules webpack/server.config.js $(js)
 	$(webpack) --config webpack/server.config.js
@@ -80,13 +80,13 @@ node_modules: package.json package-lock.json
 # targets: target-pattern: prereq-patterns
 # $< is an auto var for the first prereq
 # $* is an auto var for the stem ie %
-$(md_out): built/static/%.html: docs/%.md $(about) $(md_template)
+$(md_out): build/static/%.html: docs/%.md $(about) $(md_template)
 
-	mkdir -p built/static/
+	mkdir -p build/static/
 	$(pandoc) $< > $(md_body)
-	cp -f $(md_template) built/static/$*.html
-	sed -i '/<!--#include body-->/r '"$(md_body)" "built/static/$*.html"
-	sed -i '/<!--#include body-->/d' "built/static/$*.html"
+	cp -f $(md_template) build/static/$*.html
+	sed -i '/<!--#include body-->/r '"$(md_body)" "build/static/$*.html"
+	sed -i '/<!--#include body-->/d' "build/static/$*.html"
 	rm $(md_body)
 
 # readme and about: same thing
@@ -94,5 +94,5 @@ $(about): README.md
 	cp -f README.md $(about)
 
 clean:
-	rm -rf built/*
+	rm -rf build/*
 

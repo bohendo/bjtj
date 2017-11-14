@@ -13,7 +13,7 @@ RUN mkdir -p /etc/certs && \
 
 COPY ./ops/nginx.entry.sh /root/entry.sh
 COPY ./ops/nginx.conf /etc/nginx/nginx.conf
-COPY ./built/static /var/www/static
+COPY ./build/static /var/www/static
 
 EXPOSE 80
 EXPOSE 443

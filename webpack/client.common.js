@@ -9,7 +9,7 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, '../built/static'),
+    path: path.join(__dirname, '../build/static'),
     filename: '[name].bundle.js',
   },
 
