@@ -51,6 +51,7 @@
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "truffle": "^4.0.1",
     "universal-cookie": "^2.1.0",
     "universal-cookie-express": "^2.1.0"
   }
