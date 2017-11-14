@@ -47,7 +47,8 @@ export default class BJVM extends React.Component {
 
     <Dealer x="25" y="90" w="90" h="200"/>
 
-    {/*<Payment x="10" y="35" w="480" h="50" address={address} />*/}
+    <Payment x="410" y="35" w="175" h="50" />
+
     <text x="20" y="75" fontSize="25">{message}</text>
 
     <Chips x="410" y="100" h="150" w="175"

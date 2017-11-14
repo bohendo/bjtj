@@ -24,22 +24,22 @@ export default class Payment extends React.Component {
         rx="2" ry="2" fill="#efe" stroke="#000"/>
 
   <text x={x(2)} y={y(38)} fontSize={fs}>
-    Send Ether to:
+    Me:
   </text>
 
   <text x={x(35)} y={y(33)} fontSize={fs*0.6}>
-    {this.props.address}
+    {"0xa1b2c3..."}
   </text>
 
   <rect x={x(33)} y={y(55)} width={w(66)} height={h(33)}
         fill="#efe" stroke="#000" contentEditable="true"/>
 
   <text x={x(2)} y={y(82)} fontSize={fs}>
-    Receive Ether at:
+    You:
   </text>
 
   <text x={x(35)} y={y(77)} fontSize={fs*0.6}>
-    (Your wallet's address goes here)
+    (TBD)
   </text>
 
 
