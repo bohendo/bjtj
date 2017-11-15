@@ -45,13 +45,13 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
+    <text x="20" y="75" fontSize="20">{message}</text>
+
     <Dealer x="25" y="90" w="90" h="200"/>
 
-    <Payment x="410" y="35" w="175" h="50" />
+    <Payment x="410" y="35" w="175" h="130" />
 
-    <text x="20" y="75" fontSize="25">{message}</text>
-
-    <Chips x="410" y="100" h="150" w="175"
+    <Chips x="410" y="175" h="75" w="175"
            chips={chips} bet={bet} />
 
     {/* Deck */}

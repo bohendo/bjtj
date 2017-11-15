@@ -2,6 +2,38 @@
 import React from 'react';
 
 export default class Payment extends React.Component { 
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      val: 0,
+      balance: '??',
+      account: '',
+    }
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  componentWillMount() {
+    console.log(web3.version)
+  }
+
+  handleClick() {
+    console.log('fetching balance...')
+    web3.eth.getAccounts().then((res) => {
+      if (typeof(err) !== 'undefined') console.log('ERROR', err)
+      console.log(`Got account ${res[0]}`)
+
+      return web3.eth.getBalance(res[0]).then((balance) => {
+        console.log(`Got balance ${balance} wei`)
+        balance = web3.utils.fromWei(balance, "ether")
+        console.log(`aka ${balance} ether`)
+        this.setState({ balance })
+      })
+
+    })
+
+  }
+
   render() {
 
     ////////////////////////////////////////
@@ -20,28 +52,15 @@ export default class Payment extends React.Component {
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill="#6f6" stroke="#000"/>
 
-  <rect x={x(33)} y={y(10)} width={w(66)} height={h(33)}
-        rx="2" ry="2" fill="#efe" stroke="#000"/>
+  <g onClick={this.handleClick}>
+    <rect x={x(15)} y={y(15)} width={w(75)} height={h(25)}
+          rx="5" ry="5" fill="#dfd" stroke="#000"/>
+    <text x={x(20)} y={y(32)} fontSize="20">Get Balance</text>
+  </g>
 
-  <text x={x(2)} y={y(38)} fontSize={fs}>
-    Me:
-  </text>
+  <text x={x(10)} y={y(60)} fontSize="20">Balance: {this.state.balance}</text>
 
-  <text x={x(35)} y={y(33)} fontSize={fs*0.6}>
-    {"0xa1b2c3..."}
-  </text>
-
-  <rect x={x(33)} y={y(55)} width={w(66)} height={h(33)}
-        fill="#efe" stroke="#000" contentEditable="true"/>
-
-  <text x={x(2)} y={y(82)} fontSize={fs}>
-    You:
-  </text>
-
-  <text x={x(35)} y={y(77)} fontSize={fs*0.6}>
-    (TBD)
-  </text>
-
+  <text x={x(10)} y={y(80)} fontSize="20">Storage Val: {this.state.val}</text>
 
 </g>
     );

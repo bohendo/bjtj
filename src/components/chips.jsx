@@ -15,7 +15,7 @@ export default class Chips extends React.Component {
     let bg = '#f66';
     let fg = '#faa';
     let blk = '#000'; 
-    const fs = 23; // fs for Font Size
+    const fs = 20; // fs for Font Size
 
     return (
 <g>
@@ -24,28 +24,24 @@ export default class Chips extends React.Component {
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
   {/* Chips */}
-  <rect x={x(5)} y={y(3)} width={w(90)} height={h(25)}
+  <rect x={x(5)} y={y(5)} width={w(90)} height={h(40)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(20)} y={y(20)} fontSize={fs}>
-    Chips
+  <text x={x(10)} y={y(35)} fontSize={fs}>
+    Chips:
   </text>
-  <text x={x(43)} y={y(45)} fontSize={fs}>
+  <text x={x(60)} y={y(35)} fontSize={fs}>
     {this.props.chips}
   </text>
 
   {/* Bet */}
-  <rect x={x(5)} y={y(50)} width={w(90)} height={h(25)}
+  <rect x={x(5)} y={y(55)} width={w(90)} height={h(40)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(35)} y={y(68)} fontSize={fs}>
-    Bet
+  <text x={x(10)} y={y(85)} fontSize={fs}>
+    Bet per Hand:
   </text>
-  <text x={x(43)} y={y(91)} fontSize={fs}>
+  <text x={x(83)} y={y(85)} fontSize={fs}>
     {this.props.bet}
   </text>
-
-  <text x={x(20)} y={y(91)} fontSize={fs}>-</text>
-
-  <text x={x(70)} y={y(91)} fontSize={fs}>+</text>
 
 </g>
     );
