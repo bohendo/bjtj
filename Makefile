@@ -37,13 +37,6 @@ deploy: mongo nodejs nodemon nginx certbot
 	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:$v .
 	docker push `whoami`/bjvm_certbot:$v
 
-push: mongo nodejs nodemon nginx certbot
-	docker push `whoami`/bjvm_mongo:latest
-	docker push `whoami`/bjvm_nodejs:latest
-	docker push `whoami`/bjvm_nodemon:latest
-	docker push `whoami`/bjvm_nginx:latest
-	docker push `whoami`/bjvm_certbot:latest
-
 mongo: mongo.Dockerfile mongo.entry.sh mongo.conf
 	docker build -f ops/mongo.Dockerfile -t `whoami`/bjvm_mongo:latest -t bjvm_mongo:latest .
 	mkdir -p build && touch build/mongo
