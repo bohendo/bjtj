@@ -19,7 +19,7 @@ module.exports = merge(require('./client.common.js'), {
 
   // location of files according to our browser
   output: {
-    publicPath: 'static'
+    publicPath: '/'
   },
 
   module: {
