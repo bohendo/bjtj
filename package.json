@@ -2,10 +2,11 @@
   "name": "bjvm",
   "version": "0.4.0",
   "description": "",
-  "main": "built/server.bundle.js",
+  "main": "build/server.bundle.js",
   "scripts": {
     "watch": "webpack --watch --config webpack/server.config.js & webpack --watch --config webpack/client.dev.js",
-    "start": "make && docker stack deploy -c ops/compose-dev.yml bjvm"
+    "start": "make && docker stack deploy -c ops/compose-dev.yml bjvm",
+    "client": "make && webpack-dev-server --config webpack/client.dev.js"
   },
   "author": "Bo Henderson",
   "license": "GPLv3",
@@ -51,7 +52,9 @@
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "truffle": "^4.0.1",
     "universal-cookie": "^2.1.0",
-    "universal-cookie-express": "^2.1.0"
+    "universal-cookie-express": "^2.1.0",
+    "web3": "^1.0.0-beta.26"
   }
 }

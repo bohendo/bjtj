@@ -74,7 +74,7 @@ const payout = (state) => {
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
-      ns.public.message = 'Click Deal when you\'re ready to play!'
+      ns.public.message = 'Click Deal when you\'re ready!'
     } else {
       ns.public.message = 'Oh no! You\'re out of chips :('
     }

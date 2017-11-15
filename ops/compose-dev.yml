@@ -43,7 +43,7 @@ services:
       - mongo_user
     volumes:
       - type: bind
-        source: ../built/server.bundle.js
+        source: ../build/server.bundle.js
         target: /root/server.bundle.js
 
   nginx:
@@ -59,7 +59,7 @@ services:
     volumes:
       - devcerts:/etc/devcerts/
       - type: bind
-        source: ../built/static/client.bundle.js
+        source: ../build/static/client.bundle.js
         target: /var/www/static/client.bundle.js
     ports:
       - "80:80"

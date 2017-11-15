@@ -27,7 +27,7 @@ const shuffle = () => {
 
 const initialState = {
   public: {
-    message: 'Click Deal when you\'re ready to play!',
+    message: 'Click Deal when you\'re ready!',
     moves: ['deal'],
     playerHands: [],
     dealerCards: [],

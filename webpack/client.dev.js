@@ -12,14 +12,14 @@ module.exports = merge(require('./client.common.js'), {
 
   devServer: {
     // folder to serve files out of
-    contentBase: './built/static',
+    contentBase: './build/static',
     hot: true,
     port: 3000,
   },
 
   // location of files according to our browser
   output: {
-    publicPath: 'static'
+    publicPath: '/'
   },
 
   module: {
