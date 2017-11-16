@@ -18,6 +18,9 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+    // scrypt.js says "if target is node, use c++ implementation, otherwise use js"
+    // but I don't want any c++, force the js version to be loaded instead.
+    alias: { 'scrypt.js': 'scryptsy' },
   },
 
   module: {

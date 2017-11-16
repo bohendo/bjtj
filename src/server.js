@@ -8,6 +8,13 @@ import ssr  from './server/ssr'
 import { err }  from './utils'
 
 ////////////////////////////////////////
+// setup web3 connection
+
+import Web3 from 'web3-eth'
+global.web3 = new Web3('http://138.197.156.204:8545')
+
+
+////////////////////////////////////////
 // START express pipeline
 const app = require('express')()
 
