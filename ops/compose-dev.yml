@@ -30,6 +30,8 @@ services:
 
   node:
     image: bjvm_nodemon:latest
+    environment:
+      - BJVM_ETHPROVIDER
     depends_on:
       - mongo
     deploy:

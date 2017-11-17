@@ -6,66 +6,69 @@
 # define a clean error handler
 function err { >&2 echo "Error: $1"; exit 1; }
 
-# Sanity check, were we given an IP?
+# Sanity check: were we given an IP?
 if [[ ! $1 || $2 ]]
 then
   err "Provide droplet's hostname as the first & only arg"
+else
+  hostname=$1
 fi
 
-# Check our given IP and the default ssh credentials
-if ! ssh -q $1 exit 2> /dev/null
+# Sanity check: have we already initialized (aka disabled root login)?
+if ! ssh -q root@$hostname exit 2> /dev/null
 then
-  err "Couldn't open an ssh connection to $1"
+  err "$hostname is already initialized"
 fi
+
+# Sanity check: Can't login as root? Well then we can't initialize
+if ! ssh -q root@$hostname exit 2> /dev/null
+then
+  err "Can't connect to root@$hostname"
+else
+  hostname=root@$hostname
+fi
+
+# Prepare to set our user's password
+echo "Enter sudo password for REMOTE machine's user (no echo)"
+echo -n "> "
+read -s password
+echo
 
 ####################
 # Get data to set as environment vars
 
-if [[ $BJVM_DOMAINNAME == "" ]]
-then
-  echo "At which domain name will you be publishing this bjvm?"
-  read domainname
-else
-  echo "At which domain name will you be publishing this bjvm? [default: $BJVM_DOMAINNAME]"
-  read domainname
-  if [[ $domainname == "" ]]
-  then
-    domainname=$BJVM_DOMAINNAME
-  fi
-fi
+# Establish defaults
+[[ -n $BJVM_DOMAINNAME ]] || BJVM_DOMAINNAME=localhost
+[[ -n $BJVM_EMAIL ]] || BJVM_EMAIL=`git config user.email`
 
-if [[ $BJVM_EMAIL == "" ]]
-then
-  echo "At which email do you want to receive alerts from certbot?"
-  read email
-else
-  echo "At which email do you want to receive alerts from certbot? [default: $BJVM_EMAIL]"
-  read email
-  if [[ $email == "" ]]
-  then
-    email=$BJVM_EMAIL
-  fi
-fi
+echo "Which domain name should we assign to this server? [default: $BJVM_DOMAINNAME]"
+echo -n "> "
+read domainname
+
+echo "If we set up letsencrypt, which email should receive notifications? [default: $BJVM_EMAIL]"
+echo -n "> "
+read email
+
+# Fallback to defaults if no user-supplied data
+[[ -n $domainname ]] || domainname=$BJVM_DOMAINNAME
+[[ -n $email ]] || email=$BJVM_EMAIL
 
 echo "Proceeding with email=$email and domainname=$domainname"
 
 ####################
 # little more setup before main here doc
 
-if [ -f ~/.bash_aliases ]
-then
-  scp ~/.bash_aliases $1:/root/.bash_aliases
-fi
+[[ -f ~/.bash_aliases ]] && scp ~/.bash_aliases $hostname:/root/.bash_aliases
 
-internal_ip=`ssh $1 ifconfig eth1 | grep 'inet addr' | awk '{print $2;exit}' | sed 's/addr://'`
+me=`whoami`
 
 ####################
 # main heredoc
 
-ssh $1 "bash -s" <<EOF
+ssh $hostname "bash -s" <<EOF
 
 ########################################
-# Set env vars
+# Set some env vars
 
 if ! grep BJVM_EMAIL /etc/environment
 then
@@ -118,11 +121,37 @@ add-apt-repository \
    stable"
 
 apt-get update -y
-apt-get install -y docker-ce=17.09.0~ce-0~ubuntu
+apt-get install -y docker-ce
 
 systemctl enable docker
 
-docker swarm init --advertise-addr $internal_ip 2> /dev/null
+# Get docker-compose too
+curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-\`uname -s\`-\`uname -m\` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+########################################
+# Create our non-root user & harden
+
+adduser --gecos "" $me <<EOIF
+$password
+$password
+EOIF
+usermod -aG sudo,docker $me
+
+cp -r /root/.ssh /home/$me
+cp -r /root/.bash_aliases /home/$me
+chown -R $me:$me /home/$me
+
+# Turn off password authentication
+sed -i '/PasswordAuthentication/ c\
+PasswordAuthentication no
+' /etc/ssh/sshd_config
+
+# Turn off root login
+sed -i '/PermitRootLogin/ c\
+PermitRootLogin no
+' /etc/ssh/sshd_config
+
 
 ########################################
 # Double-check upgrades & reboot
