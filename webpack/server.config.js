@@ -7,6 +7,10 @@ module.exports = {
 
   target: 'node',
 
+  // some stupid web3 dependency requires electron but doesn't 
+  // mention it in their package.json, this fixes 'module not found' error
+  externals: 'electron',
+
   entry: {
     server: './src/server.js',
   },
@@ -18,8 +22,9 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+
     // scrypt.js says "if target is node, use c++ implementation, otherwise use js"
-    // but I don't want any c++, force the js version to be loaded instead.
+    // but I don't want any c++, let's force the js version to always be loaded.
     alias: { 'scrypt.js': 'scryptsy' },
   },
 
@@ -39,12 +44,9 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.IgnorePlugin(
-      /\.s?css$/
-    ),
-    new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') },
-    }),
+    // The server has nothing to do with stylesheets.
+    // During server-side renders, nginx provides style.css
+    new webpack.IgnorePlugin(/\.s?css$/),
   ],
 
 }

@@ -1,4 +1,3 @@
-
 import 'babel-polyfill'
 
 // My express middleware
@@ -7,12 +6,7 @@ import api  from './server/api'
 import ssr  from './server/ssr'
 import { err }  from './utils'
 
-////////////////////////////////////////
-// setup web3 connection
-
-import Web3 from 'web3-eth'
-global.web3 = new Web3('http://138.197.156.204:8545')
-
+import eth  from './server/eth'
 
 ////////////////////////////////////////
 // START express pipeline

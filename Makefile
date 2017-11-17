@@ -15,10 +15,15 @@ about=docs/about.md
 
 v=$(shell grep "\"version\"" ./package.json | egrep -o [0-9.]*)
 
+# Input files
 md=$(shell find ./docs -type f -name "*.md")
 js=$(shell find ./src -type f -name "*.js*")
 css=$(shell find ./src -type f -name "*.scss")
+sol=$(shell find ./contracts -type f -name "*.sol")
+migrations=$(shell find ./migrations -type f -name "*.js")
 
+# Output files
+artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 md_out=$(subst docs/,build/static/,$(subst .md,.html,$(md)))
 
 ##### RULES #####
@@ -57,10 +62,14 @@ certbot: certbot.Dockerfile certbot.entry.sh
 	docker build -f ops/certbot.Dockerfile -t `whoami`/bjvm_certbot:latest -t bjvm_certbot:latest .
 	mkdir -p build && touch build/certbot
 
-server.bundle.js: node_modules webpack/server.config.js $(js)
+$(artifacts): $(sol) $(migrations)
+	truffle compile
+	truffle migrate --network live
+
+server.bundle.js: node_modules $(artifacts) webpack/server.config.js $(js)
 	$(webpack) --config webpack/server.config.js
 
-client.bundle.js: node_modules webpack/client.common.js webpack/client.prod.js $(js)
+client.bundle.js: node_modules $(artifacts) webpack/client.common.js webpack/client.prod.js $(js)
 	$(webpack) --config webpack/client.prod.js
 
 style.css: node_modules $(css)
