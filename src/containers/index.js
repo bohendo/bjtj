@@ -1,14 +1,15 @@
 
 import { connect } from 'react-redux'
-import { submit } from '../actions'
+import { submit, refresh, cashout } from '../actions'
 import BJVM from '../components/bjvm.jsx'
 
 const mapStateToProps = state => state
 
-// submit is the only interactive action
 const mapDispatchToProps = dispatch => {
   return ({
-    submit: (move) => {dispatch(submit(move))}
+    submit: (move) => {dispatch(submit(move))},
+    refresh: () => {dispatch(refresh())},
+    cashout: (addr) => {dispatch(cashout(addr))},
   })
 }
 

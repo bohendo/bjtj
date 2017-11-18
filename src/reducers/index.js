@@ -1,18 +1,18 @@
 
 import fetch from 'isomorphic-fetch'
 import { 
-  SELECT,
   SUBMIT,
+  CASHOUT,
   REFRESH,
   SUCCESS,
   FAILURE,
 } from '../actions'
 
-/* This is the client-side reducer. It doesn't contain any blackjack
- * logic, instead it asyncronously asks the server to update our state
+/* This is the client-side reducer, it doesn't contain any blackjack logic.
+ * Instead, it asyncronously asks the server to update our state for us.
+ * (This bj state only contains the public half of the backend bj state)
  */
 
-// NOTE: The frontend state is the public half of the backend state
 const initialState = {
   message: 'Click Deal when you\'re ready to play!',
   moves: ['deal'],
@@ -20,28 +20,42 @@ const initialState = {
   dealerCards: [],
   bet: 1,
   chips: 5,
+
+  // not used yet but might be later
   waiting: false,
+
+  // let's disclose our server's financial situation
+  dealerAddr: '0xabc123...',
+  dealerBal: 0,
 }
 
 const reducer = (state = initialState, action) => {
-
   switch (action.type) {
-    case SUBMIT:
-      return (Object.assign({}, state, {
-        waiting: true
-      }))
+    case CASHOUT:
+      return (Object.assign({}, state,
+        { waiting: true }
+      ))
+    case REFRESH:
+      return (Object.assign({}, state,
+        { waiting: true },
+      ))
+     case SUBMIT:
+      return (Object.assign({}, state,
+        { waiting: true },
+      ))
     case SUCCESS:
-      return Object.assign({}, action.state, {
-        waiting: false
-      })
+      return (Object.assign({}, state,
+        action.state,
+        { waiting: false },
+      ))
     case FAILURE:
-      return (Object.assign({}, state, {
-        message: action.error,
-      }))
+      return (Object.assign({}, state,
+        { message: action.error },
+        { waiting: false },
+      ))
     default:
       return state
   }
-
 }
 
 export default reducer;

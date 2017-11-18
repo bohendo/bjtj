@@ -6,8 +6,6 @@ import api  from './server/api'
 import ssr  from './server/ssr'
 import { err }  from './utils'
 
-import eth  from './server/eth'
-
 ////////////////////////////////////////
 // START express pipeline
 const app = require('express')()

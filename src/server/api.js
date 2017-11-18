@@ -7,6 +7,25 @@ const router = require('express').Router()
 import { err } from '../utils'
 import bj from '../blackjack'
 import db from './mongo'
+import eth from './eth'
+
+
+router.get('/refresh', (req, res, next) => {
+  eth().then((e) => {
+    console.log(`API: eth refreshed, bal: ${e.dealerBal}`)
+    e.dealerBal = parseInt(e.dealerBal)
+    res.json(e)
+  }).catch(err('API: eth refresh'))
+})
+
+router.get('/cashout', (req, res, next) => {
+  console.log(`API: cashing out ${req.state.public.chips} chips`)
+  res.json(Object.assign({}, req.state, {
+    tx: '0xtxid0123',
+    chips: 0,
+  }))
+})
+
 
 //////////////////////////////
 // Generic function to handle each move
