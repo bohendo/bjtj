@@ -1,6 +1,6 @@
 {
   "name": "bjvm",
-  "version": "0.0.0",
+  "version": "0.5.0",
   "description": "",
   "main": "build/server.bundle.js",
   "scripts": {
