@@ -16,6 +16,9 @@ export default class Payment extends React.Component {
       if (typeof(err) !== 'undefined') console.log('ERROR', err)
       console.log(`cashing out to account: ${res}`)
       this.props.cashout(res)
+    }).catch(error => {
+      console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
+      console.log(`web3.eth: ${error}`)
     })
   }
 
