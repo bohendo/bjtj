@@ -9,26 +9,22 @@ function err { >&2 echo "Error: $1"; exit 1; }
 # Sanity check: were we given an IP?
 if [[ ! $1 || $2 ]]
 then
-  err "Provide droplet's hostname as the first & only arg"
+  err "Provide droplet's hostname as the first arg"
 else
   hostname=$1
 fi
 
-# Sanity check: have we already initialized (aka disabled root login)?
-if ! ssh -q root@$hostname exit 2> /dev/null
-then
-  err "$hostname is already initialized"
-fi
-
 # Sanity check: Can't login as root? Well then we can't initialize
-if ! ssh -q root@$hostname exit 2> /dev/null
+if ! ssh -q $hostname exit 2> /dev/null
 then
-  err "Can't connect to root@$hostname"
-else
   hostname=root@$hostname
+  if ! ssh -q $hostname exit 2> /dev/null
+  then
+    err "Can't connect to $1 or $hostname"
+  fi
 fi
 
-# Prepare to set our user's password
+# Prepare to set or use our user's password
 echo "Enter sudo password for REMOTE machine's user (no echo)"
 echo -n "> "
 read -s password
@@ -40,6 +36,7 @@ echo
 # Establish defaults
 [[ -n $BJVM_DOMAINNAME ]] || BJVM_DOMAINNAME=localhost
 [[ -n $BJVM_EMAIL ]] || BJVM_EMAIL=`git config user.email`
+[[ -n $BJVM_ETHPROVIDER ]] || BJVM_ETHPROVIDER=localhost
 
 echo "Which domain name should we assign to this server? [default: $BJVM_DOMAINNAME]"
 echo -n "> "
@@ -49,23 +46,23 @@ echo "If we set up letsencrypt, which email should receive notifications? [defau
 echo -n "> "
 read email
 
+echo "At which IP address will this server access it's ethereum provider? [default: $BJVM_ETHPROVIDER]"
+echo -n "> "
+read ethprovider
+
 # Fallback to defaults if no user-supplied data
 [[ -n $domainname ]] || domainname=$BJVM_DOMAINNAME
 [[ -n $email ]] || email=$BJVM_EMAIL
+[[ -n $ethprovider ]] || ethprovider=$BJVM_ETHPROVIDER
 
-echo "Proceeding with email=$email and domainname=$domainname"
-
-####################
-# little more setup before main here doc
-
-[[ -f ~/.bash_aliases ]] && scp ~/.bash_aliases $hostname:/root/.bash_aliases
-
+echo "Proceeding with email=$email domainname=$domainname ethprovider=$ethprovider"
 me=`whoami`
 
 ####################
 # main heredoc
 
-ssh $hostname "bash -s" <<EOF
+ssh $hostname "sudo -S bash -s" <<EOF
+$password
 
 ########################################
 # Set some env vars
@@ -82,6 +79,12 @@ then
   echo "BJVM_DOMAINNAME=\"$domainname\"" >> /etc/environment
 fi
 
+if ! grep BJVM_ETHPROVIDER /etc/environment
+then
+  echo "Initializing server with eth provider: $ethprovider"
+  echo "BJVM_ETHPROVIDER=\"$ethprovider\"" >> /etc/environment
+fi
+
 if ! grep NODE_ENV /etc/environment
 then
   echo "NODE_ENV=\"production\"" >> /etc/environment
@@ -93,7 +96,7 @@ fi
 # update & upgrade without prompts
 # https://askubuntu.com/questions/146921/how-do-i-apt-get-y-dist-upgrade-without-a-grub-config-prompt
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 apt-get autoremove -y
 
 ########################################
@@ -154,16 +157,12 @@ PermitRootLogin no
 
 
 ########################################
-# Double-check upgrades & reboot
+# Double-check upgrades
 
 ## For some reason, gotta upgrade again to get it all
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 apt-get autoremove -y
-
-echo "Restarting remote server..."
-sleep 3 && reboot &
-exit
 
 EOF
 
