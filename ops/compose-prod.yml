@@ -15,6 +15,9 @@ secrets:
   mongo_user:
     external: true
 
+# I use sed to replate '$v' with a real
+# version number at deploy-time in ops/deploy.sh
+
 services:
 
   mongo:
@@ -31,6 +34,7 @@ services:
     image: bohendo/bjvm_nodejs:$v
     environment:
       - NODE_ENV=production
+      - BJVM_ETHPROVIDER
     depends_on:
       - mongo
     deploy:
