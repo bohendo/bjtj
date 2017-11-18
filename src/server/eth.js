@@ -1,11 +1,15 @@
 import Web3 from 'web3'
 
-const web3 = new Web3(new Web3.providers.HttpProvider(`http://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8545`))
+const provider=`http://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8545`
+
+console.log(`ETH: Connecting to ${provider}`)
+
+const web3 = new Web3(new Web3.providers.HttpProvider(provider))
 
 const eth = () => {
   return web3.eth.getAccounts()
   .then(a => a[0])
-  .then((addr) => {
+  .then(addr => {
     return web3.eth.getBalance(addr).then(bal => {
       console.log('done loading eth')
       return {
@@ -13,6 +17,10 @@ const eth = () => {
         dealerBal: parseInt(web3.utils.fromWei(bal, 'milli')),
       }
     })
+  })
+  .catch(error => {
+    console.log(`ETH: Error connecting to ${provider}`)
+    console.log(`ETH: ${error}`)
   })
 }
 
