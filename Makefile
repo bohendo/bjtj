@@ -64,7 +64,7 @@ certbot: certbot.Dockerfile certbot.entry.sh
 
 $(artifacts): $(sol) $(migrations)
 	truffle compile
-	truffle migrate --network live
+	truffle migrate --network=private
 
 server.bundle.js: node_modules $(artifacts) webpack/server.config.js $(js)
 	$(webpack) --config webpack/server.config.js

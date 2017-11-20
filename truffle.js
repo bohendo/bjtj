@@ -8,7 +8,7 @@ module.exports = {
       port: 9545,
       network_id: '*'
     },
-    live: {
+    private: {
       host: process.env.BJVM_ETHPROVIDER || 'localhost',
       port: 8545,
       network_id: '3993',
