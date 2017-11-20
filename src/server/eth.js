@@ -4,7 +4,7 @@ const provider=`http://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8545`
 
 console.log(`ETH: Connecting to ${provider}`)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(provider))
+global.web3 = new Web3(new Web3.providers.HttpProvider(provider))
 
 const eth = () => {
   return web3.eth.getAccounts()

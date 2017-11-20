@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Web3 from 'web3';
 
 export default class Payment extends React.Component { 
 
@@ -8,18 +9,55 @@ export default class Payment extends React.Component {
     this.state = {
       dealerAddr: this.props.dealerAddr,
       dealerBal: this.props.dealerBal,
+      playerAddr: this.props.playerAddr,
     }
   }
 
-  cashout() {
+  componentDidMount() {
+
+    if (typeof(web3) === 'undefined') {
+      console.log('Couldn\'t find built-in web3 instance, falling back to localhost:8545...')
+      web3 = new Web3(new Web3.providers.HttpProvider('localhost:8545'))
+    } else {
+      console.log(`Found built-in web3 instance!`)
+      web3 = new Web3(web3.currentProvider)
+    }
+    
     web3.eth.getAccounts().then((res) => {
-      if (typeof(err) !== 'undefined') console.log('ERROR', err)
-      console.log(`cashing out to account: ${res}`)
-      this.props.cashout(res)
+      if (res && res[0] && res[0].length === 42) {
+        this.setState = { playerAddr: res[0] }
+        document.getElementById('playerAddr').value = res[0]
+      }
     }).catch(error => {
       console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
       console.log(`web3.eth: ${error}`)
     })
+  }
+
+  cashout() {
+    this.refresh()
+    this.props.cashout(this.state.playerAddr)
+  }
+
+  refresh() {
+    this.props.refresh()
+    var input = document.getElementById('playerAddr').value
+    if (input.length === 42) {
+      console.log(`Player address: ${input}`)
+      this.setState = { playerAddr: input }
+    } else {
+
+      web3.eth.getAccounts().then((res) => {
+        if (res && res[0] && res[0].length === 42) {
+          console.log(`Got player address: ${res}`)
+          this.setState = { playerAddr: res[0] }
+          document.getElementById('playerAddr').value = res[0]
+        }
+      }).catch(error => {
+        console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
+        console.log(`web3.eth: ${error}`)
+      })
+    }
   }
 
   render() {
@@ -40,21 +78,36 @@ export default class Payment extends React.Component {
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill="#6f6" stroke="#000"/>
 
-  <text x={x(10)} y={y(20)} fontSize="16">Dealer Address:</text>
-  <text x={x(5)} y={y(35)} fontSize="10" textLength={w(90)}>
+
+  <rect x={x(5)} y={y(5)} width={w(90)} height={h(30)}
+        rx="5" ry="5" fill="#dfd" stroke="#000"/>
+
+  <text x={x(10)} y={y(13)} fontSize="16">Dealer Address:</text>
+  <text x={x(10)} y={y(20)} fontSize="10" textLength={w(80)}>
     {this.props.dealerAddr}</text>
 
-  <text x={x(10)} y={y(52)} fontSize="16">Dealer Balance</text>
-  <text x={x(10)} y={y(68)} fontSize="18">{this.props.dealerBal} mETH</text>
 
-  <g onClick={()=>this.props.refresh()}>
-    <rect x={x(5)} y={y(75)} width={w(42.5)} height={h(20)}
+  <text x={x(10)} y={y(30)} fontSize="16">Dealer Balance:</text>
+  <text x={x(55)} y={y(30)} fontSize="16">{this.props.dealerBal} mETH</text>
+
+  <rect x={x(5)} y={y(37.5)} width={w(90)} height={h(40)}
+        rx="5" ry="5" fill="#dfd" stroke="#000"/>
+
+  <text x={x(10)} y={y(47.5)} fontSize="16">Your Cash Out Address:</text>
+
+  <foreignObject x={x(7.5)} y={y(54)} width={w(90)} height={h(17.5)}>
+    <input id="playerAddr" type="text"
+       value={this.props.playerAddr} placeholder="Paste your ETH address"/>
+  </foreignObject>
+
+  <g onClick={()=>this.refresh()}>
+    <rect x={x(5)} y={y(80)} width={w(42.5)} height={h(15)}
           rx="5" ry="5" fill="#dfd" stroke="#000"/>
     <text x={x(12)} y={y(90)} fontSize="20">Refresh</text>
   </g>
 
   <g onClick={()=>this.cashout()}>
-    <rect x={x(52.5)} y={y(75)} width={w(42.5)} height={h(20)}
+    <rect x={x(52.5)} y={y(80)} width={w(42.5)} height={h(15)}
           rx="5" ry="5" fill="#dfd" stroke="#000"/>
     <text x={x(56)} y={y(90)} fontSize="20">Cash Out</text>
   </g>
