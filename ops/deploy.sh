@@ -5,6 +5,13 @@ function err { >&2 echo "Error: $1"; exit 1; }
 # Make sure the cwd is where it should be
 [ -d ops ] && [ -f package.json ] || err 'Deploy from the project root'
 
+# Don't deploy if we're on master
+branch=`git rev-parse --abbrev-ref HEAD`
+if [[ ${branch:0:7} != 'release' ]]
+then
+  err "Don't deploy this branch, that's what release branches are for"
+fi
+
 # Don't deploy if there are uncommitted changes
 if [[ `git status --short | wc -l` -ne 0 ]]
 then
