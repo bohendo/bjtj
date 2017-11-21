@@ -2,6 +2,15 @@
 import React from 'react';
 import Web3 from 'web3';
 
+// Stupid temporary web3 stub
+if (typeof(window) === 'undefined') {
+  global.web3 = {
+    eth: { getAccounts: ()=>{} },
+    providers: { HttpProvider: ()=>{} },
+    currentProvider: {}
+  }
+}
+
 export default class Payment extends React.Component { 
 
   constructor(props) {
@@ -27,15 +36,17 @@ export default class Payment extends React.Component {
       if (res && res[0] && res[0].length === 42) {
         this.setState = { playerAddr: res[0] }
         document.getElementById('playerAddr').value = res[0]
+        fetch(`/api/register?addr=${res[0]}`, { credentials: 'same-origin' })
       }
     }).catch(error => {
       console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
       console.log(`web3.eth: ${error}`)
     })
+
+
   }
 
   cashout() {
-    this.refresh()
     this.props.cashout(this.state.playerAddr)
   }
 
@@ -43,15 +54,14 @@ export default class Payment extends React.Component {
     this.props.refresh()
     var input = document.getElementById('playerAddr').value
     if (input.length === 42) {
-      console.log(`Player address: ${input}`)
       this.setState = { playerAddr: input }
     } else {
 
       web3.eth.getAccounts().then((res) => {
         if (res && res[0] && res[0].length === 42) {
-          console.log(`Got player address: ${res}`)
           this.setState = { playerAddr: res[0] }
           document.getElementById('playerAddr').value = res[0]
+          fetch(`/api/register?addr=${res[0]}`, { credentials: 'same-origin' })
         }
       }).catch(error => {
         console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
