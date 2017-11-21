@@ -11,8 +11,17 @@ import Chips from './chips.jsx'
 export default class BJVM extends React.Component {
 
   render() {
-    const { message, moves, playerHands, dealerCards, bet, chips, submit, refresh, cashout, dealerAddr, dealerBal, playerAddr } = this.props
+    const { message, moves, playerHands, dealerCards, bet, submit, refresh, dealerAddr, dealerBal, playerAddr } = this.props
     let dealerHand = [{ cards: dealerCards, isActive: true}]
+
+    let chips = this.props.chips
+    const cashout = (addr) => {
+      if (chips === 0) {
+        console.log('nothing to cash out')
+      }
+      chips = 0
+      this.props.cashout(addr)
+    }
 
     ////////////////////////////////////////
     // Magic Numbers & Strings
