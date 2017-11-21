@@ -14,6 +14,8 @@ secrets:
     external: true
   mongo_user:
     external: true
+  geth_prod:
+    external: true
 
 # I use sed to replate '$v' with a real
 # version number at deploy-time in ops/deploy.sh
@@ -46,6 +48,7 @@ services:
       - back
     secrets:
       - mongo_user
+      - geth_prod
 
   nginx:
     image: bohendo/bjvm_nginx:$v
