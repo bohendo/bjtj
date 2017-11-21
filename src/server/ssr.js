@@ -21,7 +21,7 @@ const serverSideRender = (req, res) =>{
   if (!req.state) { err('SSR: no req.state') }
 
   // wait for eth calls to return before server-side rendering
-  eth().then((e) => {
+  eth.dealerData().then((e) => {
 
     // Only send the client the public part of our game state
     const store = createStore(reducer, Object.assign(req.state.public, e))
