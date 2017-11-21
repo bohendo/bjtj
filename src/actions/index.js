@@ -14,14 +14,14 @@ export const CASHOUT = 'CASHOUT'
 export function cashout(addr) {
   console.log('Cashout: activated!')
   return function(dispatch) {
-    return fetch(`/api/cashout?${addr}`, { credentials: 'same-origin' })
+    return fetch(`/api/cashout?addr=${addr}`, { credentials: 'same-origin' })
       .then(
         response => response.json(),
         error => dispatch(failure(error))
       ).then(
         data => {
-          console.log(`Cashout success: Transaction id = ${data.tx}`)
-          return dispatch(success(data))
+          console.log(`Cashout success: receipt = ${JSON.stringify(data)}`)
+          return dispatch(success({ chips: 0 }))
         }
       )
   }

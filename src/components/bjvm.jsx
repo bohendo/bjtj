@@ -11,8 +11,17 @@ import Chips from './chips.jsx'
 export default class BJVM extends React.Component {
 
   render() {
-    const { message, moves, playerHands, dealerCards, bet, chips, submit, refresh, cashout, dealerAddr, dealerBal } = this.props
+    const { message, moves, playerHands, dealerCards, bet, submit, refresh, dealerAddr, dealerBal, playerAddr } = this.props
     let dealerHand = [{ cards: dealerCards, isActive: true}]
+
+    let chips = this.props.chips
+    const cashout = (addr) => {
+      if (chips === 0) {
+        console.log('nothing to cash out')
+      }
+      chips = 0
+      this.props.cashout(addr)
+    }
 
     ////////////////////////////////////////
     // Magic Numbers & Strings
@@ -49,11 +58,11 @@ export default class BJVM extends React.Component {
 
     <Dealer x="25" y="90" w="90" h="200"/>
 
-    <Payment x="350" y="35" w="235" h="130"
-      refresh={refresh} cashout={cashout}
+    <Payment x="335" y="35" w="250" h="215"
+      refresh={refresh} cashout={cashout} playerAddr={playerAddr}
       dealerAddr={dealerAddr} dealerBal={dealerBal} />
 
-    <Chips x="410" y="175" w="175" h="75"
+    <Chips x="125" y="260" w="275" h="45"
            chips={chips} bet={bet} />
 
     {/* Deck
@@ -67,8 +76,8 @@ export default class BJVM extends React.Component {
     <Card x="325" y="135" w="80" suit="?" rank="?" />
     */}
 
-    <Hand x="130" y="115" w="180" hand={dealerHand} />
-    <Hand x="20"  y="280" w="375" hand={playerHands} />
+    <Hand x="130" y="105" w="190" hand={dealerHand} />
+    <Hand x="140"  y="315" w="250" hand={playerHands} />
 
     <Button x="410" y="260" w="175" h="45" type="deal" fn={submit} moves={moves}/>
     <Button x="410" y="310" w="175" h="45" type="hit" fn={submit} moves={moves}/>

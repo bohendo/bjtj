@@ -14,7 +14,7 @@ import {
  */
 
 const initialState = {
-  message: 'Click Deal when you\'re ready to play!',
+  message: 'Click Deal when you\'re ready!',
   moves: ['deal'],
   playerHands: [],
   dealerCards: [],
@@ -27,6 +27,9 @@ const initialState = {
   // let's disclose our server's financial situation
   dealerAddr: '0xabc123...',
   dealerBal: 0,
+
+  // placeholder
+  playerAddr: '0xabc123...',
 }
 
 const reducer = (state = initialState, action) => {

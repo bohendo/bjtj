@@ -24,22 +24,22 @@ export default class Chips extends React.Component {
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
   {/* Chips */}
-  <rect x={x(5)} y={y(5)} width={w(90)} height={h(40)}
+  <rect x={x(2.5)} y={y(15)} width={w(32.5)} height={h(70)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(10)} y={y(35)} fontSize={fs}>
+  <text x={x(5)} y={y(62.5)} fontSize={fs}>
     Chips:
   </text>
-  <text x={x(60)} y={y(35)} fontSize={fs}>
+  <text x={x(27.5)} y={y(62.5)} fontSize={fs}>
     {this.props.chips}
   </text>
 
   {/* Bet */}
-  <rect x={x(5)} y={y(55)} width={w(90)} height={h(40)}
+  <rect x={x(40)} y={y(15)} width={w(57.5)} height={h(70)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
-  <text x={x(10)} y={y(85)} fontSize={fs}>
+  <text x={x(42.5)} y={y(62.5)} fontSize={fs}>
     Bet per Hand:
   </text>
-  <text x={x(83)} y={y(85)} fontSize={fs}>
+  <text x={x(87.5)} y={y(62.5)} fontSize={fs}>
     {this.props.bet}
   </text>
 

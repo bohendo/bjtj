@@ -13,6 +13,8 @@ secrets:
     external: true
   mongo_user:
     external: true
+  geth_dev:
+    external: true
 
 services:
 
@@ -35,7 +37,7 @@ services:
     depends_on:
       - mongo
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: any
     networks:
@@ -43,6 +45,7 @@ services:
       - back
     secrets:
       - mongo_user
+      - geth_dev
     volumes:
       - type: bind
         source: ../build/server.bundle.js

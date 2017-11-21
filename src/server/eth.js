@@ -1,75 +1,71 @@
+
+import fs from 'fs'
+import { err } from '../utils'
+
 import Web3 from 'web3'
+import dealerJSON from '../../build/contracts/Dealer.json'
 
-const provider=`http://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8545`
+import db from './mongo'
 
-console.log(`ETH: Connecting to ${provider}`)
+const secret = fs.readFileSync('/run/secrets/geth_dev', 'utf8')
 
-const web3 = new Web3(new Web3.providers.HttpProvider(provider))
+const web3 = new Web3(new Web3.providers.WebsocketProvider(
+  `ws://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8546/`
+))
 
-const eth = () => {
-  return web3.eth.getAccounts()
-  .then(a => a[0])
-  .then(addr => {
-    return web3.eth.getBalance(addr).then(bal => {
-      console.log('done loading eth')
-      return {
-        dealerAddr: addr,
-        dealerBal: parseInt(web3.utils.fromWei(bal, 'milli')),
-      }
-    })
-  })
-  .catch(error => {
-    console.log(`ETH: Error connecting to ${provider}`)
-    console.log(`ETH: ${error}`)
+
+const dealer = new web3.eth.Contract(
+  dealerJSON.abi,
+  dealerJSON.networks[3993].address,
+)
+
+const eth = {}
+
+eth.dealerData = () => {
+  return web3.eth.getBalance(dealer.options.address).then(res => {
+    return {
+      dealerAddr: dealer.options.address,
+      dealerBal: web3.utils.fromWei(res, 'milli')
+    }
   })
 }
 
-export default eth
+var myAddr
+
+eth.cashout = (addr, chips) => {
+  console.log(`ETH: Cashing out ${chips} chips to ${addr}`)
+  return web3.eth.getAccounts().then(addresses => {
+    myAddr = addresses[0]
+    return web3.eth.personal.unlockAccount(myAddr, secret, 15) // unlock our management account for 15 seconds
+  }).then(receipt => {
+    return dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from: myAddr })
+  }).then(receipt => {
+
+    return db.states.update({ addr: addr }, { $set: { "state.public.chips": 0 } } )
+
+  }).then(receipt => {
+    return receipt
+  }).catch(console.log)
+}
 
 
+dealer.events.Deposit((err, res) => {
 
-////////////////////////////////////////
-// Hello World smart contract reference
+  const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
 
-/*
+  console.log(`Dealer Deposit Detected: ${chips} mETH from ${res.returnValues._from}`)
 
-import contract from 'truffle-contract'
-import ssc from '../../build/contracts/SimpleStorage.json'
+  db.states.findOne({ addr: res.returnValues._from }).then((doc) => {
 
-var instance
-var dealerAddr
-web3.eth.getAccounts().then((accounts) => {
-  dealerAddr = accounts[0]
-  return web3.eth.getBalance(accounts[0])
-}).then((balance) => {
-  const dealerBal = web3.utils.fromWei(balance, 'milli')
-  const simpleStorage = contract(ssc)
-  simpleStorage.setProvider(web3.currentProvider)
+    const newChips = Number(doc.state.public.chips) + Number(chips)
+    console.log(`User ${doc.cookie.substring(0,8)} had ${doc.state.public.chips} chips but now has ${newChips}`)
+    db.states.update({ cookie: doc.cookie }, { $set: { "state.public.chips": newChips } }).then(res => {
+      console.log(`result: ${JSON.stringify(res)}`)
+    })
 
-  // dirty hack for web3@1.0.0 support for http providers
-  // see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
-  if (typeof simpleStorage.currentProvider.sendAsync !== "function") {
-    simpleStorage.currentProvider.sendAsync = function() {
-      return simpleStorage.currentProvider.send.apply(
-        simpleStorage.currentProvider,
-        arguments
-      );
-    };
-  }
+  }).catch(console.log)//err('ETH: states.update'))
 
-  return simpleStorage.deployed()
-}).then((res) => {
-  instance = res
-  // full-blown eth transaction, will take ~15s to resolve
-  return instance.set(5, { from: dealerAddr })
-}).then((res) => {
-  return instance.get.call({ from: dealerAddr })
-}).then((res) => {
-  if (res === 5) console.log('Smart contract hello-world succeeded')
-}).catch((err) => {
-  console.log(err)
-  process.exit(1)
 })
 
-*/
+export default eth
 

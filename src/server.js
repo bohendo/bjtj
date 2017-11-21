@@ -5,6 +5,7 @@ import auth from './server/auth'
 import api  from './server/api'
 import ssr  from './server/ssr'
 import { err }  from './utils'
+import eth from './server/eth' // sets global.web3
 
 ////////////////////////////////////////
 // START express pipeline
