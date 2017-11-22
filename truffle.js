@@ -9,10 +9,10 @@ module.exports = {
       network_id: '*'
     },
     private: {
-      host: process.env.BJVM_ETHPROVIDER || 'localhost',
+      host: process.env.BJVM_ETHPROVIDER,
       port: 8545,
       network_id: '3993',
-      from: "0xdd8251bb8e7ba07dfcd9e1842cd9e3cdfc0399c8",
+      from: process.env.BJVM_ETHADDR,
       gas: 4612000
     }
   }
