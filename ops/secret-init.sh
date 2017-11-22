@@ -1,6 +1,6 @@
 #!/bin/bash
 
-secrets=("mongo_admin" "mongo_user")
+secrets=("admin" "mongo" "geth")
 
 for sec in "${secrets[@]}"
 do

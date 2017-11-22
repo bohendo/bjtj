@@ -7,8 +7,8 @@ then
 fi
 
 # Prepare to use our secrets in a here doc
-admin_pwd=`cat /run/secrets/mongo_admin`
-user_pwd=`cat /run/secrets/mongo_user`
+admin_pwd=`cat /run/secrets/admin`
+user_pwd=`cat /run/secrets/mongo`
 
 # Start mongod for the very first time w/out auth
 mongod &

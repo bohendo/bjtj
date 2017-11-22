@@ -9,11 +9,11 @@ volumes:
   mongodb:
 
 secrets:
-  mongo_admin:
+  admin:
     external: true
-  mongo_user:
+  mongo:
     external: true
-  geth_dev:
+  geth:
     external: true
 
 services:
@@ -27,8 +27,8 @@ services:
     volumes:
       - mongodb:/data/db
     secrets:
-      - mongo_admin
-      - mongo_user
+      - admin
+      - mongo
 
   node:
     image: bjvm_nodemon:latest
@@ -44,8 +44,8 @@ services:
       - front
       - back
     secrets:
-      - mongo_user
-      - geth_dev
+      - mongo
+      - geth
     volumes:
       - type: bind
         source: ../build/server.bundle.js

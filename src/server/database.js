@@ -5,7 +5,7 @@ import monk from 'monk'
 import err from '../utils/err'
 
 const mongodb = monk(`mongodb://bjvm:${
-  fs.readFileSync('/run/secrets/mongo_user', 'utf8')
+  fs.readFileSync('/run/secrets/mongo', 'utf8')
 }@mongo:27017/bjvm`)
 
 const q = false // q for quiet

@@ -10,11 +10,11 @@ volumes:
   mongodb:
 
 secrets:
-  mongo_admin:
+  admin:
     external: true
-  mongo_user:
+  mongo:
     external: true
-  geth_prod:
+  geth:
     external: true
 
 # I use sed to replate '$v' with a real
@@ -29,8 +29,8 @@ services:
     volumes:
       - mongodb:/data/db
     secrets:
-      - mongo_admin
-      - mongo_user
+      - admin
+      - mongo
 
   node:
     image: bohendo/bjvm_nodejs:$v
@@ -47,8 +47,8 @@ services:
       - front
       - back
     secrets:
-      - mongo_user
-      - geth_prod
+      - mongo
+      - geth
 
   nginx:
     image: bohendo/bjvm_nginx:$v

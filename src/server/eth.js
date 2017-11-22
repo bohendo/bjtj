@@ -7,7 +7,7 @@ import dealerJSON from '../../build/contracts/Dealer.json'
 import db from './database'
 import err from '../utils/err'
 
-const secret = fs.readFileSync('/run/secrets/geth_dev', 'utf8')
+const secret = fs.readFileSync('/run/secrets/geth', 'utf8')
 
 const web3 = new Web3(new Web3.providers.WebsocketProvider(
   `ws://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8546/`
