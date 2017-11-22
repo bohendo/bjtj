@@ -116,13 +116,13 @@ export default class Payment extends React.Component {
   <g onClick={()=>this.refresh()}>
     <rect x={x(5)} y={y(80)} width={w(42.5)} height={h(15)}
           rx="5" ry="5" fill="#dfd" stroke="#000"/>
-    <text x={x(12)} y={y(90)} fontSize="20">Refresh</text>
+    <text x={x(12)} y={y(90)} fontSize="20" pointerEvents="none">Refresh</text>
   </g>
 
   <g onClick={()=>this.cashout()}>
     <rect x={x(52.5)} y={y(80)} width={w(42.5)} height={h(15)}
           rx="5" ry="5" fill="#dfd" stroke="#000"/>
-    <text x={x(56)} y={y(90)} fontSize="20">Cash Out</text>
+    <text x={x(56)} y={y(90)} fontSize="20" pointerEvents="none">Cash Out</text>
   </g>
 
 
