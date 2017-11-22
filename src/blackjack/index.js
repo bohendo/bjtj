@@ -3,7 +3,7 @@ import { hit } from './hit'
 import { stand } from './stand'
 import { double } from './double'
 import { split } from './split'
-
+import { payout } from './payout'
 
 // () => [cards]
 const shuffle = () => {
@@ -57,6 +57,8 @@ const blackjack = (state = initialState,
       return double(state)
     case 'SPLIT':
       return split(state)
+    case 'SYNC':
+      return payout(state)
     default:
       return state
   }

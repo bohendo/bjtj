@@ -1,6 +1,4 @@
 
-import path from 'path'
-
 import React from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
@@ -8,17 +6,12 @@ import { renderToString } from 'react-dom/server'
 
 import Index from '../components/index'
 import reducer from '../reducers'
-import db from './mongo'
-import { err } from '../utils'
 import eth from './eth'
+import err from '../utils/err'
 
 import template from '../index.html'
 
-
 const serverSideRender = (req, res) =>{
-
-  if (!req.id) { err('SSR: no req.id') }
-  if (!req.state) { err('SSR: no req.state') }
 
   // wait for eth calls to return before server-side rendering
   eth.dealerData().then((e) => {
@@ -32,8 +25,8 @@ const serverSideRender = (req, res) =>{
       </Provider>,
     )
 
-    // inject stylesheet
-    let index = template.replace(
+    // send index w injected stylesheet, js, etc
+    res.send(template.replace(
       /<\/head>/,
       '  <link href="/static/style.css" rel="stylesheet">\n$&',
     ).replace(
@@ -47,12 +40,8 @@ const serverSideRender = (req, res) =>{
     ).replace(
       /<div id="root">/,
       `$&${html}`,
-    )
-
-    console.log(`SSR: successful render for ${req.id.substring(0,8)}`)
-
-    res.send(index)
-  })
+    ))
+  }).catch(err)
 }
 
 export default serverSideRender
