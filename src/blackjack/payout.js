@@ -1,9 +1,13 @@
 import assert from 'assert'
 
+// q for quiet, set to true to disable logging
+const q = false
+
 // [cards] => { n, isSoft, bj }
 const score = (cards, hiddenCard = false) => {
+
   // Substitute the dealer's placeholder card with it's hidden card
-  const hand = (cards.map(c => c.rank).includes('?')) ?
+  const hand = (cards.map(c => c.rank).includes('?') && hiddenCard) ?
     [hiddenCard].push(cards.filter(c => c.rank !== '?')) :
     cards
 
@@ -69,7 +73,7 @@ const payout = (state) => {
     // if not done then move on
     return (h)
   })
- 
+
   // In case we call payout() on the initial state..
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
@@ -78,19 +82,20 @@ const payout = (state) => {
     } else {
       ns.public.message = 'Oh no! You\'re out of chips :('
     }
-    console.log(`PAYOUT init: ${JSON.stringify(ns.public)}`)
+    q || console.log(`PAYOUT: initializing state ${JSON.stringify(ns.public)}`)
     return (ns)
   }
 
   // Cut things off if the dealer has a blackjack
-  if (score(ns.public.dealerCards, ns.private.hiddenCard).bj) {
+  if (typeof (ns.private.hiddenCard) !== 'undefined' &&
+      score(ns.public.dealerCards, ns.private.hiddenCard).bj) {
     ns.public.message = 'Dealer got a blackjack'
     ns.public.playerHands[0].isDone = true
     ns.public.playerHands[0].isActive = false
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
-    console.log(`PAYOUT dealer bj: ${JSON.stringify(ns.public)}`)
+    q || console.log(`PAYOUT: dealer bj ${JSON.stringify(ns.public)}`)
     return (ns)
   }
 
@@ -108,7 +113,7 @@ const payout = (state) => {
   if (nTodo !== 0) {
     ns.public.message = 'Make your move...'
 
-    // if no cards are active, activate one
+    // if no hands are active, activate one
     let ah // ah for Active Hand
     if (nActive === 0) {
       for (let i=0; i<ns.public.playerHands.length; i++) {
@@ -139,16 +144,26 @@ const payout = (state) => {
       ns.public.moves.push('split')
     }
 
-    console.log(`PAYOUT round continues: ${JSON.stringify(ns.public)}`)
+    q || console.log(`PAYOUT: round continues ${JSON.stringify(ns.public)}`)
     return (ns)
   }
 
-  // No active cards, time for the dealer to go
+  ////////////////////////////////////////
+  // No active cards, time to wrap this round up
 
   // flip the dealer's hidden card
-  ns.public.dealerCards = [ns.private.hiddenCard].concat(
-    ns.public.dealerCards.filter(c => c.rank !== '?'),
-  )
+  if (ns.private.hiddenCard !== false) {
+    ns.public.dealerCards = [Object.assign({}, ns.private.hiddenCard)].concat(
+      ns.public.dealerCards.filter(c => c.rank !== '?'),
+    )
+    ns.private.hiddenCard = false
+  } else {
+    q || console.log(`PAYOUT: already paid out ${JSON.stringify(ns.public)}`)
+    if (ns.public.chips >= ns.public.bet) {
+      ns.public.moves.push('deal')
+    }
+    return (ns)
+  }
 
   // ds for Dealer's Score
   let ds = score(ns.public.dealerCards)
@@ -190,7 +205,7 @@ const payout = (state) => {
     ns.public.moves.push('deal')
   }
 
-  console.log(`PAYOUT round over: ${JSON.stringify(ns.public)}`)
+  q || console.log(`PAYOUT: round over: ${JSON.stringify(ns.public)}`)
   return (ns)
 }
 
