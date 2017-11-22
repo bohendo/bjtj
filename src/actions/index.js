@@ -24,7 +24,7 @@ export function cashout(addr) {
           console.log(`Cashout success: receipt = ${JSON.stringify(data)}`)
           return dispatch(success({ chips: 0 }))
         }
-      )
+      ).catch(console.error)
   }
 }
 
@@ -41,7 +41,7 @@ export function refresh() {
           console.log('Refreshment: succeeded!')
           return dispatch(success(ethData))
         }
-      )
+      ).catch(console.error)
   }
 }
 
@@ -56,7 +56,7 @@ export function submit(move) {
         error => dispatch(failure(error))
       ).then(
         state => dispatch(success(state))
-      )
+      ).catch(console.error)
   }
 }
 
