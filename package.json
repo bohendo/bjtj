@@ -39,6 +39,7 @@
     "babel-cli": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-node6": "^11.0.0",
+    "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0-beta",
     "es6-promise": "^4.1.1",
     "express": "^4.16.1",

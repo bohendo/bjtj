@@ -11,6 +11,7 @@ const mongodb = monk(`mongodb://bjvm:${
 const q = false // q for quiet
 const states = mongodb.get('states')
 const actions = mongodb.get('actions')
+const feedback = mongodb.get('feedback')
 
 const db = {}
 
@@ -81,6 +82,17 @@ db.deposit = (cookie, chips) => {
   q || console.log(`DB: depositing ${chips} chips to ${cookie}`)
   return states.update({ cookie }, {
     $inc: { "state.public.chips": Number(chips) }
+  }).catch(err)
+}
+
+db.saveFeedback = (cookie, data) => {
+  q || console.log(`DB: saving feedback from ${cookie}: ${JSON.parse(data).feedback}`)
+  return db.getState(cookie).then(state=>{
+    return feedback.insert({
+      cookie,
+      state,
+      feedback: JSON.parse(data),
+    }).catch(err)
   }).catch(err)
 }
 

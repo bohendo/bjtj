@@ -16,6 +16,7 @@ const app = require('express')()
 // 3rd party express middleware
 app.use(require('helmet')())
 app.use(require('universal-cookie-express')())
+app.use(require('body-parser').text())
 
 // initialize id or check for id in db
 app.use(auth)

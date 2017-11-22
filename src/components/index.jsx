@@ -4,7 +4,31 @@ import Container from '../containers'
 
 class Index extends React.Component {
 
+
   render () {
+
+    const handle = () => {
+      var feedback = document.getElementById('feedbackText')
+      var title = document.getElementById('feedbackTitle')
+
+      if (feedback.value.length < 10) {
+        title.innerHTML = "Share more thoughts"
+      } else {
+        console.log(`submitting ${feedback}`)
+        fetch('/api/feedback', {
+          method: "POST",
+          body: JSON.stringify({
+            feedback: feedback.value,
+            userAgent: navigator.userAgent,
+            timestamp: Date(),
+          }),
+          credentials: 'same-origin'
+        }).then(res=>{
+          title.innerHTML = "Thanks! Share more thoughts?"
+          feedback.value = ""
+        })
+      }
+    }
 
     return (
 <div>
