@@ -24,6 +24,10 @@ class Index extends React.Component {
         <h3 class="text-muted">BlackJack Vending Machine</h3>
       </div>
 
+      <p><strong>Warning:</strong> This smart contract is only alive on my private ethereum network (see stats at bohendo.net). Do not send mainchains funds to the dealer yet, that comes later</p>
+
+      <p>If you tweet an ethereum address to @bohendo, I'll give you more fake ether than you'll know what to do with</p>
+
       <Container />
 
       <div class="row marketing">
