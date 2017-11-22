@@ -1,7 +1,7 @@
 {
   "name": "bjvm",
-  "version": "0.5.0",
-  "description": "",
+  "version": "0.6.0",
+  "description": "Blackjack Vending Machine",
   "main": "build/server.bundle.js",
   "scripts": {
     "watch": "webpack --watch --config webpack/server.config.js & webpack --watch --config webpack/client.dev.js",
