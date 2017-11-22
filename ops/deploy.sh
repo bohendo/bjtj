@@ -2,6 +2,9 @@
 
 function err { >&2 echo "Error: $1"; exit 1; }
 
+echo "Make sure your webpack --watch is turned off..."
+sleep 2
+
 # Make sure the cwd is where it should be
 [ -d ops ] && [ -f package.json ] || err 'Deploy from the project root'
 
