@@ -1,64 +1,48 @@
 
-// Node built-in
-import crypto from 'crypto'
-
 const router = require('express').Router()
 
-import { err } from '../utils'
 import bj from '../blackjack'
-import db from './mongo'
+import db from './database'
 import eth from './eth'
+import err from '../utils/err'
 
 // check for an ethereum address in the query string
 router.use('/', (req, res, next) => {
-
   if (req.query && req.query.addr && req.query.addr.length === 42 && req.query.addr !== req.addr) {
-
     req.addr = req.query.addr
-
-    db.states.update(
-      { cookie: req.id },
-      { $set: { addr: req.addr } }
-    ).then(() => {
-      console.log(`API: updated db.states for ${req.id.substring(0,8)} to ${req.addr}`)
+    db.saveAddress(req.id, req.addr).then(() => {
+      console.log(`API: saved address ${req.addr} for ${req.id}`)
       next()
-    }).catch(err('API: states.update'))
-
-  // no new addr? do nothing
+    }).catch(err)
   } else {
     next()
   }
 })
 
 router.get('/refresh', (req, res, next) => {
-  eth.dealerData().then((e) => {
-    console.log(`API: eth refreshed, bal: ${e.dealerBal}`)
-    e.dealerBal = parseInt(e.dealerBal)
-    res.json(e)
-  }).catch(err('API: eth refresh'))
+  eth.dealerData().then(dealer => {
+    db.getState(req.id).then(doc => {
+      const newState = bj(doc.state, { type: 'SYNC' })
+      db.updateState(req.id, newState).then(() => {
+        console.log(`API: eth & state data refreshed`)
+        res.json(Object.assign(dealer, newState.public))
+      })
+    }).catch(err)
+  }).catch(err)
 })
 
 router.get('/cashout', (req, res, next) => {
-  console.log(`API: cashing out ${req.state.public.chips} chips`)
-
-  db.states.findOne({ cookie: req.id }).then((doc) => {
-    if (doc && doc.addr) {
-      console.log(`API: cashout to ${doc.addr}`)
-      eth.cashout(doc.addr, doc.state.public.chips).then(receipt => {
-
-        db.states.update({ cookie: res.id }, {
-          $set: { "state.public.chips": 0 }
-        }).then(doc => {
+  db.getState(req.id).then(doc => {
+    if (doc && doc.address) {
+      db.cashout(req.id).then(() => {
+        eth.cashout(doc.address, doc.state.public.chips).then(receipt => {
           res.json(receipt)
-        })
-
-      })
+        }).catch(err)
+      }).catch(err)
     } else {
       res.json({ message: 'Please provide an address to cash out to first' })
     }
-  })
-
-
+  }).catch(err)
 })
 
 
@@ -67,30 +51,19 @@ router.get('/cashout', (req, res, next) => {
 
 const handleMove = (req, res, move) => {
 
-  if (!req.id) { err('API: no req.id') }
-  if (!req.state) { err('API: no req.state') }
-
-  console.log(`API: Handling ${move} for id ${req.id.substring(0,8)}`)
+  console.log(`API: Handling ${move} for ${req.id}`)
 
   // insert this move into our log of all actions taken
-  db.actions.insert({
-    cookie: req.id,
-    action: { type: move }
-  }).then(() => {
+  db.recordAction(req.id, move).then(() => {
     console.log(`API: inserted ${move} into db.actions`)
-  }).catch(err('API: actions.insert'))
+  }).catch(err)
 
   const newState = bj(req.state, { type: move })
 
   // insert the result of this move into our states collection
-  db.states.update(
-    { cookie: req.id },
-    { cookie: req.id, state: newState }
-  ).then(() => {
-    console.log(`API: updated db.states for ${req.id.substring(0,8)}`)
-    // send the user the public part of our game state
+  db.updateState(req.id, newState).then(() => {
     res.json(newState.public)
-  }).catch(err('API: states.update'))
+  }).catch(err)
 
 }
 

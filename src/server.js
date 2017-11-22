@@ -1,11 +1,11 @@
 import 'babel-polyfill'
 
 // My express middleware
-import auth from './server/auth'
 import api  from './server/api'
+import auth from './server/auth'
+import eth from './server/eth'
 import ssr  from './server/ssr'
-import { err }  from './utils'
-import eth from './server/eth' // sets global.web3
+import err from './utils/err'
 
 ////////////////////////////////////////
 // START express pipeline
@@ -36,10 +36,9 @@ app.use((req, res) => {
 ////////////////////////////////////////
 
 // express pipeline error handler
-app.use((err, req, res, next) => {
+app.use((error, req, res, next) => {
   res.status(500).send('Something broke!')
-  console.error(err)
-  process.exit(1)
+  err(error)
 })
 
 // start http server
