@@ -24,6 +24,8 @@ then
   err "Couldn't open an ssh connection to $1"
 fi
 
+# Make sure client.bundle.js gets rebuilt as the production version
+touch src/client.js
 make && make deploy
 
 v=$(grep "\"version\"" ./package.json | egrep -o [0-9.]*)
