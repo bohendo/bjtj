@@ -97,13 +97,16 @@ export default class Payment extends React.Component {
     {this.props.dealerAddr}</text>
 
 
-  <text x={x(10)} y={y(30)} fontSize="16">Dealer Balance:</text>
-  <text x={x(55)} y={y(30)} fontSize="16">{this.props.dealerBal} mETH</text>
+  <text x={x(10)} y={y(30)} fontSize="16" textLength={w(80)}>
+    Dealer Balance: {this.props.dealerBal} mETH
+  </text>
 
   <rect x={x(5)} y={y(37.5)} width={w(90)} height={h(40)}
         rx="5" ry="5" fill="#dfd" stroke="#000"/>
 
-  <text x={x(10)} y={y(47.5)} fontSize="16">Your Cash Out Address:</text>
+  <text x={x(10)} y={y(47.5)} fontSize="16">
+    Your Cash Out Address:
+  </text>
 
   <foreignObject x={x(7.5)} y={y(54)} width={w(90)} height={h(17.5)}>
     <input id="playerAddr" type="text"

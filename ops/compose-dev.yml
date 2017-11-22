@@ -38,7 +38,7 @@ services:
     depends_on:
       - mongo
     deploy:
-      replicas: 1
+      mode: global
       restart_policy:
         condition: any
     networks:
