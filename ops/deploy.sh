@@ -37,5 +37,8 @@ ssh $1 docker pull bohendo/bjvm_nodejs:$v
 ssh $1 docker pull bohendo/bjvm_nginx:$v
 ssh $1 docker pull bohendo/bjvm_certbot:$v
 
-ssh $1 docker stack deploy -c docker-compose.yml bjvm
+ssh $1 'bash -s' <<EOF
+export BJVM=ETHID="$BJVM_ETHID"
+docker stack deploy -c docker-compose.yml bjvm
+EOF
 

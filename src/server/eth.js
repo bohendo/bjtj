@@ -7,6 +7,8 @@ import dealerJSON from '../../build/contracts/Dealer.json'
 import db from './database'
 import err from '../utils/err'
 
+console.log(`ETH: Loading in env ${JSON.stringify(process.env)}`)
+
 const secret = fs.readFileSync('/run/secrets/geth', 'utf8')
 
 const web3 = new Web3(new Web3.providers.WebsocketProvider(
@@ -15,7 +17,7 @@ const web3 = new Web3(new Web3.providers.WebsocketProvider(
 
 const dealer = new web3.eth.Contract(
   dealerJSON.abi,
-  dealerJSON.networks[3993].address,
+  dealerJSON.networks[Number(process.env.BJVM_ETHID)].address,
 )
 
 var myAddr

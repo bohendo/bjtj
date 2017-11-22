@@ -7,6 +7,8 @@ import eth from './server/eth'
 import ssr  from './server/ssr'
 import err from './utils/err'
 
+console.log(process.env)
+
 ////////////////////////////////////////
 // START express pipeline
 const app = require('express')()

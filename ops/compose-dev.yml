@@ -34,6 +34,7 @@ services:
     image: bjvm_nodemon:latest
     environment:
       - BJVM_ETHPROVIDER
+      - BJVM_ETHID
     depends_on:
       - mongo
     deploy:

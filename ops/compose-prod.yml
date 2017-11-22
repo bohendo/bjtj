@@ -39,6 +39,7 @@ services:
     environment:
       - NODE_ENV=production
       - BJVM_ETHPROVIDER
+      - BJVM_ETHID
     depends_on:
       - mongo
     deploy:
