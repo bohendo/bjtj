@@ -152,13 +152,16 @@ const payout = (state) => {
   // No active cards, time to wrap this round up
 
   // flip the dealer's hidden card
-  if (ns.private.hiddenCard === false) {
+  if (ns.private.hiddenCard !== false) {
     ns.public.dealerCards = [Object.assign({}, ns.private.hiddenCard)].concat(
       ns.public.dealerCards.filter(c => c.rank !== '?'),
     )
     ns.private.hiddenCard = false
   } else {
     q || console.log(`PAYOUT: already paid out ${JSON.stringify(ns.public)}`)
+    if (ns.public.chips >= ns.public.bet) {
+      ns.public.moves.push('deal')
+    }
     return (ns)
   }
 
