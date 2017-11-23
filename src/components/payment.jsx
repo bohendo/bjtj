@@ -18,7 +18,7 @@ export default class Payment extends React.Component {
     this.state = {
       dealerAddr: this.props.dealerAddr,
       dealerBal: this.props.dealerBal,
-      playerAddr: this.props.playerAddr,
+      playerAddr: this.props.playerAddr || 'Login to MetaMask to cashout',
     }
   }
 
@@ -31,43 +31,24 @@ export default class Payment extends React.Component {
       console.log(`Found built-in web3 instance!`)
       web3 = new Web3(web3.currentProvider)
     }
-    
+    this.refresh()
+  }
+
+  cashout() {
+    this.props.cashout()
+  }
+
+  refresh() {
+    this.props.refresh()
     web3.eth.getAccounts().then((res) => {
       if (res && res[0] && res[0].length === 42) {
-        this.setState = { playerAddr: res[0] }
-        document.getElementById('playerAddr').value = res[0]
+        this.setState({ playerAddr: res[0] })
         fetch(`/api/register?addr=${res[0]}`, { credentials: 'same-origin' })
       }
     }).catch(error => {
       console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
       console.log(`web3.eth: ${error}`)
     })
-
-
-  }
-
-  cashout() {
-    this.props.cashout(this.state.playerAddr)
-  }
-
-  refresh() {
-    this.props.refresh()
-    var input = document.getElementById('playerAddr').value
-    if (input.length === 42) {
-      this.setState = { playerAddr: input }
-    } else {
-
-      web3.eth.getAccounts().then((res) => {
-        if (res && res[0] && res[0].length === 42) {
-          this.setState = { playerAddr: res[0] }
-          document.getElementById('playerAddr').value = res[0]
-          fetch(`/api/register?addr=${res[0]}`, { credentials: 'same-origin' })
-        }
-      }).catch(error => {
-        console.log(`web3.eth: Error connecting to ${web3.currentProvider}`)
-        console.log(`web3.eth: ${error}`)
-      })
-    }
   }
 
   render() {
@@ -89,29 +70,27 @@ export default class Payment extends React.Component {
         rx="5" ry="5" fill="#6f6" stroke="#000"/>
 
 
-  <rect x={x(5)} y={y(5)} width={w(90)} height={h(30)}
+  <rect x={x(5)} y={y(5)} width={w(90)} height={h(35)}
         rx="5" ry="5" fill="#dfd" stroke="#000"/>
 
-  <text x={x(10)} y={y(13)} fontSize="16">Dealer Address:</text>
-  <text x={x(10)} y={y(20)} fontSize="10" textLength={w(80)}>
+  <text x={x(10)} y={y(15)} fontSize="16">Dealer Address:</text>
+  <text x={x(10)} y={y(22.5)} fontSize="10" textLength={w(80)}>
     {this.props.dealerAddr}</text>
 
 
-  <text x={x(10)} y={y(30)} fontSize="16" textLength={w(80)}>
+  <text x={x(10)} y={y(32.5)} fontSize="16" textLength={w(80)}>
     Dealer Balance: {this.props.dealerBal} mETH
   </text>
 
-  <rect x={x(5)} y={y(37.5)} width={w(90)} height={h(40)}
+  <rect x={x(5)} y={y(47.5)} width={w(90)} height={h(30)}
         rx="5" ry="5" fill="#dfd" stroke="#000"/>
 
-  <text x={x(10)} y={y(47.5)} fontSize="16">
-    Your Cash Out Address:
+  <text x={x(10)} y={y(57.5)} fontSize="16">
+    Your MetaMask Address:
   </text>
-
-  <foreignObject x={x(7.5)} y={y(54)} width={w(90)} height={h(17.5)}>
-    <input id="playerAddr" type="text"
-       value={this.props.playerAddr} placeholder="Paste your ETH address"/>
-  </foreignObject>
+  <text x={x(10)} y={y(67.5)} fontSize="10" textLength={w(80)}>
+    {this.state.playerAddr}
+  </text>
 
   <g onClick={()=>this.refresh()}>
     <rect x={x(5)} y={y(80)} width={w(42.5)} height={h(15)}
@@ -127,7 +106,7 @@ export default class Payment extends React.Component {
 
 
 </g>
-    );
+    )
   }
 }
 

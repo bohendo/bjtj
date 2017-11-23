@@ -14,7 +14,7 @@ class Index extends React.Component {
       if (feedback.value.length < 10) {
         title.innerHTML = "Share more thoughts"
       } else {
-        console.log(`submitting ${feedback}`)
+        console.log(`submitting ${feedback.value}`)
         fetch('/api/feedback', {
           method: "POST",
           body: JSON.stringify({
