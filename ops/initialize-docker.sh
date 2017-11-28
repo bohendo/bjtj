@@ -6,7 +6,7 @@
 # define a clean error handler
 function err { >&2 echo "Error: $1"; exit 1; }
 
-# Sanity check: were we given an IP?
+# Sanity check: were we given a hostname?
 if [[ ! $1 || $2 ]]
 then
   err "Provide droplet's hostname as the first arg"
