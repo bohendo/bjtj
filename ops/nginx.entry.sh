@@ -19,9 +19,8 @@ then
 # Otherwise, use certbot to get new certs
 else
   echo "Couldn't find certs for $BJVM_DOMAINNAME, initializing those now.."
-  echo "certbot certonly --standalone -m $BJVM_EMAIL --agree-tos --no-eff-email -d $BJVM_DOMAINNAME -n"
 
-  certbot certonly --standalone -m $BJVM_EMAIL --agree-tos --no-eff-email -d $BJVM_DOMAINNAME -n
+  certbot certonly --standalone -m $BJVM_EMAIL --agree-tos --no-eff-email -d $BJVM_DOMAINNAME -d alpha.$BJVM_DOMAINNAME -n
   [ $? -eq 0 ] || sleep 9999 # Take a sec to debug before we try again..
 
   ln -sf /etc/letsencrypt/live/$BJVM_DOMAINNAME/privkey.pem /etc/certs/privkey.pem
@@ -34,7 +33,7 @@ sed -i 's/$hostname/'"$BJVM_DOMAINNAME"'/' /etc/nginx/nginx.conf
 
 cat /etc/nginx/nginx.conf
 
-# TODO: wait until node is alive
+# TODO: wait until nodejs is alive
 
 exec nginx
 
