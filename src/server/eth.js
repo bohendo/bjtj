@@ -9,10 +9,10 @@ import err from '../utils/err'
 
 console.log(`ETH: Loading in env ${JSON.stringify(process.env)}`)
 
-const secret = fs.readFileSync('/run/secrets/geth', 'utf8')
+const secret = fs.readFileSync('/run/secrets/mongo', 'utf8')
 
-const web3 = new Web3(new Web3.providers.WebsocketProvider(
-  `ws://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8546/`
+const web3 = new Web3(new Web3.providers.HttpProvider(
+  `http://localhost:7545`
 ))
 
 const dealer = new web3.eth.Contract(
@@ -45,14 +45,16 @@ eth.cashout = (addr, chips) => {
   }).catch(err)
 }
 
-
+/*
 dealer.events.Deposit((err, res) => {
+  if (err) { console.error(err); process.exit(1) }
   const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
   console.log(`ETH: Deposit detected: ${chips} mETH from ${res.returnValues._from} `)
   db.getSession(res.returnValues._from).then(doc => {
     db.deposit(doc.cookie, Number(chips))
   }).catch(err)
 })
+*/
 
 export default eth
 
