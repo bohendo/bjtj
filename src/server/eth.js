@@ -24,12 +24,19 @@ var myAddr
 const eth = {}
 
 eth.dealerData = () => {
+  console.log(`ETH: Fetching dealer data from ${dealer.options.address}`)
   return web3.eth.getBalance(dealer.options.address).then(bal => {
     return {
       dealerAddr: dealer.options.address,
       dealerBal: parseInt(web3.utils.fromWei(bal, 'milli'))
     }
-  }).catch(err)
+  }).catch((error) => {
+    console.error(error)
+    return {
+      dealerAddr: dealer.options.address,
+      dealerBal: 0
+    }
+  })
 }
 
 

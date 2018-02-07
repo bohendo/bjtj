@@ -26,7 +26,6 @@ v=latest
 #docker pull bohendo/bjvm_mongo:$v
 #docker pull bohendo/bjvm_nodejs:$v
 #docker pull bohendo/bjvm_nginx:$v
-#docker pull bohendo/bjvm_certbot:$v
 
 export BJVM_ETHPROVIDER="$BJVM_ETHPROVIDER"
 export BJVM_ETHID="$BJVM_ETHID"
@@ -92,8 +91,6 @@ services:
       mode: global
     hostname: $BJVM_DOMAINNAME
     volumes:
-      - letsencrypt:/etc/letsencrypt/
-      - webroot:/var/www/letsencrypt/
       - devcerts:/etc/devcerts/
     ports:
       - "80:80"
@@ -101,22 +98,6 @@ services:
     networks:
       - front
 
-  certbot:
-    image: bohendo/bjvm_certbot:$v
-    environment:
-      - BJVM_DOMAINNAME=$BJVM_DOMAINNAME
-      - BJVM_EMAIL=$BJVM_EMAIL
-    depends_on:
-      - nginx
-    deploy:
-      mode: global
-      restart_policy:
-        delay: 48h
-    volumes:
-      - letsencrypt:/etc/letsencrypt/
-      - webroot:/var/www/letsencrypt/
-    networks:
-      - front
 EOF
 
 docker stack deploy -c /tmp/bjvm/docker-compose.yml bjvm

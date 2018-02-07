@@ -6,15 +6,18 @@ import auth from './server/auth'
 import eth from './server/eth'
 import ssr  from './server/ssr'
 import err from './utils/err'
+import express from 'express'
 
 console.log(process.env)
 
 ////////////////////////////////////////
 // START express pipeline
-const app = require('express')()
+const app = express()
 
-// 3rd party express middleware
 app.use(require('helmet')())
+
+app.use('/static', express.static('static'))
+
 app.use(require('universal-cookie-express')())
 app.use(require('body-parser').text())
 

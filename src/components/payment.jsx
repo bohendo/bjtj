@@ -25,8 +25,8 @@ export default class Payment extends React.Component {
   componentDidMount() {
 
     if (typeof(web3) === 'undefined') {
-      console.log('Couldn\'t find built-in web3 instance, falling back to localhost:8545...')
-      web3 = new Web3(new Web3.providers.HttpProvider('localhost:8545'))
+      console.log('Couldn\'t find built-in web3 instance, falling back to localhost:7545...')
+      web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
     } else {
       console.log(`Found built-in web3 instance!`)
       web3 = new Web3(web3.currentProvider)

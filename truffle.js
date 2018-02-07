@@ -5,15 +5,8 @@ module.exports = {
   networks: {
     development: {
       host: 'localhost',
-      port: 9545,
-      network_id: '*'
+      port: 7545,
+      network_id: '5777'
     },
-    private: {
-      host: process.env.BJVM_ETHPROVIDER,
-      port: 8545,
-      network_id: process.env.BJVM_ETHID,
-      from: process.env.BJVM_ETHADDR,
-      gas: 4612000
-    }
   }
 }
