@@ -10,11 +10,11 @@ volumes:
   mongodb:
 
 secrets:
-  mongo_admin:
+  admin:
     external: true
-  mongo_user:
+  mongo:
     external: true
-  geth_prod:
+  geth:
     external: true
 
 # I use sed to replate '$v' with a real
@@ -24,31 +24,34 @@ services:
 
   mongo:
     image: bohendo/bjvm_mongo:$v
+    deploy:
+      mode: global
     networks:
       - back
     volumes:
       - mongodb:/data/db
     secrets:
-      - mongo_admin
-      - mongo_user
+      - admin
+      - mongo
 
   node:
     image: bohendo/bjvm_nodejs:$v
     environment:
       - NODE_ENV=production
       - BJVM_ETHPROVIDER
+      - BJVM_ETHID
     depends_on:
       - mongo
     deploy:
-      replicas: 2
+      mode: global
       restart_policy:
         condition: any
     networks:
       - front
       - back
     secrets:
-      - mongo_user
-      - geth_prod
+      - mongo
+      - geth
 
   nginx:
     image: bohendo/bjvm_nginx:$v

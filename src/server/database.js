@@ -5,12 +5,13 @@ import monk from 'monk'
 import err from '../utils/err'
 
 const mongodb = monk(`mongodb://bjvm:${
-  fs.readFileSync('/run/secrets/mongo_user', 'utf8')
+  fs.readFileSync('/run/secrets/mongo', 'utf8')
 }@mongo:27017/bjvm`)
 
 const q = false // q for quiet
 const states = mongodb.get('states')
 const actions = mongodb.get('actions')
+const feedback = mongodb.get('feedback')
 
 const db = {}
 
@@ -81,6 +82,17 @@ db.deposit = (cookie, chips) => {
   q || console.log(`DB: depositing ${chips} chips to ${cookie}`)
   return states.update({ cookie }, {
     $inc: { "state.public.chips": Number(chips) }
+  }).catch(err)
+}
+
+db.saveFeedback = (cookie, data) => {
+  q || console.log(`DB: saving feedback from ${cookie}: ${JSON.parse(data).feedback}`)
+  return db.getState(cookie).then(state=>{
+    return feedback.insert({
+      cookie,
+      state,
+      feedback: JSON.parse(data),
+    }).catch(err)
   }).catch(err)
 }
 

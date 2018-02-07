@@ -15,7 +15,7 @@ import theme from './style.scss'
 import Web3 from 'web3'
 
 // clobber global web3 if it exists
-window.web3 = new Web3(Web3.givenProvider || "http://localhost:8545")
+window.web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
 
 const state = window.__BJVM_STATE__
 delete window.__BJVM_STATE__

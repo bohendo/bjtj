@@ -18,6 +18,7 @@ const auth = (req, res, next) => {
     db.getState(req.id).then(doc => {
       if (doc && doc.state) {
         req.state = doc.state
+        req.address = doc.address
         next()
       } else {
         req.state = bj()

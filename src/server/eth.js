@@ -7,27 +7,36 @@ import dealerJSON from '../../build/contracts/Dealer.json'
 import db from './database'
 import err from '../utils/err'
 
-const secret = fs.readFileSync('/run/secrets/geth_dev', 'utf8')
+console.log(`ETH: Loading in env ${JSON.stringify(process.env)}`)
 
-const web3 = new Web3(new Web3.providers.WebsocketProvider(
-  `ws://${process.env.BJVM_ETHPROVIDER || 'localhost'}:8546/`
+const secret = fs.readFileSync('/run/secrets/mongo', 'utf8')
+
+const web3 = new Web3(new Web3.providers.HttpProvider(
+  `http://localhost:7545`
 ))
 
 const dealer = new web3.eth.Contract(
   dealerJSON.abi,
-  dealerJSON.networks[3993].address,
+  dealerJSON.networks[Number(process.env.BJVM_ETHID)].address,
 )
 
 var myAddr
 const eth = {}
 
 eth.dealerData = () => {
+  console.log(`ETH: Fetching dealer data from ${dealer.options.address}`)
   return web3.eth.getBalance(dealer.options.address).then(bal => {
     return {
       dealerAddr: dealer.options.address,
       dealerBal: parseInt(web3.utils.fromWei(bal, 'milli'))
     }
-  }).catch(err)
+  }).catch((error) => {
+    console.error(error)
+    return {
+      dealerAddr: dealer.options.address,
+      dealerBal: 0
+    }
+  })
 }
 
 
@@ -43,14 +52,16 @@ eth.cashout = (addr, chips) => {
   }).catch(err)
 }
 
-
+/*
 dealer.events.Deposit((err, res) => {
+  if (err) { console.error(err); process.exit(1) }
   const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
   console.log(`ETH: Deposit detected: ${chips} mETH from ${res.returnValues._from} `)
   db.getSession(res.returnValues._from).then(doc => {
     db.deposit(doc.cookie, Number(chips))
   }).catch(err)
 })
+*/
 
 export default eth
 

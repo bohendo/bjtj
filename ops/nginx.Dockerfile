@@ -6,14 +6,11 @@ MAINTAINER Bo Henderson <twitter.com/bohendo>
 RUN apk add --update openssl certbot nginx && \
     openssl dhparam -out /etc/ssl/dhparam.pem 2048
 
-RUN mkdir -p /etc/certs && \
-  # Link the logs to stdout so docker can collect them
-  ln -fs /dev/stderr /var/log/nginx/error.log && \
-  ln -fs /dev/stdout /var/log/nginx/access.log
+RUN ln -fs /dev/stdout /var/log/nginx/access.log && \
+    ln -fs /dev/stderr /var/log/nginx/error.log
 
 COPY ./ops/nginx.entry.sh /root/entry.sh
 COPY ./ops/nginx.conf /etc/nginx/nginx.conf
-COPY ./build/static /var/www/static
 
 EXPOSE 80
 EXPOSE 443

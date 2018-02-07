@@ -6,16 +6,31 @@ import db from './database'
 import eth from './eth'
 import err from '../utils/err'
 
+
+router.use('/feedback', (req, res, next) => {
+  console.log(`API: feedback received from ${req.id}`)
+  db.saveFeedback(req.id, req.body).then(done=>{
+    db.deposit(req.id, 5).then(done=>{
+      res.json({message:"Thanks for the feedback!"})
+    }).catch(err)
+  }).catch(err)
+})
+
+
 // check for an ethereum address in the query string
-router.use('/', (req, res, next) => {
+router.use('/register', (req, res, next) => {
   if (req.query && req.query.addr && req.query.addr.length === 42 && req.query.addr !== req.addr) {
     req.addr = req.query.addr
     db.saveAddress(req.id, req.addr).then(() => {
       console.log(`API: saved address ${req.addr} for ${req.id}`)
-      next()
+      res.json({
+        message: `Ready to cashout to ${req.addr}`
+      })
     }).catch(err)
   } else {
-    next()
+    res.json({
+      fyi: `Oops, expected an ethereum address in the URL query`
+    })
   }
 })
 
@@ -25,7 +40,9 @@ router.get('/refresh', (req, res, next) => {
       const newState = bj(doc.state, { type: 'SYNC' })
       db.updateState(req.id, newState).then(() => {
         console.log(`API: eth & state data refreshed`)
-        res.json(Object.assign(dealer, newState.public))
+        res.json(Object.assign(dealer, newState.public, {
+          message: "Refresh successful!"
+        }))
       })
     }).catch(err)
   }).catch(err)
@@ -36,11 +53,16 @@ router.get('/cashout', (req, res, next) => {
     if (doc && doc.address) {
       db.cashout(req.id).then(() => {
         eth.cashout(doc.address, doc.state.public.chips).then(receipt => {
-          res.json(receipt)
+          res.json(Object.assign(receipt, {
+            message: "Cashout successful!",
+            chips: 0,
+          }))
         }).catch(err)
       }).catch(err)
     } else {
-      res.json({ message: 'Please provide an address to cash out to first' })
+      res.json({
+        message: 'Please provide an address first'
+      })
     }
   }).catch(err)
 })
