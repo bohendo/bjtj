@@ -1,12 +1,30 @@
 
 import fs from 'fs'
 import bj from '../blackjack'
-import monk from 'monk'
 import err from '../utils/err'
 
-const mongodb = monk(`mongodb://bjvm:${
+console.log('made it booyea')
+
+import mysql from 'mysql'
+
+var connection = mysql.createConnection({
+  host: 'mysql',
+  user: 'bjvm',
+  password: fs.readFileSync('/run/secrets/bjvm_mysql','utf8'),
+  database: 'bjvm'
+})
+connection.connect()
+
+connection.query('SELECT 1 + 1 AS solution', (err, res, fld) => {
+  if (err) throw err
+  console.log('the solution is:', res[0].solution)
+})
+
+process.exit(0)
+
+const mongodb = {}; /* monk(`mongodb://bjvm:${
   fs.readFileSync('/run/secrets/mongo', 'utf8')
-}@mongo:27017/bjvm`)
+}@mongo:27017/bjvm`) */
 
 const q = false // q for quiet
 const states = mongodb.get('states')

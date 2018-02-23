@@ -1,6 +1,13 @@
 #!/bin/bash
 
 export BJVM_ETHPROVIDER="/tmp/ipc/geth.ipc"
+export NODE_ENV="development"
+
+bundle="`pwd`/build/server.bundle.js"
+if [[ "$NODE_ENV" == "development" && -f "$bundle" ]]
+then
+  bindmount="- $bundle:/root/server.bundle.js"
+fi
 
 me=`whoami` # docker.io username
 v=latest
@@ -27,6 +34,11 @@ networks:
   front:
   back:
 
+volumes:
+  mysql_data:
+  ethprovider_ipc:
+    external: true
+
 secrets:
   bjvm_mysql:
     external: true
@@ -47,6 +59,9 @@ services:
       - back
     secrets:
       - bjvm_mysql
+    volumes:
+      - ethprovider_ipc:/tmp/ipc
+      $bindmount
 
   nginx:
     image: $me/bjvm_nginx:$v
@@ -55,11 +70,29 @@ services:
     deploy:
       mode: global
     ports:
-      - "80:80"
+      - "8081:80"
     networks:
       - front
 
+  mysql:
+    image: mysql:5
+    deploy:
+      mode: global
+    networks:
+      - back
+    volumes:
+      - mysql_data:/var/lib/mysql
+    secrets:
+      - bjvm_mysql
+      - bjvm_mysql_root
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bjvm_mysql_root
+      - MYSQL_PASSWORD_FILE=/run/secrets/bjvm_mysql
+      - MYSQL_USER=wordpress
+      - MYSQL_DATABASE=wordpress
+
 EOF
+cat /tmp/bjvm/docker-compose.yml
 
 docker stack deploy -c /tmp/bjvm/docker-compose.yml bjvm
 

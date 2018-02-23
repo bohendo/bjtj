@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
@@ -29,6 +30,10 @@ module.exports = {
           use: ['css-loader'],
         }),
       },
+      {
+        test: /\.woff2?$|\.ttf$|\.eot$|\.svg$/,
+        loader: 'file-loader',
+      },
     ],
   },
 
@@ -36,6 +41,11 @@ module.exports = {
     new ExtractTextPlugin('style.css'),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
+    }),
+    new HtmlPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+      inject: 'body',
     }),
   ],
 };

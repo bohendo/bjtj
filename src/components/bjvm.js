@@ -1,12 +1,12 @@
 
 import React from 'react'
 
-import Hand from './hand.jsx'
-import Card from './card.jsx'
-import Dealer from './dealer.jsx'
-import Payment from './payment.jsx'
-import Button from './button.jsx'
-import Chips from './chips.jsx'
+import Hand from './hand.js'
+import Card from './card.js'
+import Dealer from './dealer.js'
+import Payment from './payment.js'
+import Button from './button.js'
+import Chips from './chips.js'
 
 export default class BJVM extends React.Component {
 

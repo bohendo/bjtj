@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Card from './card.jsx';
+import Card from './card.js';
 
 export default class Hand extends React.Component { 
   render() {

@@ -10,7 +10,7 @@ import thunkMW from 'redux-thunk'
 import reducer from './reducers'
 import Index from './components/index'
 
-import theme from './style.scss'
+import theme from './style.css'
 
 import Web3 from 'web3'
 

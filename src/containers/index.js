@@ -1,7 +1,7 @@
 
 import { connect } from 'react-redux'
 import { submit, refresh, cashout } from '../actions'
-import BJVM from '../components/bjvm.jsx'
+import BJVM from '../components/bjvm.js'
 
 const mapStateToProps = state => state
 

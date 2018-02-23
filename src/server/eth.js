@@ -9,7 +9,7 @@ import err from '../utils/err'
 
 console.log(`ETH: Loading in env ${JSON.stringify(process.env)}`)
 
-const secret = fs.readFileSync('/run/secrets/mongo', 'utf8')
+const secret = 'secret' //fs.readFileSync('/run/secrets/mongo', 'utf8')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(
   `http://localhost:7545`
