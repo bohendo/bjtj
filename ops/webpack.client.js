@@ -1,24 +1,32 @@
 
-const merge = require('webpack-merge');
+const path = require('path');
 const webpack = require('webpack');
-
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyCssPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = merge(require('./client.common.js'), {
+module.exports = {
+
+  entry: './src/client.js',
+
+  output: {
+    path: path.join(__dirname, '../build/static'),
+    filename: 'client.bundle.js',
+  },
+
+  resolve: {
+    extensions: ['.js', '.json'],
+  },
 
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
+        test: /\.css$/,
         use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'sass-loader'],
+          use: ['css-loader'],
         }),
       },
     ],
@@ -29,9 +37,5 @@ module.exports = merge(require('./client.common.js'), {
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
     }),
-    new UglifyCssPlugin({
-      cssProcessorOptions: { discardComments: { removeAll: true } },
-    }),
-    new UglifyJSPlugin(),
   ],
-});
+};

@@ -41,14 +41,14 @@ build/nginx-image: nginx.Dockerfile nginx.entry.sh nginx.conf client.bundle.js s
 	docker build -f ops/nginx.Dockerfile -t `whoami`/bjvm_nginx:$v -t bjvm_nginx:$v .
 	touch build/nginx-image
 
-server.bundle.js: node_modules webpack/server.config.js $(js)
-	$(webpack) --config webpack/server.config.js
+server.bundle.js: node_modules webpack.server.js $(js)
+	$(webpack) --config ops/webpack.server.js
 
-client.bundle.js: node_modules webpack/client.common.js webpack/client.prod.js $(js)
-	$(webpack) --config webpack/client.prod.js
+client.bundle.js: node_modules webpack.client.js $(js)
+	$(webpack) --config ops/webpack.client.js
 
 style.css: node_modules $(css)
-	$(webpack) --config webpack/client.prod.js
+	$(webpack) --config ops/webpack.client.js
 
 node_modules: package.json package-lock.json
 	npm install
