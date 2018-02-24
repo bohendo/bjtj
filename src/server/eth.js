@@ -17,7 +17,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(
 
 const dealer = new web3.eth.Contract(
   dealerJSON.abi,
-  dealerJSON.networks[Number(process.env.BJVM_ETHID)].address,
+  '0xbed6b644203881aae28072620433524a66a37b87', // fake address
 )
 
 var myAddr

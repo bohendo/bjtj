@@ -4,7 +4,6 @@ import 'babel-polyfill'
 import api  from './server/api'
 import auth from './server/auth'
 import eth from './server/eth'
-import ssr  from './server/ssr'
 import err from './utils/err'
 import express from 'express'
 
@@ -26,9 +25,6 @@ app.use(auth)
 
 // vending machine buttons
 app.use('/api', api)
-
-// ssr for server side rendering
-app.get('/', ssr)
 
 // catch-all
 app.use((req, res) => {

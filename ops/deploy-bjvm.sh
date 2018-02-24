@@ -88,11 +88,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bjvm_mysql_root
       - MYSQL_PASSWORD_FILE=/run/secrets/bjvm_mysql
-      - MYSQL_USER=wordpress
-      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=bjvm
+      - MYSQL_DATABASE=bjvm
 
 EOF
-cat /tmp/bjvm/docker-compose.yml
 
 docker stack deploy -c /tmp/bjvm/docker-compose.yml bjvm
 

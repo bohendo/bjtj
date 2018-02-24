@@ -3,7 +3,9 @@
   "version": "0.6.0",
   "description": "Blackjack Vending Machine",
   "main": "build/server.bundle.js",
-  "scripts": {},
+  "scripts": {
+    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js"
+  },
   "author": "Bo Henderson",
   "license": "GPLv3",
   "devDependencies": {

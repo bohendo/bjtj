@@ -21,18 +21,19 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
         exclude: /node_modules/,
+        use: {
+            loader: 'babel-loader',
+            options: {
+                presets: ['es2015','react'],
+            },
+        },
       },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           use: ['css-loader'],
         }),
-      },
-      {
-        test: /\.woff2?$|\.ttf$|\.eot$|\.svg$/,
-        loader: 'file-loader',
       },
     ],
   },
