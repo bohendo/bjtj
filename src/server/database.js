@@ -5,9 +5,9 @@ import mysql from 'mysql'
 
 var connection = mysql.createConnection({
   host: 'mysql',
-  user: 'bjvm',
-  password: fs.readFileSync('/run/secrets/bjvm_mysql','utf8'),
-  database: 'bjvm'
+  user: 'wordpress',
+  password: fs.readFileSync('/run/secrets/wp_mysql','utf8'),
+  database: 'wordpress'
 })
 
 connection.connect(err=>{
@@ -19,6 +19,12 @@ connection.query('SELECT 1 + 1 AS solution', (err, res, fld) => {
   if (err) console.error(err)
   console.log('the solution is:', res[0].solution)
 })
+
+
+// Initialize the bjvm database tables
+
+
+
 
 const q = false // q for quiet
 const db = {}

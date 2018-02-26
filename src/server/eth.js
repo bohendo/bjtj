@@ -1,5 +1,5 @@
-
 import fs from 'fs'
+import net from 'net'
 
 import Web3 from 'web3'
 import dealerJSON from '../../build/contracts/Dealer.json'
@@ -11,8 +11,9 @@ console.log(`ETH: Loading in env ${JSON.stringify(process.env)}`)
 
 const secret = 'secret' //fs.readFileSync('/run/secrets/mongo', 'utf8')
 
-const web3 = new Web3(new Web3.providers.HttpProvider(
-  `http://localhost:7545`
+const web3 = new Web3(new Web3.providers.IpcProvider(
+  process.env.ETH_PROVIDER,
+  new net.Socket()
 ))
 
 const dealer = new web3.eth.Contract(

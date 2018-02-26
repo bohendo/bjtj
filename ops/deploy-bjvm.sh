@@ -1,18 +1,19 @@
 #!/bin/bash
 
-export BJVM_ETHPROVIDER="/tmp/ipc/geth.ipc"
-export NODE_ENV="development"
+########################################
+# Setup environment
 
-bundle="`pwd`/build/server.bundle.js"
-if [[ "$NODE_ENV" == "development" && -f "$bundle" ]]
-then
-  bindmount="- $bundle:/root/server.bundle.js"
-fi
+set -e
+
+export ETH_PROVIDER="/tmp/ipc/geth.ipc"
+export NODE_ENV="development"
 
 me=`whoami` # docker.io username
 v=latest
 
-secrets="bjvm_mysql bjvm_mysql_root"
+########################################
+# Initialize docker secrets
+secrets="wp_mysql"
 for secret in $secrets
 do
   if [[ -z "`docker secret ls -qf name=$secret`" ]]
@@ -22,76 +23,68 @@ do
   fi
 done
 
-#docker pull $me/bjvm_mongo:$v
-#docker pull $me/bjvm_nodejs:$v
-#docker pull $me/bjvm_nginx:$v
+########################################
+# Setup bind mount for easy development
+bundle="`pwd`/build/server.bundle.js"
+if [[ "$NODE_ENV" == "development" && -f "$bundle" ]]
+then
+  bindmount="- $bundle:/root/server.bundle.js"
+fi
 
+########################################
+# Pull updated images
+nodejs="$me/bjvm_nodejs:$v"
+docker pull $nodejs
+nginx="$me/bjvm_nginx:$v"
+docker pull $nginx
+
+########################################
+# Create a docker-compose.yml & deploy
 mkdir -p /tmp/bjvm
 cat -> /tmp/bjvm/docker-compose.yml <<EOF
 version: '3.4'
 
 networks:
-  front:
-  back:
+  blog_back:
+    external: true
 
 volumes:
-  mysql_data:
   ethprovider_ipc:
     external: true
 
 secrets:
-  bjvm_mysql:
-    external: true
-  bjvm_mysql_root:
+  wp_mysql:
     external: true
 
 services:
 
   nodejs:
-    image: $me/bjvm_nodejs:$v
+    image: $nodejs
     environment:
-      - NODE_ENV=production
-      - BJVM_ETHPROVIDER=$BJVM_ETHPROVIDER
+      - NODE_ENV=$NODE_ENV
+      - ETH_PROVIDER=$ETH_PROVIDER
+      - ETH_ADDRESS=$ETH_ADDRESS
     deploy:
       mode: global
     networks:
-      - front
-      - back
+      - blog_back
     secrets:
-      - bjvm_mysql
+      - wp_mysql
     volumes:
       - ethprovider_ipc:/tmp/ipc
       $bindmount
 
   nginx:
-    image: $me/bjvm_nginx:$v
+    image: $nginx
     depends_on:
       - nodejs
     deploy:
       mode: global
     ports:
-      - "8081:80"
-    networks:
-      - front
-
-  mysql:
-    image: mysql:5
-    deploy:
-      mode: global
-    networks:
-      - back
-    volumes:
-      - mysql_data:/var/lib/mysql
-    secrets:
-      - bjvm_mysql
-      - bjvm_mysql_root
-    environment:
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bjvm_mysql_root
-      - MYSQL_PASSWORD_FILE=/run/secrets/bjvm_mysql
-      - MYSQL_USER=bjvm
-      - MYSQL_DATABASE=bjvm
+      - "3000:80"
 
 EOF
 
 docker stack deploy -c /tmp/bjvm/docker-compose.yml bjvm
+rm -rf /tmp/bjvm
 
