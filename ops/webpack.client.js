@@ -5,7 +5,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
-  entry: './src/client.js',
+  entry: './client/index.js',
 
   output: {
     path: path.join(__dirname, '../build/static'),
@@ -43,7 +43,7 @@ module.exports = {
       'process.env': { NODE_ENV: JSON.stringify('production') },
     }),
     new HtmlPlugin({
-      template: './src/index.html',
+      template: './client/index.html',
       filename: 'index.html',
       inject: 'body',
     }),

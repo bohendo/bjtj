@@ -1,7 +1,8 @@
-import bj from '../blackjack'
+import express from 'express'
+
+import bj from './blackjack'
 import db from './database'
 import eth from './eth'
-import express from 'express'
 
 const die = (msg) => {
   console.error(`${new Date().toISOString()} Fatal: ${msg}`)

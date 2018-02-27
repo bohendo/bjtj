@@ -5,7 +5,7 @@ import {
   REFRESH,
   SUCCESS,
   FAILURE,
-} from '../actions'
+} from './actions'
 
 /* This is the client-side reducer, it doesn't contain any blackjack logic.
  * Instead, it asyncronously asks the server to update our state for us.

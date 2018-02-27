@@ -2,7 +2,7 @@ import fs from 'fs'
 import net from 'net'
 import Web3 from 'web3'
 
-import dealerData from '../../build/contracts/Dealer.json'
+import dealerData from '../build/contracts/Dealer.json'
 import db from './database'
 
 const die = (msg) => {

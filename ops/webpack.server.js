@@ -12,7 +12,7 @@ module.exports = {
   externals: 'electron',
 
   entry: {
-    server: './src/server.js',
+    server: './server/index.js',
   },
 
   output: {

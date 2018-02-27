@@ -15,8 +15,9 @@ webpack=node_modules/.bin/webpack
 v=latest
 
 # Input files
-js=$(shell find src -type f -name "*.js*")
-css=$(shell find src -type f -name "*.scss")
+client=$(shell find client -type f)
+server=$(shell find server -type f)
+
 sol=$(shell find contracts -type f -name "*.sol")
 
 # Output files
@@ -31,20 +32,14 @@ all: nodejs-image
 deploy: nodejs-image
 	docker push `whoami`/bjvm_nodejs:$v
 
-nodejs: nodejs-image
-	docker push `whoami`/bjvm_nodejs:$v
-
-build/nodejs-image: nodejs.Dockerfile server.bundle.js client.bundle.js style.css
+build/nodejs-image: nodejs.Dockerfile server.bundle.js client.bundle.js
 	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v -t bjvm_nodejs:$v .
 	touch build/nodejs-image
 
-server.bundle.js: node_modules webpack.server.js $(js) $(artifacts)
+server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)
 	$(webpack) --config ops/webpack.server.js
 
-client.bundle.js: node_modules webpack.client.js $(js)
-	$(webpack) --config ops/webpack.client.js
-
-style.css: node_modules $(css)
+client.bundle.js: node_modules webpack.client.js $(client)
 	$(webpack) --config ops/webpack.client.js
 
 $(artifacts): $(sol)
@@ -53,5 +48,3 @@ $(artifacts): $(sol)
 node_modules: package.json package-lock.json
 	npm install
 
-clean:
-	rm -rf node_modules build

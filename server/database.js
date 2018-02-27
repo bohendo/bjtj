@@ -1,5 +1,4 @@
 import fs from 'fs'
-import bj from '../blackjack'
 import mysql from 'mysql'
 
 const die = (msg) => {

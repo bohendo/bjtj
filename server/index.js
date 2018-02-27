@@ -1,9 +1,8 @@
 import 'babel-polyfill'
-
-// My express middleware
-import api  from './server/api'
-import eth from './server/eth'
 import express from 'express'
+
+import api  from './api'
+import eth from './eth'
 
 console.log(process.env)
 
@@ -14,11 +13,6 @@ const app = express()
 app.use(require('helmet')())
 
 app.use(express.static('/root/static'))
-
-app.use((req, res) => {
-  console.log(`New request received for: ${req.path}`)
-  res.send('hello world')
-})
 
 app.use(require('universal-cookie-express')())
 app.use(require('body-parser').text())
