@@ -1,7 +1,11 @@
 import fs from 'fs'
 import bj from '../blackjack'
-import err from '../utils/err'
 import mysql from 'mysql'
+
+const die = (msg) => {
+  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
+  process.exit(1)
+}
 
 var connection = mysql.createConnection({
   host: 'mysql',
@@ -9,75 +13,95 @@ var connection = mysql.createConnection({
   password: fs.readFileSync('/run/secrets/wp_mysql','utf8'),
   database: 'wordpress'
 })
+connection.connect((err) => { if (err) die(err) })
 
-connection.connect(err=>{
-  if (err) console.error(err)
-  console.log(`connected with id ${connection.threadId}`)
-})
-
-connection.query('SELECT 1 + 1 AS solution', (err, res, fld) => {
-  if (err) console.error(err)
-  console.log('the solution is:', res[0].solution)
-})
-
+const query = (q) => {
+  return new Promise( (resolve, reject) => {
+    return connection.query(q, (err, rows) => {
+      if (err) return reject(err)
+      return resolve(rows)
+    })
+  })
+}
 
 // Initialize the bjvm database tables
+query(`CREATE TABLE IF NOT EXISTS bjvm_gamestates (
+  account   CHAR(42)      PRIMARY KEY,
+  state     VARCHAR(2048) NOT NULL,
+  timestamp DATETIME      NOT NULL);`)
 
+query(`CREATE TABLE IF NOT EXISTS bjvm_actions (
+  account   CHAR(42)      NOT NULL,
+  action    VARCHAR(1024) NOT NULL,
+  timestamp DATETIME      NOT NULL,
+  PRIMARY KEY (account, timestamp));`)
 
+query(`CREATE TABLE IF NOT EXISTS bjvm_signatures (
+  account   CHAR(42)      PRIMARY KEY,
+  signature VARCHAR(1024) NOT NULL,
+  timestamp DATETIME      NOT NULL);`)
 
-
-const q = false // q for quiet
 const db = {}
 
 // return gamestate for the given session
-db.getState = (cookie) => {
-  q || console.log(`DB: getting state for ${cookie}`)
-  // return states.findOne({ cookie }).catch(err)
+db.getState = (account) => {
+  const q = `SELECT * from bjvm_gamestates WHERE account='${account}';`
+  console.log(`${new Date().toISOString()} ${q}`)
+  return (
+    query(q).then(res=>JSON.parse(res[0])) // convert stringified object to object
+    .catch(die)
+  )
 }
 
 // update this session's state
-db.updateState = (cookie, state) => {
-  q || console.log(`DB: updating state for ${cookie}`)
-  // return states.update({ cookie }, { $set: { state: state, timestamp: new Date(), }}).catch(err)
+db.updateState = (account, state) => {
+  const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).catch(die) )
 }
 
-db.recordAction = (cookie, action) => {
-  q || console.log(`DB: recording action ${action} for ${cookie}`)
-  // return actions.insert({ cookie, action, timestamp: new Date(), }).catch(err)
+db.recordAction = (account, action) => {
+  const q = `INSERT INTO bjvm_actions (account, action, timestamp)
+    VALUES ('${account}', '${JSON.stringify(action)}', ${new Date().toISOString()});`
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).catch(die) )
 }
 
-db.newState = (cookie, state) => {
-  q || console.log(`DB: replacing state for ${cookie}`)
-  // return states.insert({ cookie, state, timestamp: new Date(), }).catch(err)
+db.newState = (account, state) => {
+  const q = `INSERT INTO bjvm_gamestates (account, state, timestamp)
+    VALUES ('${account}', '${JSON.stringify(state)}', ${new Date().toISOString()});`
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).catch(die) )
 }
 
-db.saveAddress = (cookie, address) => {
-  q || console.log(`DB: saving address ${address} for ${cookie}`)
-  // return states.update({ cookie }, { $set: { address: address, timestamp: new Date(), }}).catch(err)
+db.saveSig = (address, signature) => {
+  const q = `INSERT INTO bjvm_signatures (account, signature, timestamp)
+    VALUES ('${account}', '${signature}', ${new Date().toISOString()});`
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).catch(die) )
 }
 
-// What if multiple sessions are linked to this eth address?
-// Return the one most recently used
-db.getSession = (address) => {
-  q || console.log(`DB: Getting the cookie linked to ${address}`)
-  // return states.find({ address }, { sort: { timestamp: -1 } }).then(doc => { return doc[0] }).catch(err)
+db.cashout = (account) => {
+  return (query(`SELECT * FROM bjvm_signatures where account='${account}';`).then((rows) => {
+    // What if this account doesn't exist?!
+    const state = JSON.parse(rows[0])
+    state.public.chips = 0
+    const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+    console.log(`${new Date().toISOString()} ${q}`)
+    return ( query(q).catch(die) )
+  }).catch(die))
 }
 
 // add some chips to a session's current pile
-db.cashout = (cookie) => {
-  q || console.log(`DB: resetting ${cookie}'s chips to 0`)
-  // return states.update({ cookie }, { $set: { "state.public.chips": 0 } }).catch(err)
-}
-
-// add some chips to a session's current pile
-db.deposit = (cookie, chips) => {
-  q || console.log(`DB: depositing ${chips} chips to ${cookie}`)
-  // return states.update({ cookie }, { $inc: { "state.public.chips": Number(chips) } }).catch(err)
-}
-
-db.saveFeedback = (cookie, data) => {
-  q || console.log(`DB: saving feedback from ${cookie}: ${JSON.parse(data).feedback}`)
-  // return db.getState(cookie).then(state=>{ return feedback.insert({ cookie, state, feedback: JSON.parse(data), }).catch(err) }).catch(err)
+db.deposit = (account, chips) => {
+  return (query(`SELECT * FROM bjvm_signatures where account='${account}';`).then((rows) => {
+    // What if this account doesn't exist?!
+    const state = JSON.parse(rows[0])
+    state.public.chips += chips
+    const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+    console.log(`${new Date().toISOString()} ${q}`)
+    return ( query(q).catch(die) )
+  }).catch(die))
 }
 
 export default db
