@@ -13,11 +13,12 @@ const app = express()
 
 app.use(require('helmet')())
 
+app.use(express.static('/root/static'))
+
 app.use((req, res) => {
   console.log(`New request received for: ${req.path}`)
+  res.send('hello world')
 })
-
-app.use('/static', express.static('/root/static'))
 
 app.use(require('universal-cookie-express')())
 app.use(require('body-parser').text())

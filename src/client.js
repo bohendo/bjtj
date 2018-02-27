@@ -26,6 +26,6 @@ hydrate(
   <Provider store={store}>
     <Index />
   </Provider>,
-  document.getElementById('root'),
+  document.getElementById('bjvm_root'),
 )
 
