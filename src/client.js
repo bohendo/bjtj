@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMW from 'redux-thunk'
 
 import reducer from './reducers'
-import Index from './components/index'
+import Container from './containers/index'
 
 import theme from './style.css'
 
@@ -24,7 +24,7 @@ const store = createStore(reducer, state, applyMiddleware(thunkMW))
 
 hydrate(
   <Provider store={store}>
-    <Index />
+    <Container />
   </Provider>,
   document.getElementById('bjvm_root'),
 )

@@ -24,11 +24,17 @@ do
 done
 
 ########################################
-# Setup bind mount for easy development
-bundle="`pwd`/build/server.bundle.js"
-if [[ "$NODE_ENV" == "development" && -f "$bundle" ]]
+# Setup bind mounts for easy development
+if [[ "$NODE_ENV" == "development" ]]
 then
-  bindmount="- $bundle:/root/server.bundle.js"
+
+  bindserver=''
+  serverbundle="`pwd`/build/server.bundle.js"
+  [[ -f "$serverbundle" ]] && bindserver="- $serverbundle:/root/server.bundle.js"
+
+  bindclient=''
+  clientbundle="`pwd`/build/static/client.bundle.js"
+  [[ -f "$clientbundle" ]] && bindclient="- $clientbundle:/root/static/client.bundle.js"
 fi
 
 ########################################
@@ -72,7 +78,8 @@ services:
       - "3000:3000"
     volumes:
       - ethprovider_ipc:/tmp/ipc
-      $bindmount
+      $bindserver
+      $bindclient
 
 EOF
 
