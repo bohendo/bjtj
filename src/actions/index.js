@@ -1,4 +1,3 @@
-
 import fetch from 'isomorphic-fetch'
 
 // server-side actions
@@ -75,4 +74,3 @@ export function failure(error) {
     error,
   })
 }
-

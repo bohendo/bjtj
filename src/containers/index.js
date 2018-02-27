@@ -1,4 +1,3 @@
-
 import { connect } from 'react-redux'
 import { submit, refresh, cashout } from '../actions'
 import BJVM from '../components/bjvm.js'

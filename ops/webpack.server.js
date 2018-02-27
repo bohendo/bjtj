@@ -44,8 +44,6 @@ module.exports = {
   },
 
   plugins: [
-    // The server has nothing to do with stylesheets.
-    // During server-side renders, nginx provides style.css
     new webpack.IgnorePlugin(/\.s?css$/),
   ],
 

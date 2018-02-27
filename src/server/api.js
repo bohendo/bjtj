@@ -1,32 +1,25 @@
-
-const router = require('express').Router()
-
 import bj from '../blackjack'
 import db from './database'
 import eth from './eth'
-import err from '../utils/err'
+import express from 'express'
 
+const die = (msg) => {
+  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
+  process.exit(1)
+}
 
-router.use('/feedback', (req, res, next) => {
-  console.log(`API: feedback received from ${req.id}`)
-  db.saveFeedback(req.id, req.body).then(done=>{
-    db.deposit(req.id, 5).then(done=>{
-      res.json({message:"Thanks for the feedback!"})
-    }).catch(err)
-  }).catch(err)
-})
-
+const router = express.Router()
 
 // check for an ethereum address in the query string
 router.use('/register', (req, res, next) => {
   if (req.query && req.query.addr && req.query.addr.length === 42 && req.query.addr !== req.addr) {
     req.addr = req.query.addr
-    db.saveAddress(req.id, req.addr).then(() => {
+    db.saveSig(req.id, req.addr).then(() => {
       console.log(`API: saved address ${req.addr} for ${req.id}`)
       res.json({
         message: `Ready to cashout to ${req.addr}`
       })
-    }).catch(err)
+    }).catch(die)
   } else {
     res.json({
       fyi: `Oops, expected an ethereum address in the URL query`
@@ -44,8 +37,8 @@ router.get('/refresh', (req, res, next) => {
           message: "Refresh successful!"
         }))
       })
-    }).catch(err)
-  }).catch(err)
+    }).catch(die)
+  }).catch(die)
 })
 
 router.get('/cashout', (req, res, next) => {
@@ -57,14 +50,14 @@ router.get('/cashout', (req, res, next) => {
             message: "Cashout successful!",
             chips: 0,
           }))
-        }).catch(err)
-      }).catch(err)
+        }).catch(die)
+      }).catch(die)
     } else {
       res.json({
         message: 'Please provide an address first'
       })
     }
-  }).catch(err)
+  }).catch(die)
 })
 
 
@@ -78,14 +71,14 @@ const handleMove = (req, res, move) => {
   // insert this move into our log of all actions taken
   db.recordAction(req.id, move).then(() => {
     console.log(`API: inserted ${move} into db.actions`)
-  }).catch(err)
+  }).catch(die)
 
   const newState = bj(req.state, { type: move })
 
   // insert the result of this move into our states collection
   db.updateState(req.id, newState).then(() => {
     res.json(newState.public)
-  }).catch(err)
+  }).catch(die)
 
 }
 

@@ -1,11 +1,11 @@
-
-// Node built-ins
 import crypto from 'crypto'
-
-// My modules
 import bj from '../blackjack'
 import db from './database'
-import err from '../utils/err'
+
+const die = (msg) => {
+  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
+  process.exit(1)
+}
 
 const auth = (req, res, next) => {
   console.log(`=====\nAUTH: new req received for ${req.path}`)
@@ -22,9 +22,9 @@ const auth = (req, res, next) => {
         next()
       } else {
         req.state = bj()
-        db.newState(req.id, req.state).then(() => next()).catch(err)
+        db.newState(req.id, req.state).then(() => next()).catch(die)
       }
-    }).catch(err)
+    }).catch(die)
 
   // tag this client with a cookie
   } else {
@@ -47,7 +47,7 @@ const auth = (req, res, next) => {
     })
 
     req.state = bj()
-    db.newState(req.id, req.state).then(() => next()).catch(err)
+    db.newState(req.id, req.state).then(() => next()).catch(die)
   }
 }
 

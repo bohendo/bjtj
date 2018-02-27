@@ -35,8 +35,6 @@ fi
 # Pull updated images
 nodejs="$me/bjvm_nodejs:$v"
 docker pull $nodejs
-nginx="$me/bjvm_nginx:$v"
-docker pull $nginx
 
 ########################################
 # Create a docker-compose.yml & deploy
@@ -70,18 +68,11 @@ services:
       - blog_back
     secrets:
       - wp_mysql
+    ports:
+      - "3000:3000"
     volumes:
       - ethprovider_ipc:/tmp/ipc
       $bindmount
-
-  nginx:
-    image: $nginx
-    depends_on:
-      - nodejs
-    deploy:
-      mode: global
-    ports:
-      - "3000:80"
 
 EOF
 
