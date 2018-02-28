@@ -11,6 +11,11 @@ const die = (msg) => {
   process.exit(1)
 }
 
+router.get('/autograph', (req, res, next) => {
+  console.log(`${new Date().toISOString()} API: autograph received`)
+  return res.json({ message: "Thanks for the autograph!" })
+})
+
 router.get('/refresh', (req, res, next) => {
   eth.dealerData().then(dealer => {
     db.getState(req.id).then(doc => {
@@ -53,7 +58,7 @@ const handleMove = (req, res, move) => {
   console.log(`API: Handling ${move} for ${req.id}`)
 
   // insert this move into our log of all actions taken
-  db.recordAction(req.id, move).then(() => {
+  db.saveAction(req.id, move).then(() => {
     console.log(`API: inserted ${move} into db.actions`)
   }).catch(die)
 

@@ -20,7 +20,7 @@ export default class BJVM extends React.Component {
   updateMessage(message) { this.setState({ message }) }
 
   render() {
-    const { cashout, moves, playerHands, dealerCards,
+    const { autograph, moves, playerHands, dealerCards,
             bet, submit, refresh, dealerAddr,
             dealerBal, playerAddr } = this.props
 
@@ -64,7 +64,7 @@ export default class BJVM extends React.Component {
 
     <Refresh x="15" y="260" w="100" h="45" refresh={refresh} />
 
-    <Auth x="335" y="55" w="250" h="195" msg={this.updateMessage}/>
+    <Auth x="335" y="55" w="250" h="195" msg={this.updateMessage} ag={autograph} />
 
     <Chips x="125" y="260" w="275" h="45"
            chips={chips} bet={bet} />

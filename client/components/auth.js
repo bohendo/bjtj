@@ -37,8 +37,7 @@ export default class Auth extends React.Component {
       const from = accounts[0].toLowerCase()
       const toSign = [{ type: 'string', name: 'Agreement', value: agreement.join(' ') }]
 
-      // a la https://medium.com/metamask/scaling-web3-with-signtypeddata-91d6efc8b290
-
+      // https://github.com/danfinlay/js-eth-personal-sign-examples/blob/master/index.js
       web3.currentProvider.sendAsync({
         method: 'eth_signTypedData',
         params: [toSign, accounts[0]],
@@ -55,7 +54,16 @@ export default class Auth extends React.Component {
         if (recovered === from) {
           console.log(`Successfully verified signer: ${recovered}`)
           this.props.msg('Thanks for the autograph!')
-          // send address & signature to server
+
+          let d = new Date(); // set a cookie that will expire in 90 days
+          d.setTime(d.getTime() + (90 * 24*60*60*1000))
+          document.cookie = `bjvm_id=${from}; expires=${d.toUTCString()}`
+          document.cookie = `bjvm_ag=${res.result}; expires=${d.toUTCString()}`
+
+          console.log(`Cookies: ${document.cookie}`)
+
+          // send id & autograph to server
+          this.props.ag()
         } else {
           console.log(`Failed to verify signer: ${recovered} ${JSON.stringify(res)}`)
         }

@@ -2,6 +2,21 @@ import fetch from 'isomorphic-fetch'
 
 // client-side actions & action creators
 
+export const AUTOGRAPH = 'AUTOGRAPH'
+export function autograph() {
+  return function(dispatch) {
+    return fetch('/api/autograph', { credentials: 'same-origin' })
+      .then(
+        response => response.json(),
+        error => dispatch(failure(error))
+      ).then(
+        data => {
+          return dispatch(success(data))
+        }
+      ).catch(console.error)
+  }
+}
+
 export const REFRESH = 'REFRESH'
 export function refresh() {
   console.log('Refreshment: activated!')

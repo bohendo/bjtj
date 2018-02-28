@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { 
+  AUTOGRAPH,
   SUBMIT,
   CASHOUT,
   REFRESH,
@@ -30,6 +31,10 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case AUTOGRAPH:
+      return (Object.assign({}, state,
+        { waiting: true }
+      ))
     case CASHOUT:
       return (Object.assign({}, state,
         { waiting: true }

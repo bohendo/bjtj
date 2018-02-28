@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import BJVM from './components/bjvm.js'
-import { submit, refresh, cashout } from './actions'
+import { submit, refresh, autograph } from './actions'
 
 const mapStateToProps = state => state
 
@@ -8,7 +8,7 @@ const mapDispatchToProps = dispatch => {
   return ({
     submit: (move) => {dispatch(submit(move))},
     refresh: () => {dispatch(refresh())},
-    cashout: (addr) => {dispatch(cashout())},
+    autograph: (addr) => {dispatch(autograph())},
   })
 }
 

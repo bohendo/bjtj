@@ -42,43 +42,53 @@ query(`CREATE TABLE IF NOT EXISTS bjvm_players (
 
 const db = { query }
 
-// return gamestate for the given session
-db.getState = (account) => {
-  const q = `SELECT * from bjvm_states WHERE account='${account}';`
-  console.log(`${new Date().toISOString()} ${q}`)
-  return (
-    query(q).then(res=>JSON.parse(res[0])) // convert stringified object to object
-    .catch(die)
-  )
-}
-
-// update this session's state
-db.updateState = (account, state) => {
-  const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).catch(die) )
-}
-
-db.recordAction = (account, action) => {
-  const q = `INSERT INTO bjvm_actions (account, action, timestamp)
-    VALUES ('${account}', '${JSON.stringify(action)}', ${new Date().toISOString()});`
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).catch(die) )
-}
-
 db.newState = (account, state) => {
   const q = `INSERT INTO bjvm_states (account, state, timestamp)
-    VALUES ('${account}', '${JSON.stringify(state)}', ${new Date().toISOString()});`
+    VALUES ('${account}',
+    '${JSON.stringify(state)}',
+    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+
   console.log(`${new Date().toISOString()} ${q}`)
   return ( query(q).catch(die) )
 }
 
-db.saveSig = (address, signature) => {
-  const q = `INSERT INTO bjvm_players (account, signature, timestamp)
-    VALUES ('${account}', '${signature}', ${new Date().toISOString()});`
+db.getState = (account) => {
+  const q = `SELECT * from bjvm_states WHERE account='${account}';`
+
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).then(res=>JSON.parse(res[0])).catch(die))
+}
+
+db.updateState = (account, state) => {
+  const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}',
+    timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+
+  console.log(`${new Date().toISOString().slice(0,19).replace('T', ' ')} ${q}`)
+  return ( query(q).catch(die) )
+}
+
+
+db.saveAction = (account, action) => {
+  const q = `INSERT INTO bjvm_actions (account, action, timestamp)
+    VALUES ('${account}',
+    '${JSON.stringify(action)}',
+    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+
   console.log(`${new Date().toISOString()} ${q}`)
   return ( query(q).catch(die) )
 }
+
+
+db.saveSig = (account, signature) => {
+  const q = `INSERT INTO bjvm_players (account, signature, timestamp)
+    VALUES ('${account}',
+    '${signature}',
+    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+
+  console.log(`${new Date().toISOString()} ${q}`)
+  return ( query(q).catch(die) )
+}
+
 
 db.cashout = (account) => {
   return (query(`SELECT * FROM bjvm_signatures where account='${account}';`).then((rows) => {
