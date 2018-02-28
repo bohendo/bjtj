@@ -20,9 +20,6 @@ const initialState = {
   bet: 1,
   chips: 5,
 
-  // not used yet but might be later
-  waiting: false,
-
   // let's disclose our server's financial situation
   dealerAddr: '0xabc123...',
   dealerBal: 0,

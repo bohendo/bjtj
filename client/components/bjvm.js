@@ -9,49 +9,23 @@ import Button from './button.js'
 import Chips from './chips.js'
 import Refresh from './refresh.js'
 
-// Stupid temporary web3 stub
-if (typeof(window) === 'undefined') {
-  global.web3 = {
-    eth: { getAccounts: ()=>{} },
-    providers: { HttpProvider: ()=>{} },
-    currentProvider: {}
-  }
-}
-
 export default class BJVM extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = { message: this.props.message }
+    this.updateMessage = this.updateMessage.bind(this)
   }
 
-  updateMessage(message) {
-    this.setState({ message }).bind(this)
-  }
-
-  componentDidMount() {
-
-    if (typeof(web3) === 'undefined') {
-      console.log('Couldn\'t find built-in web3 instance, please install metamask')
-    } else {
-      console.log(`Found built-in web3 instance!`)
-      web3 = new Web3(web3.currentProvider)
-    }
-  }
+  updateMessage(message) { this.setState({ message }) }
 
   render() {
-    const { moves, playerHands, dealerCards, bet, submit, refresh, dealerAddr, dealerBal, playerAddr } = this.props
+    const { cashout, moves, playerHands, dealerCards,
+            bet, submit, refresh, dealerAddr,
+            dealerBal, playerAddr } = this.props
+
     let dealerHand = [{ cards: dealerCards, isActive: true}]
-
-
     let chips = this.props.chips
-    const cashout = (addr) => {
-      if (chips === 0) {
-        console.log('nothing to cash out')
-      }
-      chips = 0
-      this.props.cashout(addr)
-    }
 
     ////////////////////////////////////////
     // Magic Numbers & Strings
@@ -94,17 +68,6 @@ export default class BJVM extends React.Component {
 
     <Chips x="125" y="260" w="275" h="45"
            chips={chips} bet={bet} />
-
-    {/* Deck
-    <Card x="325" y="100" w="80" suit="?" rank="?" />
-    <Card x="325" y="105" w="80" suit="?" rank="?" />
-    <Card x="325" y="110" w="80" suit="?" rank="?" />
-    <Card x="325" y="115" w="80" suit="?" rank="?" />
-    <Card x="325" y="120" w="80" suit="?" rank="?" />
-    <Card x="325" y="125" w="80" suit="?" rank="?" />
-    <Card x="325" y="130" w="80" suit="?" rank="?" />
-    <Card x="325" y="135" w="80" suit="?" rank="?" />
-    */}
 
     <Hand x="130" y="105" w="190" hand={dealerHand} />
     <Hand x="140"  y="315" w="250" hand={playerHands} />

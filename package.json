@@ -30,6 +30,7 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0-beta",
     "es6-promise": "^4.1.1",
+    "eth-sig-util": "^1.4.2",
     "express": "^4.16.1",
     "helmet": "^3.8.2",
     "html-loader": "^0.5.1",

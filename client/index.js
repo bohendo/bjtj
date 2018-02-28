@@ -10,16 +10,10 @@ import theme from './style.css'
 import reducer from './reducers'
 import Container from './containers'
 
-// clobber global web3 if it exists
 window.web3 = new Web3(Web3.givenProvider)
 
-const state = window.__BJVM_STATE__
-delete window.__BJVM_STATE__
-
-const store = createStore(reducer, state, applyMiddleware(thunkMW))
-
 hydrate(
-  <Provider store={store}>
+  <Provider store={createStore(reducer, undefined, applyMiddleware(thunkMW))}>
     <Container />
   </Provider>,
   document.getElementById('bjvm_root'),

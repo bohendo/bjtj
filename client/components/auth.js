@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import sigUtil from 'eth-sig-util'
 
 // Propose an agreement to the user
 const agreement = [ // 33 char column limit
@@ -14,29 +15,52 @@ const agreement = [ // 33 char column limit
 
 export default class Auth extends React.Component { 
 
+  componentWillMount() {
+    // Setup initial message according to metamask/signature status
+    if (!web3) { this.props.msg('Please download MetaMask'); return; }
+    web3.eth.getAccounts((err,accounts)=>{
+      if (!accounts || accounts.length === 0) {
+        this.props.msg('Please unlock MetaMask'); return;
+      }
+      this.props.msg('Please sign our agreement'); return;
+    })
+  }
+
   sign() {
     console.log(`Autographing, please wait...`)
-    if (!web3) { this.props.msg('Please download MetaMask'); return; }
 
     web3.eth.getAccounts((err,accounts)=>{
       if (!accounts || accounts.length === 0) {
        this.props.msg('Please unlock MetaMask'); return;
       }
 
-      const pretty = { type: 'string', name: 'Agreement', value: agreement.join(' ') }
-      console.log(pretty)
-      console.log(accounts)
+      const from = accounts[0].toLowerCase()
+      const toSign = [{ type: 'string', name: 'Agreement', value: agreement.join(' ') }]
 
       // a la https://medium.com/metamask/scaling-web3-with-signtypeddata-91d6efc8b290
-/*
+
       web3.currentProvider.sendAsync({
-        method: 'eth_aignTypedData',
-        params: [pretty, accounts[0]],
-        from: accounts[0]
+        method: 'eth_signTypedData',
+        params: [toSign, accounts[0]],
+        from
       }, (err,res) => {
+        if (err) { console.error('err', err); return; }
+        if (res.error) { console.log('Autograph rejected'); return; }
+
+        const recovered = sigUtil.recoverTypedSignature({
+          data: toSign,
+          sig: res.result
+        }).toLowerCase()
+
+        if (recovered === from) {
+          console.log(`Successfully verified signer: ${recovered}`)
+          this.props.msg('Thanks for the autograph!')
+          // send address & signature to server
+        } else {
+          console.log(`Failed to verify signer: ${recovered} ${JSON.stringify(res)}`)
+        }
 
       })
-*/
     })
   }
 
