@@ -4,29 +4,12 @@ import bj from './blackjack'
 import db from './database'
 import eth from './eth'
 
+const router = express.Router()
+
 const die = (msg) => {
   console.error(`${new Date().toISOString()} Fatal: ${msg}`)
   process.exit(1)
 }
-
-const router = express.Router()
-
-// check for an ethereum address in the query string
-router.use('/register', (req, res, next) => {
-  if (req.query && req.query.addr && req.query.addr.length === 42 && req.query.addr !== req.addr) {
-    req.addr = req.query.addr
-    db.saveSig(req.id, req.addr).then(() => {
-      console.log(`API: saved address ${req.addr} for ${req.id}`)
-      res.json({
-        message: `Ready to cashout to ${req.addr}`
-      })
-    }).catch(die)
-  } else {
-    res.json({
-      fyi: `Oops, expected an ethereum address in the URL query`
-    })
-  }
-})
 
 router.get('/refresh', (req, res, next) => {
   eth.dealerData().then(dealer => {
@@ -37,7 +20,7 @@ router.get('/refresh', (req, res, next) => {
         res.json(Object.assign(dealer, newState.public, {
           message: "Refresh successful!"
         }))
-      })
+      }).catch(die)
     }).catch(die)
   }).catch(die)
 })

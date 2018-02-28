@@ -1,17 +1,48 @@
 import React from 'react'
+import Web3 from 'web3';
 
 import Hand from './hand.js'
 import Card from './card.js'
 import Dealer from './dealer.js'
-import Payment from './payment.js'
+import Auth from './auth.js'
 import Button from './button.js'
 import Chips from './chips.js'
+import Refresh from './refresh.js'
+
+// Stupid temporary web3 stub
+if (typeof(window) === 'undefined') {
+  global.web3 = {
+    eth: { getAccounts: ()=>{} },
+    providers: { HttpProvider: ()=>{} },
+    currentProvider: {}
+  }
+}
 
 export default class BJVM extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = { message: this.props.message }
+  }
+
+  updateMessage(message) {
+    this.setState({ message }).bind(this)
+  }
+
+  componentDidMount() {
+
+    if (typeof(web3) === 'undefined') {
+      console.log('Couldn\'t find built-in web3 instance, please install metamask')
+    } else {
+      console.log(`Found built-in web3 instance!`)
+      web3 = new Web3(web3.currentProvider)
+    }
+  }
+
   render() {
-    const { message, moves, playerHands, dealerCards, bet, submit, refresh, dealerAddr, dealerBal, playerAddr } = this.props
+    const { moves, playerHands, dealerCards, bet, submit, refresh, dealerAddr, dealerBal, playerAddr } = this.props
     let dealerHand = [{ cards: dealerCards, isActive: true}]
+
 
     let chips = this.props.chips
     const cashout = (addr) => {
@@ -53,13 +84,13 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
-    <text x="20" y="75" fontSize="20">{message}</text>
+    <text x="20" y="75" fontSize="20">{this.state.message}</text>
 
-    <Dealer x="25" y="90" w="90" h="200"/>
+    <Dealer x="25" y="90" w="90" h="180"/>
 
-    <Payment x="335" y="35" w="250" h="215"
-      refresh={refresh} cashout={cashout} playerAddr={playerAddr}
-      dealerAddr={dealerAddr} dealerBal={dealerBal} />
+    <Refresh x="15" y="260" w="100" h="45" refresh={refresh} />
+
+    <Auth x="335" y="55" w="250" h="195" msg={this.updateMessage}/>
 
     <Chips x="125" y="260" w="275" h="45"
            chips={chips} bet={bet} />

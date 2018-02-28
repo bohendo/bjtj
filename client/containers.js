@@ -8,7 +8,7 @@ const mapDispatchToProps = dispatch => {
   return ({
     submit: (move) => {dispatch(submit(move))},
     refresh: () => {dispatch(refresh())},
-    cashout: (addr) => {dispatch(cashout(addr))},
+    cashout: (addr) => {dispatch(cashout())},
   })
 }
 

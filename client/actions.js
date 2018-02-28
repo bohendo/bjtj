@@ -2,23 +2,6 @@ import fetch from 'isomorphic-fetch'
 
 // client-side actions & action creators
 
-export const CASHOUT = 'CASHOUT'
-export function cashout(addr) {
-  console.log('Cashout: activated!')
-  return function(dispatch) {
-    return fetch(`/api/cashout?addr=${addr}`, { credentials: 'same-origin' })
-      .then(
-        response => response.json(),
-        error => dispatch(failure(error))
-      ).then(
-        data => {
-          console.log(`Cashout response: ${JSON.stringify(data)}`)
-          return dispatch(success(data))
-        }
-      ).catch(console.error)
-  }
-}
-
 export const REFRESH = 'REFRESH'
 export function refresh() {
   console.log('Refreshment: activated!')
@@ -30,6 +13,23 @@ export function refresh() {
       ).then(
         data => {
           console.log(`Refreshment response: ${JSON.stringify(data)}`)
+          return dispatch(success(data))
+        }
+      ).catch(console.error)
+  }
+}
+
+export const CASHOUT = 'CASHOUT'
+export function cashout(addr) {
+  console.log('Cashout: activated!')
+  return function(dispatch) {
+    return fetch(`/api/cashout?addr=${addr}`, { credentials: 'same-origin' })
+      .then(
+        response => response.json(),
+        error => dispatch(failure(error))
+      ).then(
+        data => {
+          console.log(`Cashout response: ${JSON.stringify(data)}`)
           return dispatch(success(data))
         }
       ).catch(console.error)

@@ -13,8 +13,8 @@ import {
  */
 
 const initialState = {
-  message: 'Click Deal when you\'re ready!',
-  moves: ['deal'],
+  message: 'Log into MetaMask to play',
+  moves: [],
   playerHands: [],
   dealerCards: [],
   bet: 1,
@@ -28,7 +28,7 @@ const initialState = {
   dealerBal: 0,
 
   // placeholder
-  playerAddr: '0xabc123...',
+  playerAddr: 'LOCKED',
 }
 
 const reducer = (state = initialState, action) => {

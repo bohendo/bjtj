@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import express from 'express'
 
 import api  from './api'
-import eth from './eth'
+import auth  from './auth'
 
 console.log(process.env)
 
@@ -18,6 +18,7 @@ app.use(require('universal-cookie-express')())
 app.use(require('body-parser').text())
 
 // vending machine buttons
+app.use(auth)
 app.use('/api', api)
 
 // catch-all

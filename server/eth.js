@@ -10,7 +10,7 @@ const die = (msg) => {
   process.exit(1)
 }
 
-const secret = 'secret' //fs.readFileSync('/run/secrets/mongo', 'utf8')
+const secret = 'secret' //fs.readFileSync(`/run/secrets/${process.env.ETH_ADDRESS}`, 'utf8')
 
 const web3 = new Web3(new Web3.providers.IpcProvider(
   process.env.ETH_PROVIDER,
@@ -26,6 +26,13 @@ const eth = {}
 
 eth.dealerData = () => {
   console.log(`ETH: Fetching dealer data from ${dealer.options.address}`)
+
+  // stupid stub
+  return new Promise( (resolve,reject) => {
+    resolve({ dealerAddr: dealer.options.address, dealerBal: 0 })
+  })
+
+/*
   return web3.eth.getBalance(dealer.options.address).then(bal => {
     return {
       dealerAddr: dealer.options.address,
@@ -38,6 +45,7 @@ eth.dealerData = () => {
       dealerBal: 0
     }
   })
+*/
 }
 
 eth.cashout = (addr, chips) => {
@@ -64,4 +72,3 @@ dealer.events.Deposit((err, res) => {
 */
 
 export default eth
-

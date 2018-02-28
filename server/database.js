@@ -24,7 +24,7 @@ const query = (q) => {
 }
 
 // Initialize the bjvm database tables
-query(`CREATE TABLE IF NOT EXISTS bjvm_gamestates (
+query(`CREATE TABLE IF NOT EXISTS bjvm_states (
   account   CHAR(42)      PRIMARY KEY,
   state     VARCHAR(2048) NOT NULL,
   timestamp DATETIME      NOT NULL);`)
@@ -35,16 +35,16 @@ query(`CREATE TABLE IF NOT EXISTS bjvm_actions (
   timestamp DATETIME      NOT NULL,
   PRIMARY KEY (account, timestamp));`)
 
-query(`CREATE TABLE IF NOT EXISTS bjvm_signatures (
+query(`CREATE TABLE IF NOT EXISTS bjvm_players (
   account   CHAR(42)      PRIMARY KEY,
   signature VARCHAR(1024) NOT NULL,
   timestamp DATETIME      NOT NULL);`)
 
-const db = {}
+const db = { query }
 
 // return gamestate for the given session
 db.getState = (account) => {
-  const q = `SELECT * from bjvm_gamestates WHERE account='${account}';`
+  const q = `SELECT * from bjvm_states WHERE account='${account}';`
   console.log(`${new Date().toISOString()} ${q}`)
   return (
     query(q).then(res=>JSON.parse(res[0])) // convert stringified object to object
@@ -54,7 +54,7 @@ db.getState = (account) => {
 
 // update this session's state
 db.updateState = (account, state) => {
-  const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+  const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
   console.log(`${new Date().toISOString()} ${q}`)
   return ( query(q).catch(die) )
 }
@@ -67,14 +67,14 @@ db.recordAction = (account, action) => {
 }
 
 db.newState = (account, state) => {
-  const q = `INSERT INTO bjvm_gamestates (account, state, timestamp)
+  const q = `INSERT INTO bjvm_states (account, state, timestamp)
     VALUES ('${account}', '${JSON.stringify(state)}', ${new Date().toISOString()});`
   console.log(`${new Date().toISOString()} ${q}`)
   return ( query(q).catch(die) )
 }
 
 db.saveSig = (address, signature) => {
-  const q = `INSERT INTO bjvm_signatures (account, signature, timestamp)
+  const q = `INSERT INTO bjvm_players (account, signature, timestamp)
     VALUES ('${account}', '${signature}', ${new Date().toISOString()});`
   console.log(`${new Date().toISOString()} ${q}`)
   return ( query(q).catch(die) )
@@ -85,7 +85,7 @@ db.cashout = (account) => {
     // What if this account doesn't exist?!
     const state = JSON.parse(rows[0])
     state.public.chips = 0
-    const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+    const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
     console.log(`${new Date().toISOString()} ${q}`)
     return ( query(q).catch(die) )
   }).catch(die))
@@ -97,7 +97,7 @@ db.deposit = (account, chips) => {
     // What if this account doesn't exist?!
     const state = JSON.parse(rows[0])
     state.public.chips += chips
-    const q = `UPDATE bjvm_gamestates SET state='${JSON.stringify(state)}';`
+    const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
     console.log(`${new Date().toISOString()} ${q}`)
     return ( query(q).catch(die) )
   }).catch(die))
