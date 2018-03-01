@@ -19,14 +19,7 @@ const initialState = {
   playerHands: [],
   dealerCards: [],
   bet: 1,
-  chips: 5,
-
-  // let's disclose our server's financial situation
-  dealerAddr: '0xabc123...',
-  dealerBal: 0,
-
-  // placeholder
-  playerAddr: 'LOCKED',
+  chips: 5
 }
 
 const reducer = (state = initialState, action) => {

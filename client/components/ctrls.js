@@ -29,7 +29,7 @@ export default class Ctrls extends React.Component {
     return (
 
 
-<g onClick={()=>submit('deal')}>
+<g onClick={()=>this.props.submit('deal')}>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke="black"/>
