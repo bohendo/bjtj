@@ -23,8 +23,22 @@ export default class Chips extends React.Component {
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
+  {/* Sell all chips */}
+  <rect x={x(2.5)} y={y(85)} width={w(42.5)} height={h(70)}
+        rx="5" ry="5" fill={fg} stroke={blk}/>
+  <text x={x(5)} y={y(62.5)} fontSize={fs}>
+    Chips: {this.props.chips}
+  </text>
+
+  {/* Buy 5 chips */}
+  <rect x={x(2.5)} y={y(85)} width={w(42.5)} height={h(70)}
+        rx="5" ry="5" fill={fg} stroke={blk}/>
+  <text x={x(5)} y={y(62.5)} fontSize={fs}>
+    Chips: {this.props.chips}
+  </text>
+
   {/* Chips */}
-  <rect x={x(2.5)} y={y(15)} width={w(42.5)} height={h(70)}
+  <rect x={x(2.5)} y={y(85)} width={w(42.5)} height={h(70)}
         rx="5" ry="5" fill={fg} stroke={blk}/>
   <text x={x(5)} y={y(62.5)} fontSize={fs}>
     Chips: {this.props.chips}

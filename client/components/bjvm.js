@@ -20,26 +20,42 @@ export default class BJVM extends React.Component {
       authenticated: false
     }
     this.updateMessage = this.updateMessage.bind(this)
+    this.updateAuth = this.updateAuth.bind(this)
   }
 
   componentDidMount() {
-    let cookies = document.cookie;
 
-    if (!cookies) {
-      return this.setState({ authenticated: false })
-    }
+    // get account
+    if (!web3) return this.props.msg('Please install MetaMask')
+    web3.eth.getAccounts((err,accounts)=>{
+      if (!accounts || accounts.length === 0) {
+        return this.props.msg('Please unlock MetaMask')
+      }
+      let d = new Date(); // set a cookie that will expire in 90 days
+      d.setTime(d.getTime() + (90 * 24*60*60*1000))
+      document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${d.toUTCString()}`
+      console.log(`Found ethereum account: ${accounts[0].toLowerCase()}`)
 
-    // get cookies
-    let bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
-    let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
-    if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
-      return this.setState({ authenticated: true })
-    } else {
-      return this.setState({ authenticated: false })
-    }
+      // get cookies
+      let cookies = document.cookie;
+      if (!cookies) return this.setState({ authenticated: false })
+
+      let bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
+      let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
+      if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
+        console.log(`User authenticated`)
+        this.updateMessage(`If you tip me, I'll give you some chips :)`)
+        return this.setState({ authenticated: true })
+      } else {
+        console.log(`User not authenticated`)
+        return this.setState({ authenticated: false })
+      }
+
+    })
   }
 
   updateMessage(message) { this.setState({ message }) }
+  updateAuth(auth) { this.setState({ authenticated: auth }) }
 
   render() {
     const { autograph, moves, playerHands, dealerCards,
@@ -71,7 +87,7 @@ export default class BJVM extends React.Component {
 
     const auth = (this.state.authenticated) ?
       null : 
-      <Auth x="175" y="147.5" w="250" h="200" msg={this.updateMessage} ag={autograph} />
+      <Auth x="175" y="147.5" w="250" h="200" msg={this.updateMessage} auth={this.updateAuth} ag={autograph} />
 
     return (
 
