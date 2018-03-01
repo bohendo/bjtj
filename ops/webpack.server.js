@@ -40,6 +40,10 @@ module.exports = {
         use: ['html-loader'],
         exclude: /node_modules/,
       },
+      {
+        test: /\.txt$/,
+        use: [{ loader: 'raw-loader' }]
+      },
     ],
   },
 

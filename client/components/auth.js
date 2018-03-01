@@ -1,17 +1,6 @@
 import React from 'react'
 import sigUtil from 'eth-sig-util'
-
-// Propose an agreement to the user
-const agreement = [ // 33 char column limit
-  "I understand and agree that",
-  "this game is an elaborate tip jar.",
-  "Although I expect to be able to",
-  "exchange my chips for Ether,",
-  "I am at peace knowing that the",
-  "site owner may, at any time and",
-  "for any reason, be unable or",
-  "unwilling to refund my chips."
-]
+import { agreement, signData, verify } from '../verify'
 
 export default class Auth extends React.Component { 
 
@@ -27,45 +16,39 @@ export default class Auth extends React.Component {
   }
 
   sign() {
-    console.log(`Autographing, please wait...`)
 
     web3.eth.getAccounts((err,accounts)=>{
       if (!accounts || accounts.length === 0) {
-       this.props.msg('Please unlock MetaMask'); return;
+        this.props.msg('Please unlock MetaMask')
+        return console.log('Please unlock MetaMask')
       }
 
+      console.log(`Autographing, please wait...`)
       const from = accounts[0].toLowerCase()
-      const toSign = [{ type: 'string', name: 'Agreement', value: agreement.join(' ') }]
 
       // https://github.com/danfinlay/js-eth-personal-sign-examples/blob/master/index.js
       web3.currentProvider.sendAsync({
         method: 'eth_signTypedData',
-        params: [toSign, accounts[0]],
+        params: [signData, accounts[0]],
         from
       }, (err,res) => {
         if (err) { console.error('err', err); return; }
         if (res.error) { console.log('Autograph rejected'); return; }
 
-        const recovered = sigUtil.recoverTypedSignature({
-          data: toSign,
-          sig: res.result
-        }).toLowerCase()
-
-        if (recovered === from) {
-          console.log(`Successfully verified signer: ${recovered}`)
+        if (verify(from, res.result)) {
+          console.log(`Successfully verified signer: ${from}`)
           this.props.msg('Thanks for the autograph!')
 
           let d = new Date(); // set a cookie that will expire in 90 days
           d.setTime(d.getTime() + (90 * 24*60*60*1000))
           document.cookie = `bjvm_id=${from}; expires=${d.toUTCString()}`
           document.cookie = `bjvm_ag=${res.result}; expires=${d.toUTCString()}`
-
           console.log(`Cookies: ${document.cookie}`)
 
           // send id & autograph to server
           this.props.ag()
         } else {
-          console.log(`Failed to verify signer: ${recovered} ${JSON.stringify(res)}`)
+          console.log(`Failed to verify signer: ${from} ${JSON.stringify(res)}`)
         }
 
       })
@@ -82,7 +65,7 @@ export default class Auth extends React.Component {
     const w = (n) => Number(this.props.w)*n/100;
     const h = (n) => Number(this.props.h)*n/100;
 
-    const agreement_jsx = agreement.map((line,i) => {
+    const agreement_jsx = agreement.split(/\r?\n/).map((line,i) => {
       return(<text x={x(5)} y={y(12+8.5*i)} fontSize="14" pointerEvents="none">{line}</text>)
     })
 

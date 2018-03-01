@@ -5,7 +5,7 @@ import Hand from './hand.js'
 import Card from './card.js'
 import Dealer from './dealer.js'
 import Auth from './auth.js'
-import Button from './button.js'
+import Ctrls from './ctrls.js'
 import Chips from './chips.js'
 import Refresh from './refresh.js'
 
@@ -13,8 +13,16 @@ export default class BJVM extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = { message: this.props.message }
+    this.state = {
+      message: this.props.message,
+      signed: false
+    }
     this.updateMessage = this.updateMessage.bind(this)
+  }
+
+  componentDidMount() {
+    let cookies = document.cookies;
+    
   }
 
   updateMessage(message) { this.setState({ message }) }
@@ -72,11 +80,7 @@ export default class BJVM extends React.Component {
     <Hand x="130" y="105" w="190" hand={dealerHand} />
     <Hand x="140"  y="315" w="250" hand={playerHands} />
 
-    <Button x="410" y="260" w="175" h="45" type="deal" fn={submit} moves={moves}/>
-    <Button x="410" y="310" w="175" h="45" type="hit" fn={submit} moves={moves}/>
-    <Button x="410" y="360" w="175" h="45" type="double" fn={submit} moves={moves}/>
-    <Button x="410" y="410" w="175" h="45" type="stand" fn={submit} moves={moves}/>
-    <Button x="410" y="460" w="175" h="45" type="split" fn={submit} moves={moves}/>
+    <Ctrls x="335" y="260" w="250" h="150" submit={submit} moves={moves} />
 
   </svg> 
 

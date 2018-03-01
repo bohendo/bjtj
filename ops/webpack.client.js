@@ -35,6 +35,10 @@ module.exports = {
           { loader: 'css-loader' },
         ],
       },
+      {
+        test: /\.txt$/,
+        use: [{ loader: 'raw-loader' }]
+      },
     ],
   },
 

@@ -4,10 +4,10 @@ import React from 'react';
 let height = "50";
 let width = "150";
 
-export default class Button extends React.Component { 
+export default class Ctrls extends React.Component { 
   render() {
 
-    const { type, moves, fn } = this.props
+    const { type, moves, submit } = this.props
 
     ////////////////////////////////////////
     // Props & Magic Numbers
@@ -20,32 +20,24 @@ export default class Button extends React.Component {
     const bg = '#ff2';
     const fg = '#ffc'
 
-    let txt;
-    if (type === 'deal') {
-      txt = 'Deal me in';
-    } else if (type === 'hit') {
-      txt = 'Hit me';
-    } else if (type === 'double') {
-      txt = 'Double down';
-    } else if (type === 'stand') {
-      txt = 'Stand';
-    } else if (type === 'split') {
-      txt = 'Split';
-    }
-
     let isEnabled = "0.8"
     if (moves.includes(type)) {
       isEnabled = "0.0"
     }
 
+    // TODO: Add hit,stand,double,split buttons
     return (
-<g onClick={()=>fn(type)}>
+
+
+<g onClick={()=>submit('deal')}>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke="black"/>
+
   <rect x={x(5)} y={y(10)} width={w(90)} height={h(80)}
         rx="5" ry="5" fill={fg} stroke="black"/>
-  <text x={x(10)} y={y(65)} fontSize='20' pointerEvents="none">{txt}</text>
+
+  <text x={x(10)} y={y(65)} fontSize='20' pointerEvents="none">Deal</text>
 
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill="black" fillOpacity={isEnabled} stroke="black"/>

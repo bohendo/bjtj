@@ -1,18 +1,14 @@
 import db from './database'
 import sigUtil from 'eth-sig-util'
+import agreement from '../Agreement.txt'
 
-// Propose an agreement to the user
-const agreement = [ // 33 char column limit
-  "I understand and agree that",
-  "this game is an elaborate tip jar.",
-  "Although I expect to be able to",
-  "exchange my chips for Ether,",
-  "I am at peace knowing that the",
-  "site owner may, at any time and",
-  "for any reason, be unable or",
-  "unwilling to refund my chips."
-]
-const toSign = [{ type: 'string', name: 'Agreement', value: agreement.join(' ') }]
+const verify = (usr, sig) => {
+  const signee = sigUtil.recoverTypedSignature({
+    data: [{ type: 'string', name: 'Agreement', value: agreement }],
+    sig
+  })
+  return (signee.toLowerCase() === usr.toLowerCase())
+}
 
 const auth = (req, res, next) => {
   console.log(`${new Date().toISOString()} AUTH: new req received for ${req.path}`)
@@ -27,10 +23,7 @@ const auth = (req, res, next) => {
   id = id.toLowerCase()
   ag = ag.toLowerCase()
 
-  // verify signature
-  const signer = sigUtil.recoverTypedSignature({ data: toSign, sig: ag }).toLowerCase()
-
-  if (signer !== id) { // autograph is valid
+  if (!verify(id, ag)) { // autograph is valid
     console.log(`${new Date().toISOString()} Player ${id} provided an invalid signature`)
     return res.json({ message: "Sorry bud, this autograph don't look right" })
   }
