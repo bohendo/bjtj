@@ -73,12 +73,17 @@ export default class Chips extends React.Component {
     const w = (n) => Number(this.props.w)*n/100;
     const h = (n) => Number(this.props.h)*n/100;
 
-    const bg = '#66f';
-    const fg = '#aaf';
+    const bg = '#88f';
+    const fg = '#ccf';
     const blk = '#000'; 
     const fs = 16; // fs for Font Size
 
     const btn_h = 47.5
+
+    const tip     = [2.5,  47.5,  52.5, 25]
+    const cashout = [60, 47.5,  37.5, 25]
+
+    const txt = [10, 22]
 
     const addrlink = `https://etherscan.io/address/${this.state.dealerAddr}`
 
@@ -98,22 +103,22 @@ export default class Chips extends React.Component {
 
   {/* Buy 5 chips */}
   <g onClick={this.tip} cursor="pointer">
-    <rect x={x(2.5)} y={y(btn_h)} width={w(50)} height={h(25)}
+    <rect x={x(tip[0])} y={y(tip[1])} width={w(tip[2])} height={h(tip[3])}
           rx="5" ry="5" fill="#00f" stroke={blk}/>
-    <rect x={x(2.5)+2.5} y={y(btn_h)+2.5} width={w(50)-5} height={h(25)-5}
+    <rect x={x(tip[0])+2.5} y={y(tip[1])+2.5} width={w(tip[2])-5} height={h(tip[3])-5}
           rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(7.5)} y={y(btn_h)+20} fontSize={fs}>
+    <text x={x(tip[0])+txt[0]} y={y(tip[1])+txt[1]} fontSize="18">
       Tip 5 mETH
     </text>
   </g>
 
   {/* Cash out all chips */}
   <g onClick={this.cashout} cursor="pointer">
-    <rect x={x(56)} y={y(btn_h)} width={w(40)} height={h(25)}
+    <rect x={x(cashout[0])} y={y(cashout[1])} width={w(cashout[2])} height={h(cashout[3])}
           rx="5" ry="5" fill="#00f" stroke={blk}/>
-    <rect x={x(56)+2.5} y={y(btn_h)+2.5} width={w(40)-5} height={h(25)-5}
+    <rect x={x(cashout[0])+2.5} y={y(cashout[1])+2.5} width={w(cashout[2])-5} height={h(cashout[3])-5}
           rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(62.5)} y={y(btn_h)+20} fontSize={fs}>
+    <text x={x(cashout[0])+txt[0]} y={y(cashout[1])+txt[1]} fontSize="18">
       Cashout
     </text>
   </g>

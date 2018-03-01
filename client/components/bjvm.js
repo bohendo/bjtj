@@ -1,13 +1,10 @@
 import React from 'react'
-import Web3 from 'web3';
 
 import Hand from './hand.js'
-import Card from './card.js'
 import Dealer from './dealer.js'
 import Auth from './auth.js'
 import Ctrls from './ctrls.js'
 import Payment from './payment.js'
-import Refresh from './refresh.js'
 
 import { verify } from '../verify'
 
@@ -17,7 +14,8 @@ export default class BJVM extends React.Component {
     super(props)
     this.state = {
       message: this.props.message,
-      authenticated: false
+      authenticated: false,
+      moves: this.props.moves
     }
     this.updateMessage = this.updateMessage.bind(this)
     this.updateAuth = this.updateAuth.bind(this)
@@ -45,7 +43,7 @@ export default class BJVM extends React.Component {
       if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
         console.log(`User authenticated`)
         this.updateMessage(`If you tip me, I'll give you 1 chip per mETH`)
-        return this.setState({ authenticated: true })
+        return this.setState({ authenticated: true, moves: ['deal'] })
       } else {
         console.log(`User not authenticated`)
         return this.setState({ authenticated: false })
@@ -60,7 +58,6 @@ export default class BJVM extends React.Component {
   render() {
     const { autograph, playerHands, submit, refresh } = this.props
             
-    let moves = this.props.moves
     let dealerHand = [{ cards: this.props.dealerCards, isActive: true}]
     let bet = this.props.bet
     let chips = this.props.chips
@@ -68,7 +65,7 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // Magic Numbers & Strings
 
-    let height = 450
+    let height = 400
     let width = 600
     let depth = 25
     let fill = "#171"
@@ -99,20 +96,17 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
-    <Refresh x="485" y="40" w="100" h="45" refresh={refresh} />
-
     <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
     <text x="20" y="70" fontSize="20">{this.state.message}</text>
 
-    <Payment x="335" y="95" w="250" h="115" chips={chips} bet={bet}/>
+    <Payment x="340" y="110" w="250" h="125" chips={chips} bet={bet}/>
+
+    <Ctrls x="340" y="275" w="250" h="125" submit={submit} moves={this.state.moves} />
 
     <Dealer x="25" y="90" w="90" h="180"/>
+    <Hand x="130" y="100" w="200" hand={dealerHand} />
 
-
-    <Hand x="130" y="105" w="190" hand={dealerHand} />
-    <Hand x="140"  y="315" w="250" hand={playerHands} />
-
-    <Ctrls x="335" y="260" w="250" h="150" submit={submit} moves={moves} />
+    <Hand x="130" y="260" w="200" hand={playerHands} />
 
     {auth}
 
