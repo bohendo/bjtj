@@ -6,8 +6,10 @@ import Card from './card.js'
 import Dealer from './dealer.js'
 import Auth from './auth.js'
 import Ctrls from './ctrls.js'
-import Chips from './chips.js'
+import Payment from './payment.js'
 import Refresh from './refresh.js'
+
+import { verify } from '../verify'
 
 export default class BJVM extends React.Component {
 
@@ -15,14 +17,26 @@ export default class BJVM extends React.Component {
     super(props)
     this.state = {
       message: this.props.message,
-      signed: false
+      authenticated: false
     }
     this.updateMessage = this.updateMessage.bind(this)
   }
 
   componentDidMount() {
-    let cookies = document.cookies;
-    
+    let cookies = document.cookie;
+
+    if (!cookies) {
+      return this.setState({ authenticated: false })
+    }
+
+    // get cookies
+    let bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
+    let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
+    if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
+      return this.setState({ authenticated: true })
+    } else {
+      return this.setState({ authenticated: false })
+    }
   }
 
   updateMessage(message) { this.setState({ message }) }
@@ -38,7 +52,7 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // Magic Numbers & Strings
 
-    let height = 500
+    let height = 450
     let width = 600
     let depth = 25
     let fill = "#171"
@@ -55,10 +69,13 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // DOM
 
+    const auth = (this.state.authenticated) ?
+      null : 
+      <Auth x="175" y="147.5" w="250" h="200" msg={this.updateMessage} ag={autograph} />
+
     return (
 
 <div class="center canvas">
-
   <svg height={height+depth} width={width+depth} id="bjvm-svg">
 
     <rect x="0" y={depth} height={height} width={width}
@@ -66,24 +83,23 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
-    <text x="20" y="75" fontSize="20">{this.state.message}</text>
+    <Refresh x="485" y="40" w="100" h="45" refresh={refresh} />
 
+    <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
+    <text x="20" y="70" fontSize="20">{this.state.message}</text>
+
+    <Payment x="335" y="95" w="250" h="150" chips={chips} bet={bet} />
     <Dealer x="25" y="90" w="90" h="180"/>
 
-    <Refresh x="15" y="260" w="100" h="45" refresh={refresh} />
-
-    <Auth x="335" y="55" w="250" h="195" msg={this.updateMessage} ag={autograph} />
-
-    <Chips x="125" y="260" w="275" h="45"
-           chips={chips} bet={bet} />
 
     <Hand x="130" y="105" w="190" hand={dealerHand} />
     <Hand x="140"  y="315" w="250" hand={playerHands} />
 
     <Ctrls x="335" y="260" w="250" h="150" submit={submit} moves={moves} />
 
-  </svg> 
+    {auth}
 
+  </svg> 
 </div>
 
 ) } }
