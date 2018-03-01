@@ -39,8 +39,10 @@ export default class Chips extends React.Component {
 
   cashout() {
     console.log(`cashout`)
+
     if (!web3) return this.props.msg(`Please install MetaMask`)
     if (!dealer) return this.props.msg(`Sorry, can't find the dealer`)
+    // send request to server
 
   }
 
@@ -59,7 +61,6 @@ export default class Chips extends React.Component {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
       })
     })
-
   }
 
   render() {
@@ -76,7 +77,8 @@ export default class Chips extends React.Component {
     const fg = '#aaf';
     const blk = '#000'; 
     const fs = 16; // fs for Font Size
-    const btn_h = 37.5
+
+    const btn_h = 47.5
 
     const addrlink = `https://etherscan.io/address/${this.state.dealerAddr}`
 
@@ -86,34 +88,38 @@ export default class Chips extends React.Component {
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
-  <text x={x(3)} y={y(15)} fontSize={fs}>
+  <text x={x(3)} y={y(20)} fontSize={fs}>
     Dealer address: <a href={addrlink}>{this.state.dealerAddr.substring(0,5)}...</a>
   </text>
 
-  <text x={x(3)} y={y(30)} fontSize={fs}>
+  <text x={x(3)} y={y(40)} fontSize={fs}>
     Dealer balance: {this.state.dealerBal} mETH
   </text>
 
-  {/* Cash out all chips */}
-  <g onClick={this.cashout} cursor="pointer">
-    <rect x={x(57.5)} y={y(btn_h)} width={w(37.55)} height={h(20)}
-          rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(60)} y={y(btn_h+15)} fontSize={fs}>
-      Cashout
-    </text>
-  </g>
-
   {/* Buy 5 chips */}
   <g onClick={this.tip} cursor="pointer">
-    <rect x={x(2.5)} y={y(btn_h)} width={w(50)} height={h(20)}
+    <rect x={x(2.5)} y={y(btn_h)} width={w(50)} height={h(25)}
+          rx="5" ry="5" fill="#00f" stroke={blk}/>
+    <rect x={x(2.5)+2.5} y={y(btn_h)+2.5} width={w(50)-5} height={h(25)-5}
           rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(5)} y={y(btn_h + 15)} fontSize={fs}>
+    <text x={x(7.5)} y={y(btn_h)+20} fontSize={fs}>
       Tip 5 mETH
     </text>
   </g>
 
+  {/* Cash out all chips */}
+  <g onClick={this.cashout} cursor="pointer">
+    <rect x={x(56)} y={y(btn_h)} width={w(40)} height={h(25)}
+          rx="5" ry="5" fill="#00f" stroke={blk}/>
+    <rect x={x(56)+2.5} y={y(btn_h)+2.5} width={w(40)-5} height={h(25)-5}
+          rx="5" ry="5" fill={fg} stroke={blk}/>
+    <text x={x(62.5)} y={y(btn_h)+20} fontSize={fs}>
+      Cashout
+    </text>
+  </g>
+
   {/* Chips */}
-  <text x={x(3)} y={y(75)} fontSize={fs}>
+  <text x={x(40)} y={y(90)} fontSize={fs}>
     Bet per Hand: {this.props.bet}
   </text>
 

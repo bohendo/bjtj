@@ -104,7 +104,7 @@ export default class BJVM extends React.Component {
     <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
     <text x="20" y="70" fontSize="20">{this.state.message}</text>
 
-    <Payment x="335" y="95" w="250" h="150" chips={chips} bet={bet}/>
+    <Payment x="335" y="95" w="250" h="115" chips={chips} bet={bet}/>
 
     <Dealer x="25" y="90" w="90" h="180"/>
 
