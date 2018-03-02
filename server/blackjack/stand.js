@@ -1,4 +1,4 @@
-import { payout } from './payout'
+import { sync } from './sync'
 
 const stand = (state) => {
   // don't do anything if this isn't currently a valid move
@@ -13,7 +13,7 @@ const stand = (state) => {
       Object.assign({}, h)
   ))
 
-  return (payout(ns))
+  return (sync(ns))
 }
 
 export { stand }

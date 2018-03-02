@@ -1,4 +1,4 @@
-import { payout } from './payout'
+import { sync } from './sync'
 
 const hit = (state) => {
   // don't do anything if this isn't currently a valid move
@@ -16,7 +16,7 @@ const hit = (state) => {
       Object.assign({}, h)
   ))
 
-  return (payout(ns))
+  return (sync(ns))
 }
 
 export { hit }

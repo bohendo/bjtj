@@ -34,6 +34,9 @@ const auth = (req, res, next) => {
   .catch(console.error)
 
   console.log(`${new Date().toISOString()} Player ${id} Successfully Authenticated!`)
+
+  req.id = id
+  req.ag = ag
   return next()
 }
 

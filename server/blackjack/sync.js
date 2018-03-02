@@ -48,7 +48,7 @@ const score = (cards, hiddenCard = false) => {
 
 
 // { state } => { state }
-const payout = (state) => {
+const sync = (state) => {
   // create a deep copy of our state (ns for New State)
   const ns = JSON.parse(JSON.stringify(state))
 
@@ -74,7 +74,7 @@ const payout = (state) => {
     return (h)
   })
 
-  // In case we call payout() on the initial state..
+  // In case we call sync() on the initial state..
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
@@ -82,7 +82,7 @@ const payout = (state) => {
     } else {
       ns.public.message = 'Oh no! You\'re out of chips :('
     }
-    q || console.log(`PAYOUT: initializing state ${JSON.stringify(ns.public)}`)
+    q || console.log(`${new Date().toISOString()} [BJ] Initializing new game state`)
     return (ns)
   }
 
@@ -95,7 +95,7 @@ const payout = (state) => {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
-    q || console.log(`PAYOUT: dealer bj ${JSON.stringify(ns.public)}`)
+    q || console.log(`${new Date().toISOString()} [BJ] Dealer got a BlackJack`)
     return (ns)
   }
 
@@ -144,7 +144,7 @@ const payout = (state) => {
       ns.public.moves.push('split')
     }
 
-    q || console.log(`PAYOUT: round continues ${JSON.stringify(ns.public)}`)
+    q || console.log(`${new Date().toISOString()} [BJ] Round continues`)
     return (ns)
   }
 
@@ -157,8 +157,9 @@ const payout = (state) => {
       ns.public.dealerCards.filter(c => c.rank !== '?'),
     )
     ns.private.hiddenCard = false
+  // if the dealer doesn't have a hidden card, we're syncing the end of a round
   } else {
-    q || console.log(`PAYOUT: already paid out ${JSON.stringify(ns.public)}`)
+    q || console.log(`${new Date().toISOString()} [BJ] This round was already finished`)
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
@@ -205,7 +206,7 @@ const payout = (state) => {
     ns.public.moves.push('deal')
   }
 
-  q || console.log(`PAYOUT: round over: ${JSON.stringify(ns.public)}`)
+  q || console.log(`${new Date().toISOString()} [BJ] Round over, winnings have been paid out`)
   return (ns)
 }
 
@@ -222,4 +223,4 @@ assert.equal(false, score([{ rank: 'A' }, { rank: '9' }]).bj)
 assert.equal(true, score([{ rank: 'A' }, { rank: '9' }]).isSoft)
 assert.equal(false, score([{ rank: 'A' }, { rank: '9' }, { rank: '3' }]).isSoft)
 
-export { payout }
+export { sync }

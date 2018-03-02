@@ -55,12 +55,19 @@ router.get('/cashout', (req, res, next) => {
 
 const handleMove = (req, res, move) => {
 
-  console.log(`API: Handling ${move} for ${req.id}`)
+  console.log(`${new Date().toISOString()} API: Handling ${move} for ${req.id}`)
 
   // insert this move into our log of all actions taken
   db.saveAction(req.id, move).then(() => {
     console.log(`API: inserted ${move} into db.actions`)
   }).catch(die)
+
+  // get this player's old state or initialize a new one
+  db.getState(req.id).then(rows=>{
+    if (rows.length === 0) {
+      db.newState()
+    }
+  })
 
   const newState = bj(req.state, { type: move })
 

@@ -1,9 +1,14 @@
 import fs from 'fs'
 import mysql from 'mysql'
 
-const die = (msg) => {
-  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
-  process.exit(1)
+import bj from './blackjack'
+
+const die = (query) => {
+  return (msg) => {
+    console.error(`${new Date().toISOString()} Fatal error while executing: ${query}`)
+    console.error(`${new Date().toISOString()} ${msg}`)
+    process.exit(1)
+  }
 }
 
 var connection = mysql.createConnection({
@@ -12,7 +17,7 @@ var connection = mysql.createConnection({
   password: fs.readFileSync('/run/secrets/wp_mysql','utf8'),
   database: 'wordpress'
 })
-connection.connect((err) => { if (err) die(err) })
+connection.connect((err) => { if (err) die('connect()')(err) })
 
 const query = (q) => {
   return new Promise( (resolve, reject) => {
@@ -42,29 +47,29 @@ query(`CREATE TABLE IF NOT EXISTS bjvm_players (
 
 const db = { query }
 
-db.newState = (account, state) => {
+db.newState = (account) => {
   const q = `INSERT INTO bjvm_states (account, state, timestamp)
     VALUES ('${account}',
-    '${JSON.stringify(state)}',
+    '${JSON.stringify(bj())}',
     '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
 
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).catch(die) )
+  console.log(`${new Date().toISOString()} DB Saving new state for ${account}`)
+  return ( query(q).catch(die(q)) )
 }
 
 db.getState = (account) => {
   const q = `SELECT * from bjvm_states WHERE account='${account}';`
 
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).then(res=>JSON.parse(res[0])).catch(die))
+  console.log(`${new Date().toISOString()} DB Fetching state for ${account}`)
+  return ( query(q).then(res=>JSON.parse(res[0])).catch(die(q)))
 }
 
 db.updateState = (account, state) => {
   const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}',
     timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
 
-  console.log(`${new Date().toISOString().slice(0,19).replace('T', ' ')} ${q}`)
-  return ( query(q).catch(die) )
+  console.log(`${new Date().toISOString()} db Updating state for ${account} to ${JSON.stringify(state)}`)
+  return ( query(q).catch(die(q)) )
 }
 
 
@@ -74,8 +79,8 @@ db.saveAction = (account, action) => {
     '${JSON.stringify(action)}',
     '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
 
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).catch(die) )
+  console.log(`${new Date().toISOString()} DB Recording action ${action} for account ${account}`)
+  return ( query(q).catch(die(q)) )
 }
 
 
@@ -85,8 +90,8 @@ db.saveSig = (account, signature) => {
     '${signature}',
     '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
 
-  console.log(`${new Date().toISOString()} ${q}`)
-  return ( query(q).catch(die) )
+  console.log(`${new Date().toISOString()} DB Saving autograph for ${account}`)
+  return ( query(q).catch(die(q)) )
 }
 
 
@@ -97,8 +102,8 @@ db.cashout = (account) => {
     state.public.chips = 0
     const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
     console.log(`${new Date().toISOString()} ${q}`)
-    return ( query(q).catch(die) )
-  }).catch(die))
+    return ( query(q).catch(die(q)) )
+  }).catch(die(q)))
 }
 
 // add some chips to a session's current pile
@@ -109,8 +114,8 @@ db.deposit = (account, chips) => {
     state.public.chips += chips
     const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}';`
     console.log(`${new Date().toISOString()} ${q}`)
-    return ( query(q).catch(die) )
-  }).catch(die))
+    return ( query(q).catch(die(q)) )
+  }).catch(die(q)))
 }
 
 export default db

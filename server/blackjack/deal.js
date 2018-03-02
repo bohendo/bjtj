@@ -1,4 +1,4 @@
-import { payout } from './payout'
+import { sync } from './sync'
 
 const deal = (state, deck) => {
   // don't do anything if this isn't currently a valid move
@@ -35,7 +35,7 @@ const deal = (state, deck) => {
   // move some of our player's chips to this round's betting pool
   ns.public.chips -= ns.public.bet
 
-  return (payout(ns))
+  return (sync(ns))
 }
 
 export { deal }

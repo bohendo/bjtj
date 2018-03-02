@@ -1,4 +1,4 @@
-import { payout } from './payout'
+import { sync } from './sync'
 
 const split = (state) => {
   // don't do anything if deal isn't currently a valid move
@@ -30,7 +30,7 @@ const split = (state) => {
     cards: [hand.cards[1], ns.private.deck.pop()],
   })
 
-  return (payout(ns))
+  return (sync(ns))
 }
 
 export { split }

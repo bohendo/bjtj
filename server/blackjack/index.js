@@ -3,7 +3,7 @@ import { hit } from './hit'
 import { stand } from './stand'
 import { double } from './double'
 import { split } from './split'
-import { payout } from './payout'
+import { sync } from './sync'
 
 // () => [cards]
 const shuffle = () => {
@@ -27,7 +27,7 @@ const shuffle = () => {
 
 const initialState = {
   public: {
-    message: 'Click Deal when you\'re ready!',
+    message: 'Click Deal when you are ready!',
     moves: ['deal'],
     playerHands: [],
     dealerCards: [],
@@ -58,7 +58,7 @@ const blackjack = (state = initialState,
     case 'SPLIT':
       return split(state)
     case 'SYNC':
-      return payout(state)
+      return sync(state)
     default:
       return state
   }
