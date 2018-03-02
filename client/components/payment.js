@@ -1,7 +1,6 @@
 import React from 'react';
 import dealerData from '../../build/contracts/Dealer.json'
 
-
 export default class Chips extends React.Component { 
 
   constructor(props) {
@@ -20,8 +19,8 @@ export default class Chips extends React.Component {
   componentWillMount() {
     web3.eth.net.getId().then((id)=>{
 
-      if (!dealerData.networks[id].address) {
-        return console.error(`Dealer contract hasn't been deployed`)
+      if (!dealerData.networks[id]) {
+        return console.error(`Dealer contract hasn't been deployed to network ${id}`)
       }
 
       const dealerAddr = dealerData.networks[id].address
@@ -38,7 +37,7 @@ export default class Chips extends React.Component {
   }
 
   cashout() {
-    console.log(`cashout`)
+    console.log(`cashout() activated!`)
 
     if (!web3) return this.props.msg(`Please install MetaMask`)
     if (!dealer) return this.props.msg(`Sorry, can't find the dealer`)
@@ -47,8 +46,7 @@ export default class Chips extends React.Component {
   }
 
   tip() {
-    console.log(`tip`)
-    console.log(web3)
+    console.log(`tip() activated!`)
     if (!web3) return this.props.msg(`Please install MetaMask`)
     if (!this.state.dealer) return this.props.msg(`Sorry, can't find the dealer`)
 
@@ -59,8 +57,8 @@ export default class Chips extends React.Component {
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
-      })
-    })
+      }).catch((err)=>{console.log(`tx rejected`)})
+    }).catch((err)=>{console.log(`couldn't get accounts`)})
   }
 
   render() {
