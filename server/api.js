@@ -7,12 +7,12 @@ import eth from './eth'
 const router = express.Router()
 
 const die = (msg) => {
-  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
+  console.error(`${new Date().toISOString()} [API] Fatal: ${msg}`)
   process.exit(1)
 }
 
 router.get('/autograph', (req, res, next) => {
-  console.log(`${new Date().toISOString()} API: autograph received`)
+  console.log(`${new Date().toISOString()} [API] autograph received`)
   return res.json({ message: "Thanks for the autograph!" })
 })
 
@@ -21,7 +21,7 @@ router.get('/refresh', (req, res, next) => {
     db.getState(req.id).then(doc => {
       const newState = bj(doc.state, { type: 'SYNC' })
       db.updateState(req.id, newState).then(() => {
-        console.log(`API: eth & state data refreshed`)
+        console.log(`${new Date().toISOString()} [API] eth & state data refreshed`)
         res.json(Object.assign(dealer, newState.public, {
           message: "Refresh successful!"
         }))
@@ -55,26 +55,40 @@ router.get('/cashout', (req, res, next) => {
 
 const handleMove = (req, res, move) => {
 
-  console.log(`${new Date().toISOString()} API: Handling ${move} for ${req.id}`)
+  console.log(`${new Date().toISOString()} [API] Handling ${move} for ${req.id.substring(0,10)}..`)
 
   // insert this move into our log of all actions taken
   db.saveAction(req.id, move).then(() => {
-    console.log(`API: inserted ${move} into db.actions`)
+    console.log(`${new Date().toISOString()} [API] Inserted ${move} into db.actions`)
   }).catch(die)
 
   // get this player's old state or initialize a new one
-  db.getState(req.id).then(rows=>{
-    if (rows.length === 0) {
-      db.newState()
+  return db.getState(req.id).then(state=>{
+
+    // if this player doesn't have a bj state yet...
+    if (state && typeof state === 'object') {
+      
+      // use our bj reducer to generate the state after applying some move
+      const newState = bj(state, { type: move })
+      return db.updateState(req.id, newState).then(() => {
+        // send off this bj state after it's been saved in our db
+        return res.json(newState.public)
+      }).catch(die)
+
+    // if this player has a saved bj state...
+    } else {
+
+      // create a clean new blackjack state
+      const newState = bj()
+      return db.newState(req.id, newState).then(() => {
+        // send off this bj state after it's been saved in our db
+        return res.json(newState.public)
+      })
+
     }
+
+
   })
-
-  const newState = bj(req.state, { type: move })
-
-  // insert the result of this move into our states collection
-  db.updateState(req.id, newState).then(() => {
-    res.json(newState.public)
-  }).catch(die)
 
 }
 

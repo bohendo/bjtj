@@ -11,7 +11,7 @@ const verify = (usr, sig) => {
 }
 
 const auth = (req, res, next) => {
-  console.log(`${new Date().toISOString()} AUTH: new req received for ${req.path}`)
+  console.log(`${new Date().toISOString()} [AUTH] new req received for ${req.path}`)
 
   let id = req.universalCookies.get('bjvm_id') // id for IDentifier aka account
   let ag = req.universalCookies.get('bjvm_ag') // ag for AutoGraph aka signature
@@ -33,7 +33,7 @@ const auth = (req, res, next) => {
   .then(rows=>{ if (rows.length === 0) db.saveSig(id, ag) }) 
   .catch(console.error)
 
-  console.log(`${new Date().toISOString()} Player ${id} Successfully Authenticated!`)
+  console.log(`${new Date().toISOString()} [AUTH] Player ${id.substring(0,10)}.. Successfully Authenticated!`)
 
   req.id = id
   req.ag = ag
