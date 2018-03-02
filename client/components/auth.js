@@ -38,7 +38,6 @@ export default class Auth extends React.Component {
         if (verify(from, res.result)) {
           console.log(`Successfully verified signer: ${from}`)
           this.props.msg('Thanks for the autograph!')
-          this.props.auth(true)
 
           let d = new Date(); // set a cookie that will expire in 90 days
           d.setTime(d.getTime() + (90 * 24*60*60*1000))
@@ -47,9 +46,10 @@ export default class Auth extends React.Component {
           console.log(`Cookies: ${document.cookie}`)
 
           // send id & autograph to server
-          this.props.ag()
+          this.props.ag(true)
         } else {
           console.log(`Failed to verify signer: ${from} ${JSON.stringify(res)}`)
+          this.props.ag(false)
         }
 
       })

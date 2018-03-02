@@ -10,17 +10,6 @@ import { verify } from '../verify'
 
 export default class BJVM extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      message: this.props.message,
-      authenticated: false,
-      moves: this.props.moves
-    }
-    this.updateMessage = this.updateMessage.bind(this)
-    this.updateAuth = this.updateAuth.bind(this)
-  }
-
   componentDidMount() {
 
     // get account
@@ -36,31 +25,23 @@ export default class BJVM extends React.Component {
 
       // get cookies
       let cookies = document.cookie;
-      if (!cookies) return this.setState({ authenticated: false })
+      if (!cookies) return this.props.auth(false)
 
       let bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
       let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
       if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
         console.log(`User authenticated`)
-        this.updateMessage(`If you tip me, I'll give you 1 chip per mETH`)
-        return this.setState({ authenticated: true, moves: ['deal'] })
+        this.props.updateMessage(`If you tip me, I'll give you 1 chip per mETH`)
+        return this.props.auth(true)
       } else {
         console.log(`User not authenticated`)
-        return this.setState({ authenticated: false })
+        return this.props.auth(false)
       }
 
     })
   }
 
-  updateMessage(message) { this.setState({ message }) }
-  updateAuth(auth) { this.setState({ authenticated: auth }) }
-
   render() {
-    const { autograph, playerHands, submit, refresh } = this.props
-            
-    let dealerHand = [{ cards: this.props.dealerCards, isActive: true}]
-    let bet = this.props.bet
-    let chips = this.props.chips
 
     ////////////////////////////////////////
     // Magic Numbers & Strings
@@ -82,9 +63,11 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // DOM
 
-    const auth = (this.state.authenticated) ?
+    const auth = (this.props.authenticated) ?
       null : 
-      <Auth x="175" y="147.5" w="250" h="200" msg={this.updateMessage} auth={this.updateAuth} ag={autograph} />
+      <Auth x="175" y="147.5" w="250" h="200" msg={this.props.updateMessage} ag={this.props.autograph} />
+
+    const moves = (this.props.chips > 0 && this.props.moves.length === 0) ? ['deal'] : this.props.moves
 
     return (
 
@@ -97,16 +80,16 @@ export default class BJVM extends React.Component {
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
     <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-    <text x="20" y="70" fontSize="20">{this.state.message}</text>
+    <text x="20" y="70" fontSize="20">{this.props.message}</text>
 
-    <Payment x="340" y="110" w="250" h="125" chips={chips} bet={bet} msg={this.updateMessage} />
+    <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet} msg={this.props.updateMessage} />
 
-    <Ctrls x="340" y="275" w="250" h="125" submit={submit} moves={this.state.moves} />
+    <Ctrls x="340" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
 
     <Dealer x="25" y="90" w="90" h="180"/>
-    <Hand x="130" y="100" w="200" hand={dealerHand} />
+    <Hand x="130" y="100" w="200" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
 
-    <Hand x="130" y="260" w="200" hand={playerHands} />
+    <Hand x="130" y="260" w="200" hand={this.props.playerHands} />
 
     {auth}
 

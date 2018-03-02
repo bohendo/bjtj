@@ -49,7 +49,7 @@ export default class Ctrls extends React.Component {
   </g>
 
   {/* Refresh */}
-  <g onClick={()=>this.props.submit('deal')} cursor="pointer">
+  <g onClick={()=>this.props.submit('refresh')} cursor="pointer">
     <rect x={x(refresh[0])} y={y(refresh[1])} width={w(refresh[2])} height={h(refresh[3])}
           rx="5" ry="5" fill={dark} stroke="black"/>
     <rect x={x(refresh[0])+2.5} y={y(refresh[1])+2.5} width={w(refresh[2])-5} height={h(refresh[3])-5}

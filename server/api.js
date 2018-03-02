@@ -13,7 +13,7 @@ const die = (msg) => {
 
 router.get('/autograph', (req, res, next) => {
   console.log(`${new Date().toISOString()} [API] autograph received`)
-  return res.json({ message: "Thanks for the autograph!" })
+  return res.json({ message: "Thanks for the autograph!", authenticated: true })
 })
 
 router.get('/refresh', (req, res, next) => {
@@ -56,11 +56,6 @@ router.get('/cashout', (req, res, next) => {
 const handleMove = (req, res, move) => {
 
   console.log(`${new Date().toISOString()} [API] Handling ${move} for ${req.id.substring(0,10)}..`)
-
-  // insert this move into our log of all actions taken
-  db.saveAction(req.id, move).then(() => {
-    console.log(`${new Date().toISOString()} [API] Inserted ${move} into db.actions`)
-  }).catch(die)
 
   // get this player's old state or initialize a new one
   return db.getState(req.id).then(state=>{

@@ -1,6 +1,18 @@
 import fetch from 'isomorphic-fetch'
 
-// client-side actions & action creators
+
+// Synchronous actions & action creators
+export const MESSAGE = 'MESSAGE'
+export function message(msg) {
+  return ({ type: MESSAGE, message: msg})
+}
+
+export const AUTH = 'AUTH'
+export function auth(res) {
+  return ({ type: AUTH, res: res })
+}
+
+// ASYNC actions & action creators
 
 export const AUTOGRAPH = 'AUTOGRAPH'
 export function autograph() {
@@ -68,6 +80,7 @@ export function submit(move) {
 
 export const SUCCESS = 'SUCCESS'
 export function success(state) {
+  console.log(`Successfully received server response: ${JSON.stringify(state)}`)
   return ({
     type: SUCCESS,
     state,
@@ -76,6 +89,7 @@ export function success(state) {
 
 export const FAILURE = 'FAILURE'
 export function failure(error) {
+  console.log(`Failed to receive server response: ${JSON.stringify(error)}`)
   return ({
     type: FAILURE,
     error,

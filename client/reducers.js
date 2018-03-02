@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import { 
+  MESSAGE,
+  AUTH,
   AUTOGRAPH,
   SUBMIT,
   CASHOUT,
@@ -19,14 +21,25 @@ const initialState = {
   playerHands: [],
   dealerCards: [],
   bet: 1,
-  chips: 5
+  chips: 5,
+  waiting: false,
+  authenticated: false
 }
 
 const reducer = (state = initialState, action) => {
+  console.log(`Reducer: reducing ${JSON.stringify(action)} & state ${JSON.stringify(state)}`)
   switch (action.type) {
+    case AUTH:
+      return (Object.assign({}, state,
+        { authenticated: action.res }
+      ))
+    case MESSAGE:
+      return (Object.assign({}, state,
+        { message: action.message }
+      ))
     case AUTOGRAPH:
       return (Object.assign({}, state,
-        { waiting: true }
+        { waiting: true, authenticated: action.authenticated }
       ))
     case CASHOUT:
       return (Object.assign({}, state,
