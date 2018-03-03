@@ -29,23 +29,6 @@ export function autograph() {
   }
 }
 
-export const REFRESH = 'REFRESH'
-export function refresh() {
-  console.log('Refreshment: activated!')
-  return function(dispatch) {
-    return fetch('/api/refresh', { credentials: 'same-origin' })
-      .then(
-        response => response.json(),
-        error => dispatch(failure(error))
-      ).then(
-        data => {
-          console.log(`Refreshment response: ${JSON.stringify(data)}`)
-          return dispatch(success(data))
-        }
-      ).catch(console.error)
-  }
-}
-
 export const CASHOUT = 'CASHOUT'
 export function cashout(addr) {
   console.log('Cashout: activated!')

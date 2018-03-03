@@ -78,9 +78,9 @@ const sync = (state) => {
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
-      ns.public.message = 'Click Deal when you\'re ready!'
+      ns.public.message = 'Click Deal when you are ready!'
     } else {
-      ns.public.message = 'Oh no! You\'re out of chips :('
+      ns.public.message = 'Oh no! You are out of chips :('
     }
     q || console.log(`${new Date().toISOString()} [BJ] Initializing new game state`)
     return (ns)

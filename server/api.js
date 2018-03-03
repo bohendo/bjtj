@@ -18,10 +18,10 @@ router.get('/autograph', (req, res, next) => {
 
 router.get('/refresh', (req, res, next) => {
   eth.dealerData().then(dealer => {
-    db.getState(req.id).then(doc => {
-      const newState = bj(doc.state, { type: 'SYNC' })
+    db.getState(req.id).then(state => {
+      const newState = bj(state, { type: 'SYNC' })
       db.updateState(req.id, newState).then(() => {
-        console.log(`${new Date().toISOString()} [API] eth & state data refreshed`)
+        console.log(`${new Date().toISOString()} [API] Refreshed eth & state data`)
         res.json(Object.assign(dealer, newState.public, {
           message: "Refresh successful!"
         }))

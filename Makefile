@@ -39,11 +39,11 @@ build/nodejs-image: nodejs.Dockerfile server.bundle.js client.bundle.js
 server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)
 	$(webpack) --config ops/webpack.server.js
 
-client.bundle.js: node_modules webpack.client.js $(client)
+client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js
 
 $(artifacts): $(sol)
-	truffle compile
+	truffle migrate
 
 node_modules: package.json package-lock.json
 	npm install

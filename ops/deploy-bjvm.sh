@@ -7,8 +7,7 @@ set -e
 
 NODE_ENV="development"
 
-ETH_NETWORK="5777"
-ETH_PROVIDER="/tmp/ipc/geth.ipc"
+[[ -n "$ETH_PROVIDER" ]] | ETH_PROVIDER="/tmp/ipc/geth.ipc"
 
 me=`whoami` # docker.io username
 v=latest
@@ -70,7 +69,6 @@ services:
       - NODE_ENV=$NODE_ENV
       - ETH_PROVIDER=$ETH_PROVIDER
       - ETH_ADDRESS=$ETH_ADDRESS
-      - ETH_NETWORK=$ETH_NETWORK
     deploy:
       mode: global
     networks:

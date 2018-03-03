@@ -5,7 +5,6 @@ import {
   AUTOGRAPH,
   SUBMIT,
   CASHOUT,
-  REFRESH,
   SUCCESS,
   FAILURE,
 } from './actions'
@@ -45,11 +44,7 @@ const reducer = (state = initialState, action) => {
       return (Object.assign({}, state,
         { waiting: true }
       ))
-    case REFRESH:
-      return (Object.assign({}, state,
-        { waiting: true },
-      ))
-     case SUBMIT:
+    case SUBMIT:
       return (Object.assign({}, state,
         { waiting: true },
       ))
