@@ -1,18 +1,15 @@
 import assert from 'assert'
 
 const log = (msg) => {
-  console.log(`${new Date().toISOString()} [BJ] ${msg}`)
+  if (true) console.log(`${new Date().toISOString()} [BJ] ${msg}`)
 }
-
-// q for quiet, set to true to disable logging
-const q = false
 
 // [cards] => { n, isSoft, bj }
 const score = (cards, hiddenCard = false) => {
 
   // Substitute the dealer's placeholder card with it's hidden card
   const hand = (cards.map(c => c.rank).includes('?') && hiddenCard) ?
-    [hiddenCard].push(cards.filter(c => c.rank !== '?')) :
+    [hiddenCard].concat(cards.filter(c => c.rank !== '?')) :
     cards
 
   // check for a blackjack first: has to happen in first 2 cards
@@ -84,7 +81,7 @@ const sync = (state) => {
       ns.public.moves.push('deal')
       ns.public.message = 'Click Deal when you are ready!'
     } else {
-      ns.public.message = 'Oh no! You are out of chips :('
+      ns.public.message = 'Oh no, you have no chips left :('
     }
     log(`Synced fresh game state`)
     return (ns)
@@ -96,6 +93,8 @@ const sync = (state) => {
     ns.public.message = 'Dealer got a blackjack'
     ns.public.playerHands[0].isDone = true
     ns.public.playerHands[0].isActive = false
+    ns.public.dealerCards = [ns.private.hiddenCard].concat(ns.public.dealerCards.filter(c => c.rank !== '?'))
+    ns.private.hiddenCard = null
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
@@ -163,10 +162,13 @@ const sync = (state) => {
     ns.private.hiddenCard = false
   // if the dealer doesn't have a hidden card, we're syncing the end of a round
   } else {
-    log(`This round was already finished`)
     if (ns.public.chips >= ns.public.bet) {
+      ns.public.message = `Hit deal when you're ready`
       ns.public.moves.push('deal')
+    } else {
+      ns.public.message = 'Oh no, you have no chips left :('
     }
+    log(`This round was already over`)
     return (ns)
   }
 
@@ -215,6 +217,7 @@ const sync = (state) => {
 }
 
 // tests for score()
+assert.equal(true, score([{ rank: '?' }, { rank: 'K' }], { rank: 'A' }).bj)
 assert.equal(21, score([{ rank: 'A' }, { rank: 'K' }]).n)
 assert.equal(19, score([{ rank: '9' }, { rank: 'K' }]).n)
 assert.equal(20, score([{ rank: 'A' }, { rank: '9' }]).n)
