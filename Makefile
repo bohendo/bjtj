@@ -8,7 +8,6 @@ $(shell mkdir -p build/static)
 
 webpack=node_modules/.bin/webpack
 
-
 ##### CALCULATED VARIABLES #####
 
 #v=$(shell grep "\"version\"" package.json | egrep -o [0-9.]*)

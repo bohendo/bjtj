@@ -37,7 +37,6 @@ export default class Auth extends React.Component {
 
         if (verify(from, res.result)) {
           console.log(`Successfully verified signer: ${from}`)
-          this.props.msg('Thanks for the autograph!')
 
           let d = new Date(); // set a cookie that will expire in 90 days
           d.setTime(d.getTime() + (90 * 24*60*60*1000))
@@ -46,10 +45,11 @@ export default class Auth extends React.Component {
           console.log(`Cookies: ${document.cookie}`)
 
           // send id & autograph to server
-          this.props.ag(true)
+          this.props.submit('autograph')
+          this.props.submit('refresh')
+          this.props.msg('Thanks for the autograph!')
         } else {
           console.log(`Failed to verify signer: ${from} ${JSON.stringify(res)}`)
-          this.props.ag(false)
         }
 
       })
@@ -87,7 +87,7 @@ export default class Auth extends React.Component {
   <line x1={x(10)} y1={y(91)} x2={x(20)} y2={y(76)} stroke-width="3" stroke="#a00" />
 
   {/* Autograph button */}
-  <g onClick={()=>this.sign()}>
+  <g onClick={()=>this.sign()} cursor="pointer">
     <rect x={x(30)} y={y(75)} width={w(50)} height={h(15)}
           rx="5" ry="5" fill="#f55" stroke="#000"/>
     <rect x={x(31.5)} y={y(76.5)} width={w(47)} height={h(12)}

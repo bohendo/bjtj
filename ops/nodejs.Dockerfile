@@ -1,4 +1,4 @@
-FROM node:8.8-alpine
+FROM node:9.7-alpine
 
 MAINTAINER Bo Henderson <twitter.com/bohendo>
 

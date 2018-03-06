@@ -40,20 +40,21 @@ export default class Chips extends React.Component {
     console.log(`cashout() activated!`)
 
     if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!dealer) return this.props.msg(`Sorry, can't find the dealer`)
+    if (!this.props.dealerAddr) return this.props.msg(`Sorry, can't find the dealer`)
     // send request to server
+    this.props.submit('cashout')
 
   }
 
   tip() {
     console.log(`tip() activated!`)
     if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!this.state.dealer) return this.props.msg(`Sorry, can't find the dealer`)
+    if (!this.props.dealerAddr) return this.props.msg(`Sorry, can't find the dealer`)
 
     return web3.eth.getAccounts().then(accounts=>{
       return web3.eth.sendTransaction({
         from: accounts[0],
-        to: this.state.dealerAddr,
+        to: this.props.dealerAddr,
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
@@ -83,7 +84,7 @@ export default class Chips extends React.Component {
 
     const txt = [10, 22]
 
-    const addrlink = `https://etherscan.io/address/${this.state.dealerAddr}`
+    const addrlink = `https://etherscan.io/address/${this.props.dealerAddr}`
 
     return (
 <g>
@@ -92,11 +93,11 @@ export default class Chips extends React.Component {
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
   <text x={x(3)} y={y(20)} fontSize={fs}>
-    Dealer address: <a href={addrlink}>{this.state.dealerAddr.substring(0,5)}...</a>
+    Dealer address: <a href={addrlink}>{this.props.dealerAddr.substring(0,5)}...</a>
   </text>
 
   <text x={x(3)} y={y(40)} fontSize={fs}>
-    Dealer balance: {this.state.dealerBal} mETH
+    Dealer balance: {this.props.dealerBal} mETH
   </text>
 
   {/* Buy 5 chips */}

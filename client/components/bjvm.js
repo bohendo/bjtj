@@ -31,7 +31,8 @@ export default class BJVM extends React.Component {
       let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
       if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
         console.log(`User authenticated`)
-        this.props.updateMessage(`If you tip me, I'll give you 1 chip per mETH`)
+        this.props.submit('refresh')
+        this.props.msg(`If you tip me, I'll give you 1 chip per mETH`)
         return this.props.auth(true)
       } else {
         console.log(`User not authenticated`)
@@ -65,7 +66,7 @@ export default class BJVM extends React.Component {
 
     const auth = (this.props.authenticated) ?
       null : 
-      <Auth x="175" y="147.5" w="250" h="200" msg={this.props.updateMessage} ag={this.props.autograph} />
+      <Auth x="175" y="147.5" w="250" h="200" msg={this.props.msg} submit={this.props.submit} />
 
     const moves = (this.props.chips > 0 && this.props.moves.length === 0) ? ['deal'] : this.props.moves
 
@@ -82,7 +83,9 @@ export default class BJVM extends React.Component {
     <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
     <text x="20" y="70" fontSize="20">{this.props.message}</text>
 
-    <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet} msg={this.props.updateMessage} />
+    <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet}
+             dealerAddr={this.props.dealerAddr} dealerBal={this.props.dealerBal}
+             msg={this.props.msg} submit={this.props.submit} />
 
     <Ctrls x="340" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
 

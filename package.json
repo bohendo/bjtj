@@ -32,7 +32,7 @@
     "es6-promise": "^4.1.1",
     "eth-sig-util": "^1.4.2",
     "express": "^4.16.1",
-    "ganache-cli": "^6.0.3",
+    "ganache-cli": "^6.1.0-beta.4",
     "ganache-core": "^2.0.2",
     "helmet": "^3.8.2",
     "html-loader": "^0.5.1",

@@ -11,41 +11,44 @@ const die = (msg) => {
   process.exit(1)
 }
 
+const log = (msg) => {
+  console.log(`${new Date().toISOString()} [API] ${msg}`)
+}
+
+////////////////////////////////////////
+
 router.get('/autograph', (req, res, next) => {
-  console.log(`${new Date().toISOString()} [API] autograph received`)
+  log(`Autograph received`)
   return res.json({ message: "Thanks for the autograph!", authenticated: true })
 })
 
 router.get('/refresh', (req, res, next) => {
   eth.dealerData().then(dealer => {
     db.getState(req.id).then(state => {
+
       const newState = bj(state, { type: 'SYNC' })
       db.updateState(req.id, newState).then(() => {
-        console.log(`${new Date().toISOString()} [API] Refreshed eth & state data`)
-        res.json(Object.assign(dealer, newState.public, {
-          message: "Refresh successful!"
-        }))
-      }).catch(die)
+        log(`Refreshed eth & state data`)
+        res.json(Object.assign(dealer, state.public, { message: undefined }))
+      })
+
     }).catch(die)
   }).catch(die)
 })
 
 router.get('/cashout', (req, res, next) => {
-  db.getState(req.id).then(doc => {
-    if (doc && doc.address) {
-      db.cashout(req.id).then(() => {
-        eth.cashout(doc.address, doc.state.public.chips).then(receipt => {
-          res.json(Object.assign(receipt, {
-            message: "Cashout successful!",
-            chips: 0,
-          }))
-        }).catch(die)
-      }).catch(die)
-    } else {
-      res.json({
-        message: 'Please provide an address first'
-      })
+  db.cashout(req.id).then((chips) => {
+
+    if (chips === 0) {
+      return res.json({ message: "No chips to cashout" })
     }
+
+    log(`DB deleted ${chips} chips from ${req.id.substring(0,10)}.., time for ETH to send some mETH`)
+    eth.cashout(req.id, chips).then(receipt => {
+
+      return res.json({ message: "Cashout successful!", chips: 0 })
+
+    }).catch(die)
   }).catch(die)
 })
 
@@ -55,7 +58,7 @@ router.get('/cashout', (req, res, next) => {
 
 const handleMove = (req, res, move) => {
 
-  console.log(`${new Date().toISOString()} [API] Handling ${move} for ${req.id.substring(0,10)}..`)
+  log(`Handling ${move} for ${req.id.substring(0,10)}..`)
 
   // get this player's old state or initialize a new one
   return db.getState(req.id).then(state=>{

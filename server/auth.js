@@ -2,6 +2,12 @@ import db from './database'
 import sigUtil from 'eth-sig-util'
 import agreement from '../Agreement.txt'
 
+const log = (msg) => {
+  console.log(`${new Date().toISOString()} [AUTH] ${msg}`)
+}
+
+////////////////////////////////////////
+
 const verify = (usr, sig) => {
   const signee = sigUtil.recoverTypedSignature({
     data: [{ type: 'string', name: 'Agreement', value: agreement }],
@@ -11,12 +17,12 @@ const verify = (usr, sig) => {
 }
 
 const auth = (req, res, next) => {
-  console.log(`${new Date().toISOString()} [AUTH] new req received for ${req.path}`)
+  log(`New req received for ${req.path}`)
 
   let id = req.universalCookies.get('bjvm_id') // id for IDentifier aka account
   let ag = req.universalCookies.get('bjvm_ag') // ag for AutoGraph aka signature
   if (! id || id.length !== 42 || ! ag || ag.length !== 132) { // or id is a valid eth address or ag isn't valid
-    console.log(`${new Date().toISOString()} no signature, aborting...`)
+    log(`No signature, aborting...`)
     return res.json({ message: "I need your autograph before you can play" })
   }
 
@@ -24,7 +30,7 @@ const auth = (req, res, next) => {
   ag = ag.toLowerCase()
 
   if (!verify(id, ag)) { // autograph is valid
-    console.log(`${new Date().toISOString()} Player ${id} provided an invalid signature`)
+    log(`Player ${id.substring(0,10)} provided an invalid signature`)
     return res.json({ message: "Sorry bud, this autograph don't look right" })
   }
 
@@ -33,7 +39,7 @@ const auth = (req, res, next) => {
   .then(rows=>{ if (rows.length === 0) db.saveSig(id, ag) }) 
   .catch(console.error)
 
-  console.log(`${new Date().toISOString()} [AUTH] Player ${id.substring(0,10)}.. Successfully Authenticated!`)
+  log(`Player ${id.substring(0,10)}.. Successfully Authenticated!`)
 
   req.id = id
   req.ag = ag

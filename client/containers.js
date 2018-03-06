@@ -1,15 +1,14 @@
 import { connect } from 'react-redux'
 import BJVM from './components/bjvm.js'
-import { auth, message, submit, autograph } from './actions'
+import { message, auth, submit } from './actions'
 
 const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => {
   return ({
-    updateMessage: (msg) => {dispatch(message(msg))},
-    submit: (move) => {dispatch(submit(move))},
-    autograph: (addr) => {dispatch(autograph())},
+    msg: (msg) => {dispatch(message(msg))},
     auth: (res) => {dispatch(auth(res))},
+    submit: (move) => {dispatch(submit(move))}
   })
 }
 

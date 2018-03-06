@@ -1,78 +1,97 @@
 import fs from 'fs'
 import net from 'net'
 import Web3 from 'web3'
-import ganache from 'ganache-cli'
 
 import dealerData from '../build/contracts/Dealer.json'
 import db from './database'
 
 const die = (msg) => {
-  console.error(`${new Date().toISOString()} Fatal: ${msg}`)
+  console.error(`${new Date().toISOString()} [ETH] Fatal: ${msg}`)
   process.exit(1)
 }
+
+const log = (msg) => {
+  console.log(`${new Date().toISOString()} [ETH] ${msg}`)
+}
+
+////////////////////////////////////////
 
 const secret = 'secret' //fs.readFileSync(`/run/secrets/${process.env.ETH_ADDRESS}`, 'utf8')
 
 var web3 // will provide either via ws or ipc
 if (process.env.NODE_ENV === 'development') {
-  //web3 = new Web3(ganache.provider({ network_id: 5777 }))
-  //web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'))
-  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  web3 = new Web3('ws://ethprovider_ganache:7545')
 } else {
-  web3 = new Web3(new Web3.providers.IpcProvider(
+  var web3 = new Web3(new Web3.providers.IpcProvider(
     process.env.ETH_PROVIDER,
     new net.Socket()
   ))
 }
 
-const eth = {}
-
-eth.dealerData = () => {
-  console.log(`ETH: Fetching dealer data`)
-
+const getDealer = () => {
   return web3.eth.net.getId().then((id)=>{
 
-    console.log('ping pong')
     if (!dealerData.networks[id]) {
       die(`Dealer contract hasn't been deployed to network ${id}`)
     }
 
     const dealerAddr = dealerData.networks[id].address
+    return (new web3.eth.Contract(dealerData.abi, dealerAddr))
 
-    return web3.eth.getBalance(dealerAddr).then((bal) => {
-      const dealerBal = web3.utils.fromWei(bal,'milli')
-      return ({ dealerAddr, dealerBal })
+  }).catch(die)
+}
+
+////////////////////////////////////////
+const eth = {}
+
+eth.dealerData = () => {
+  return getDealer().then(dealer => {
+    return web3.eth.getBalance(dealer.options.address).then((bal) => {
+      return ({ dealerAddr: dealer.options.address, dealerBal: bal })
+    })
+  })
+}
+// Confirm our ethereum connection
+eth.dealerData().then((dealerData) => {
+  const meth = web3.utils.fromWei(dealerData.dealerBal,'milli')
+  log(`Dealer at address ${dealerData.dealerAddr.substring(0,10)}.. has balace ${meth} mETH`)
+})
+
+eth.cashout = (addr, chips) => {
+  log(`Cashing out ${chips} chips to ${addr.substring(0,10)}..`)
+  return web3.eth.getAccounts().then(accounts => {
+    if (accounts.length === 0) die(`Please load an account in this ethprovider first`)
+    var myAddr = accounts[0]
+
+    return web3.eth.personal.unlockAccount(myAddr, secret).then(res => {
+      if (!res) die(`Unable to unlock account ${myAddr}`)
+      log(`Pretending to cashout... account unlocked: ${res}`)
+      dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from: myAddr })
     }).catch(die)
 
   }).catch(die)
 }
 
-//eth.dealerData().then(dealer=>{ console.log(`[ETH] Loaded dealer data: ${JSON.stringify(dealer)}`) })
+////////////////////////////////////////
+// Activate event listener
 
-eth.cashout = (addr, chips) => {
-}
+web3.eth.net.getId().then((id)=>{
+  if (!dealerData.networks[id]) {
+    die(`Dealer contract hasn't been deployed to network ${id}`)
+  }
 
-/*
-eth.cashout = (addr, chips) => {
-  console.log(`ETH: Cashing out ${chips} chips to ${addr}`)
-  return web3.eth.getAccounts().then(addresses => {
-    myAddr = addresses[0]
-    return web3.eth.personal.unlockAccount(myAddr, secret, 15)
-  }).then(receipt => {
-    return dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from: myAddr })
-  }).then(receipt => {
-    return receipt
-  }).catch(die)
-}
+  const dealerAddr = dealerData.networks[id].address
+  const dealer = new web3.eth.Contract(dealerData.abi, dealerAddr)
 
-dealer.events.Deposit((err, res) => {
-  if (err) { die(err) }
-  const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
-  console.log(`ETH: Deposit detected: ${chips} mETH from ${res.returnValues._from} `)
-  db.getSession(res.returnValues._from).then(doc => {
-    db.deposit(doc.cookie, Number(chips))
-  }).catch(die)
-})
-*/
+  dealer.events.Deposit((err, res) => {
+    if (err) { die(err) }
+    const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
+    const from = res.returnValues._from
+    log(`Deposit detected: ${chips} mETH from ${from} `)
+    db.deposit(from, Number(chips))
+  })
+
+}).catch(die)
+
 
 export default eth

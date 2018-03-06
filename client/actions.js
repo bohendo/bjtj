@@ -14,50 +14,19 @@ export function auth(res) {
 
 // ASYNC actions & action creators
 
-export const AUTOGRAPH = 'AUTOGRAPH'
-export function autograph() {
-  return function(dispatch) {
-    return fetch('/api/autograph', { credentials: 'same-origin' })
-      .then(
-        response => response.json(),
-        error => dispatch(failure(error))
-      ).then(
-        data => {
-          return dispatch(success(data))
-        }
-      ).catch(console.error)
-  }
-}
-
-export const CASHOUT = 'CASHOUT'
-export function cashout(addr) {
-  console.log('Cashout: activated!')
-  return function(dispatch) {
-    return fetch(`/api/cashout?addr=${addr}`, { credentials: 'same-origin' })
-      .then(
-        response => response.json(),
-        error => dispatch(failure(error))
-      ).then(
-        data => {
-          console.log(`Cashout response: ${JSON.stringify(data)}`)
-          return dispatch(success(data))
-        }
-      ).catch(console.error)
-  }
-}
-
 export const SUBMIT = 'SUBMIT'
 export function submit(move) {
   console.log(`Submitting move: ${move}`)
-  // utilizes redux-thunk
-  return function(dispatch) {
-    return fetch(`/api/${move.toLowerCase()}`, { credentials: 'same-origin' })
-      .then(
-        response => response.json(),
-        error => dispatch(failure(error))
-      ).then(
-        state => dispatch(success(state))
-      ).catch(console.error)
+  return function(dispatch) { // utilizes redux-thunk
+
+    return fetch(`/api/${move.toLowerCase()}`, { credentials: 'same-origin' }).then((response) => {
+      return response.json().then(state=>{
+
+        dispatch(success(state))
+
+      }).catch((error) => dispatch(failure(error)))
+    }).catch((error) => dispatch(failure(error)))
+
   }
 }
 
@@ -72,9 +41,9 @@ export function success(state) {
 
 export const FAILURE = 'FAILURE'
 export function failure(error) {
-  console.log(`Failed to receive server response: ${JSON.stringify(error)}`)
+  console.log(`Failed to receive server response: ${error}`)
   return ({
     type: FAILURE,
-    error,
+    error: `I messed up and caused a ${error.name} :(`,
   })
 }

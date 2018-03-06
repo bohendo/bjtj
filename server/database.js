@@ -15,6 +15,8 @@ const die = (query) => {
   }
 }
 
+////////////////////////////////////////
+
 var connection = mysql.createConnection({
   host: 'mysql',
   user: 'wordpress',
@@ -26,7 +28,8 @@ connection.connect((err) => { if (err) die('connect()')(err) })
 // Wrap MySQL's callback into a Promise
 const query = (q) => {
   return new Promise( (resolve, reject) => {
-    return connection.query(q, (err, rows) => {
+    // TODO: deleted return below
+    connection.query(q, (err, rows) => {
       if (err) return reject(err)
       return resolve(rows)
     })
@@ -99,27 +102,34 @@ db.saveSig = (account, signature) => {
 
 
 db.cashout = (account) => {
-  const q1 = `SELECT * FROM bjvm_signatures WHERE account='${account}';`
+  const q1 = `SELECT * FROM bjvm_states WHERE account='${account}';`
   return (query(q1).then((rows) => {
-    // TODO: What if this account doesn't exist?!
+    if (rows.length === 0) die('cashout')(`Couldn't find state in db for ${account.substring(0,10)}..`)
+
     const state = JSON.parse(rows[0].state)
+    const chipsReceived = state.public.chips
     state.public.chips = 0
     const q2 = `UPDATE bjvm_states SET state='${JSON.stringify(state)}' WHERE account='${account}';`
-    log(`Account ${accounts.substring(0.10)}... cashed out`)
-    return ( query(q2).catch(die(q2)) )
+    log(`Account ${account.substring(0,10)}... cashed out`)
+    // when everything's resolved, return the number of chips we removed from this account
+    return ( query(q2).catch(die(q2)).then(() => chipsReceived) )
   }).catch(die(q1)))
 }
 
 // add some chips to a session's current pile
 db.deposit = (account, chips) => {
-  return (query(`SELECT * FROM bjvm_signatures WHERE account='${account}';`).then((rows) => {
-    // TODO: What if this account doesn't exist?!
+  const q1 = `SELECT * FROM bjvm_states WHERE account='${account}';`
+  return (query(q1).then((rows) => {
+    if (rows.length === 0) die('deposit')(`Couldn't find state in db for ${account.substring(0,10)}..`)
+
     const state = JSON.parse(rows[0].state)
     state.public.chips += chips
-    const q = `UPDATE bjvm_states SET state='${JSON.stringify(state)}' WHERE account='${account}';`
+
     log(`Deposited ${chips} chips to ${account.substring(0,10)}...`)
-    return ( query(q).catch(die(q)) )
-  }).catch(die(q)))
+
+    const q2 = `UPDATE bjvm_states SET state='${JSON.stringify(state)}' WHERE account='${account}';`
+    return ( query(q2).catch(die(q2)) )
+  }).catch(die(q1)))
 }
 
 export default db
