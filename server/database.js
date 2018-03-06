@@ -64,16 +64,22 @@ query(q).catch(die(q)).then(rows => {
 const db = {}
 
 db.insertState = (account, signature, state) => {
-  const q = `INSERT INTO bjvm_states (account, signature, state, timestamp) VALUES (
-    '${account}', '${signature}', '${JSON.stringify(state)}',
-    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
-  log(`Initializing new state for ${account.substring(0,10)}`)
-  return query(q).catch(die(q))
+  const q1 = `SELECT state FROM bjvm_states WHERE account='${account}';`
+  return query(q1).catch(die(q1)).then(rows => {
+    if (rows && rows.length > 0) { return log(`WARN Account ${account} already has a bj state..`) }
+
+    log(`Initializing new state for ${account.substring(0,10)}`)
+    const q2 = `INSERT INTO bjvm_states (account, signature, state, timestamp) VALUES (
+      '${account}', '${signature}', ${connection.escape(JSON.stringify(state))},
+      '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+    return query(q2).catch(die(q2))
+
+  })
 }
 
 db.getState = (account) => {
-  const q = `SELECT state from bjvm_states WHERE account='${account}';`
   log(`Fetching state for ${account.substring(0,10)}`)
+  const q = `SELECT state from bjvm_states WHERE account='${account}';`
   return query(q).catch(die(q)).then(res=>{
     // parse the saved state string to return an object
     return (res && res[0] && res[0].state) ? JSON.parse(res[0].state) : null
@@ -81,20 +87,19 @@ db.getState = (account) => {
 }
 
 db.updateState = (account, state) => {
+  log(`Updating state for ${account.substring(0,10)}`)
   const q = `UPDATE bjvm_states SET
-    state='${JSON.stringify(state)}',
+    state=${connection.escape(JSON.stringify(state))},
     timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
     WHERE account='${account}';`
-  log(`Updating state for ${account.substring(0,10)}`)
   return query(q).catch(die(q))
 }
 
 db.saveAction = (account, action) => {
-  const q = `INSERT INTO bjvm_actions (account, action, timestamp) VALUES (
-    '${account}',
-    '${JSON.stringify(action)}',
-    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
   log(`Recording action ${action} for account ${account.substring(0,10)}`)
+  const q = `INSERT INTO bjvm_actions (account, action, timestamp) VALUES (
+    '${account}', ${connection.escape(JSON.stringify(action))},
+    '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
   return query(q).catch(die(q))
 }
 
@@ -114,7 +119,10 @@ db.cashout = (account) => {
     log(`Account ${account.substring(0,10)} cashed out`)
 
     // when promises resolve, return the number of chips we removed from this account
-    const q2 = `UPDATE bjvm_states SET state='${JSON.stringify(state)}' WHERE account='${account}';`
+    const q2 = `UPDATE bjvm_states
+      SET state=${connection.escape(JSON.stringify(state))},
+      timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
+      WHERE account='${account}';`
     return query(q2).catch(die(q2)).then(() => chips)
   })
 }
@@ -132,7 +140,10 @@ db.deposit = (account, chips) => {
     log(`Deposited ${chips} chips to ${account.substring(0,10)}`)
 
     // when promises resolve, return the number of chips we added to this account
-    const q2 = `UPDATE bjvm_states SET state='${JSON.stringify(state)}' WHERE account='${account}';`
+    const q2 = `UPDATE bjvm_states
+      SET state=${connection.escape(JSON.stringify(state))},
+      timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
+      WHERE account='${account}';`
     return query(q2).catch(die(q2)).then(() => chips)
   })
 }

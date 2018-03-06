@@ -10,36 +10,47 @@ import { verify } from '../verify'
 
 export default class BJVM extends React.Component {
 
-  componentDidMount() {
+  cookieSync(shouldLog) {
 
-    // get account
+    // get ethereum address from metamask
     if (!web3) return this.props.msg('Please install MetaMask')
     web3.eth.getAccounts((err,accounts)=>{
       if (!accounts || accounts.length === 0) {
         return this.props.msg('Please unlock MetaMask')
       }
+      if (shouldLog) console.log(`Found ethereum account: ${accounts[0].toLowerCase()}`)
+
+      // Save this ethereum address as a cookie
       let d = new Date(); // set a cookie that will expire in 90 days
       d.setTime(d.getTime() + (90 * 24*60*60*1000))
       document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${d.toUTCString()}`
-      console.log(`Found ethereum account: ${accounts[0].toLowerCase()}`)
 
-      // get cookies
-      let cookies = document.cookie;
-      if (!cookies) return this.props.auth(false)
-
-      let bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
-      let bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
+      // get all cookies
+      const cookies = document.cookie;
+      const bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
+      const bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
       if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
-        console.log(`User authenticated`)
-        this.props.submit('refresh')
-        this.props.msg(`If you tip me, I'll give you 1 chip per mETH`)
+        if (shouldLog) console.log(`User authenticated via cookie`)
         return this.props.auth(true)
       } else {
-        console.log(`User not authenticated`)
+        if (shouldLog) console.log(`Failed to authenticate user via cookie`)
         return this.props.auth(false)
       }
 
     })
+  }
+
+  componentDidMount() {
+    this.cookieSync(true)
+    this.props.submit('refresh')
+
+    this.cookieWatcher = setInterval(() => {
+      this.cookieSync(false)
+    }, 3000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.cookieWatcher)
   }
 
   render() {
