@@ -1,5 +1,9 @@
 import assert from 'assert'
 
+const log = (msg) => {
+  console.log(`${new Date().toISOString()} [BJ] ${msg}`)
+}
+
 // q for quiet, set to true to disable logging
 const q = false
 
@@ -82,7 +86,7 @@ const sync = (state) => {
     } else {
       ns.public.message = 'Oh no! You are out of chips :('
     }
-    q || console.log(`${new Date().toISOString()} [BJ] Initializing new game state`)
+    log(`Synced fresh game state`)
     return (ns)
   }
 
@@ -95,7 +99,7 @@ const sync = (state) => {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
-    q || console.log(`${new Date().toISOString()} [BJ] Dealer got a BlackJack`)
+    log(`Dealer got a BlackJack`)
     return (ns)
   }
 
@@ -144,7 +148,7 @@ const sync = (state) => {
       ns.public.moves.push('split')
     }
 
-    q || console.log(`${new Date().toISOString()} [BJ] Round continues`)
+    log(`Round continues`)
     return (ns)
   }
 
@@ -159,7 +163,7 @@ const sync = (state) => {
     ns.private.hiddenCard = false
   // if the dealer doesn't have a hidden card, we're syncing the end of a round
   } else {
-    q || console.log(`${new Date().toISOString()} [BJ] This round was already finished`)
+    log(`This round was already finished`)
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }
@@ -206,7 +210,7 @@ const sync = (state) => {
     ns.public.moves.push('deal')
   }
 
-  q || console.log(`${new Date().toISOString()} [BJ] Round over, winnings have been paid out`)
+  log(`Round over, winnings have been paid out`)
   return (ns)
 }
 

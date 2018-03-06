@@ -31,8 +31,8 @@ const initialState = {
     moves: ['deal'],
     playerHands: [],
     dealerCards: [],
-    bet: Number(1),
-    chips: Number(5),
+    bet: 1,
+    chips: 5,
   },
   private: {
     deck: shuffle(),

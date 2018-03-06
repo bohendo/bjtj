@@ -42,7 +42,7 @@ client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js
 
 $(artifacts): $(sol)
-	truffle migrate
+	truffle compile
 
 node_modules: package.json package-lock.json
 	npm install
