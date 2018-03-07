@@ -65,7 +65,7 @@ router.get('/cashout', (req, res, next) => {
 
         if (!state) { log(`State err: ${JSON.stringify(state)}`) }
         const newState = bj(state, { type: 'SYNC' })
-        state.public.message = `Cashout tx: ${txHash}`
+        newState.public.message = `Cashout tx: ${txHash}`
 
         db.updateState(req.id, newState).then(() => {
 
