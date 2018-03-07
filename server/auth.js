@@ -27,7 +27,7 @@ const auth = (req, res, next) => {
   let ag = req.universalCookies.get('bjvm_ag') // ag for AutoGraph aka signature
   if (! id || id.length !== 42 || ! ag || ag.length !== 132) {
     log(`No signature cookies, aborting`)
-    return res.json({ message: "I need your autograph first" })
+    return res.json({ message: "I dont' talk to people without a cookie" })
   }
 
   id = id.toLowerCase()
@@ -35,7 +35,7 @@ const auth = (req, res, next) => {
 
   if (!verify(id, ag)) { // autograph is valid
     log(`Player ${id.substring(0,10)} provided an invalid signature`)
-    return res.json({ message: "Sorry bud, this autograph don't look right" })
+    return res.json({ message: "Hey this cookie wasn't autographed by you" })
   }
 
   log(`Player ${id.substring(0,10)} Successfully Authenticated!`)

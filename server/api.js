@@ -20,11 +20,6 @@ const handleMove = (req, res, move) => {
   log(`Handling ${move} for ${req.id.substring(0,10)}`)
   return db.getState(req.id).then(state=>{
 
-    // abort if this player doesn't have a saved bj state yet
-    if (!state || typeof state !== 'object') {
-      return res.json({ message: `Please autograph our agreement first` })
-    }
-      
     // use our bj reducer to apply some move to our old bj state
     const newState = bj(state, { type: move })
     return db.updateState(req.id, newState).then(() => {
@@ -53,6 +48,7 @@ router.get('/autograph', (req, res, next) => {
 router.get('/refresh', (req, res, next) => {
   // get fresh data from eth and db
   eth.dealerData().then(dealerData => {
+    log(`Dealer balance: ${dealerData.dealerBal}`)
     db.getState(req.id).then(state => {
 
       // sync & save our bj state before sending it to the client
@@ -69,11 +65,23 @@ router.get('/refresh', (req, res, next) => {
 router.get('/cashout', (req, res, next) => {
   db.cashout(req.id).then((chips) => {
     // short circuit if this player doesn't have any chips
-    if (chips === 0) { return res.json({ message: "No chips to cashout" }) }
+    if (chips === 0) { return res.json({ message: "Hey you don't have any chips" }) }
     eth.cashout(req.id, chips).then((receipt) => {
 
-      log(`${req.id.substring(0,10)} cashed out ${chips} chips; we sent transaction: ${JSON.stringify(receipt)}`)
-      return res.json({ message: `Cashout tx: ${JSON.stringify()}`, chips: 0 })
+      // save this txhash message into this player's game state
+      const txHash = receipt.transactionHash
+      db.getState(req.id).then(state => {
+
+        const newState = bj(state)
+        state.public.message = `Cashout tx: ${txHash}`
+
+        db.updateState(req.id, newState).then(() => {
+
+          log(`${req.id.substring(0,10)} cashed out ${chips} chips & sent tx: ${txHash}`)
+          return res.json(newState.public)
+
+        }).catch(die)
+      }).catch(die)
 
     }).catch(die)
   }).catch(die)

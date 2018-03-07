@@ -53,9 +53,8 @@ const sync = (state) => {
   // create a deep copy of our state (ns for New State)
   const ns = JSON.parse(JSON.stringify(state))
 
-  // reset moves & message
+  // reset moves, enable them one at a time
   ns.public.moves = []
-  ns.public.message = ''
 
   // Check & update all isDone/isActive values
   ns.public.playerHands = ns.public.playerHands.map((h) => {
@@ -79,9 +78,7 @@ const sync = (state) => {
   if (ns.public.playerHands.length === 0) {
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
-      ns.public.message = 'Click Deal when you are ready!'
-    } else {
-      ns.public.message = 'Oh no, you have no chips left :('
+      ns.public.message = 'Click Deal when you\'re ready!'
     }
     log(`Synced fresh game state`)
     return (ns)
@@ -162,6 +159,7 @@ const sync = (state) => {
     ns.private.hiddenCard = false
   // if the dealer doesn't have a hidden card, we're syncing the end of a round
   } else {
+    log(`Detected ${ns.public.chips} chips`)
     if (ns.public.chips >= ns.public.bet) {
       ns.public.message = `Hit deal when you're ready`
       ns.public.moves.push('deal')
