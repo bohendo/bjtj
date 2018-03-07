@@ -1,6 +1,8 @@
 import fs from 'fs'
 import mysql from 'mysql'
 
+import bj from './blackjack'
+
 ////////////////////////////////////////
 // Internal Utilities
 
@@ -116,11 +118,11 @@ db.cashout = (account) => {
     if (chips === 0) { return 0 }
 
     state.public.chips = 0
-    log(`Account ${account.substring(0,10)} cashed out`)
+    log(`Account ${account.substring(0,10)} cashed out ${chips} chips`)
 
     // when promises resolve, return the number of chips we removed from this account
     const q2 = `UPDATE bjvm_states
-      SET state=${connection.escape(JSON.stringify(state))},
+      SET state=${connection.escape(JSON.stringify(bj(state, { type: 'SYNC' })))},
       timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
       WHERE account='${account}';`
     return query(q2).catch(die(q2)).then(() => chips)
@@ -141,7 +143,7 @@ db.deposit = (account, chips) => {
 
     // when promises resolve, return the number of chips we added to this account
     const q2 = `UPDATE bjvm_states
-      SET state=${connection.escape(JSON.stringify(state))},
+      SET state=${connection.escape(JSON.stringify(bj(state, { type: 'SYNC' })))},
       timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
       WHERE account='${account}';`
     return query(q2).catch(die(q2)).then(() => chips)
