@@ -4,21 +4,10 @@ import { agreement, signData, verify } from '../verify'
 
 export default class Auth extends React.Component { 
 
-  componentWillMount() {
-    // Setup initial message according to metamask/signature status
-    if (!web3) { this.props.msg('Please download MetaMask'); return; }
-    web3.eth.getAccounts((err,accounts)=>{
-      if (!accounts || accounts.length === 0) {
-        this.props.msg('Please unlock MetaMask'); return;
-      }
-      this.props.msg('Please sign our agreement'); return;
-    })
-  }
-
   sign() {
 
     web3.eth.getAccounts((err,accounts)=>{
-      if (!accounts || accounts.length === 0) {
+      if (err || !accounts || accounts.length === 0) {
         this.props.msg('Please unlock MetaMask')
         return console.log('Please unlock MetaMask')
       }
@@ -29,20 +18,19 @@ export default class Auth extends React.Component {
       // https://github.com/danfinlay/js-eth-personal-sign-examples/blob/master/index.js
       web3.currentProvider.sendAsync({
         method: 'eth_signTypedData',
-        params: [signData, accounts[0]],
+        params: [signData, from],
         from
       }, (err,res) => {
-        if (err) { console.error('err', err); return; }
-        if (res.error) { console.log('Autograph rejected'); return; }
+        if (err) return console.error('err', err)
+        if (res.error) return console.log(`Couldn't sign that`)
 
         if (verify(from, res.result)) {
-          console.log(`Successfully verified signer: ${from}`)
+          console.log(`Successfully verified autograph from ${from.substring(0,10)}...`)
 
-          let d = new Date(); // set a cookie that will expire in 90 days
-          d.setTime(d.getTime() + (90 * 24*60*60*1000))
-          document.cookie = `bjvm_id=${from}; expires=${d.toUTCString()}`
-          document.cookie = `bjvm_ag=${res.result}; expires=${d.toUTCString()}`
-          console.log(`Cookies: ${document.cookie}`)
+          // Save this ethereum address as a cookie that will expire in 90 days
+          const later = new Date(new Date().getTime() + (90 * 24*60*60*1000)).toUTCString()
+          document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}`
+          document.cookie = `bjvm_ag=${res.result}; expires=${later}`
 
           // send id & autograph to server
           this.props.submit('autograph')

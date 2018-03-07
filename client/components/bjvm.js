@@ -18,22 +18,29 @@ export default class BJVM extends React.Component {
       if (!accounts || accounts.length === 0) {
         return this.props.msg('Please unlock MetaMask')
       }
-      if (shouldLog) console.log(`Found ethereum account: ${accounts[0].toLowerCase()}`)
 
-      // Save this ethereum address as a cookie
-      let d = new Date(); // set a cookie that will expire in 90 days
-      d.setTime(d.getTime() + (90 * 24*60*60*1000))
-      document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${d.toUTCString()}`
-
-      // get all cookies
+      // get all cookies & look for ones that match bjvm_id and bjvm_ag
       const cookies = document.cookie;
       const bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
       const bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
-      if (bjvm_id && bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
-        if (shouldLog) console.log(`User authenticated via cookie`)
+
+      if (!bjvm_id || bjvm_id[1] !== accounts[0].toLowerCase()) {
+        console.log(`Found new ethereum account: ${accounts[0].toLowerCase().substring(0,10)}...`)
+        // Save this ethereum address as a cookie that will expire in 90 days
+        const later = new Date(new Date().getTime() + (90 * 24*60*60*1000)).toUTCString()
+        document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}`
+      }
+
+      if (bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
+        if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} has an autographed cookie, awesome`)
+        // If we'd previously been talking about metamask or cookies, we're good
+        if (this.props.message.match(/(MetaMask)|(cookie)/)) {
+          this.props.msg('Thanks for the autograph!')
+        }
         return this.props.auth(true)
       } else {
-        if (shouldLog) console.log(`Failed to authenticate user via cookie`)
+        if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} is missing an autographed cookie, bummer`)
+        this.props.msg('Autograph this cookie to start playing')
         return this.props.auth(false)
       }
 
@@ -46,7 +53,7 @@ export default class BJVM extends React.Component {
 
     this.cookieWatcher = setInterval(() => {
       this.cookieSync(false)
-    }, 3000)
+    }, 1000)
   }
 
   componentWillUnmount() {
@@ -75,11 +82,18 @@ export default class BJVM extends React.Component {
     ////////////////////////////////////////
     // DOM
 
-    const auth = (this.props.authenticated) ?
+    const auth = (this.props.authed) ?
       null : 
       <Auth x="175" y="147.5" w="250" h="200" msg={this.props.msg} submit={this.props.submit} />
 
-    const moves = (this.props.chips > 0 && this.props.moves.length === 0) ? ['deal'] : this.props.moves
+    const moves = (this.props.authed) ? this.props.moves : []
+    moves.push(`refresh`) // user can always refresh
+
+    const message = this.props.message
+    message.replace(/0x[0-9a-f]{65}/, (match) => {
+      console.log(`match`)
+      return `<a href="https://etherscan.io/tx/${match}">${match.substring(0,10)}...</a>`
+    })
 
     return (
 
@@ -92,11 +106,11 @@ export default class BJVM extends React.Component {
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
     <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-    <text x="20" y="70" fontSize="20">{this.props.message}</text>
+    <text x="20" y="70" fontSize="20">{message}</text>
 
     <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet}
              dealerAddr={this.props.dealerAddr} dealerBal={this.props.dealerBal}
-             msg={this.props.msg} submit={this.props.submit} />
+             msg={this.props.msg} submit={this.props.submit} authed={this.props.authed}/>
 
     <Ctrls x="340" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
 

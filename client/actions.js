@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch'
 
-
 // Synchronous actions & action creators
 export const MESSAGE = 'MESSAGE'
 export function message(msg) {
@@ -16,7 +15,7 @@ export function auth(res) {
 
 export const SUBMIT = 'SUBMIT'
 export function submit(move) {
-  console.log(`Submitting move: ${move}`)
+  console.log(`Sending request to server: ${move}`)
   return function(dispatch) { // utilizes redux-thunk
 
     return fetch(`/api/${move.toLowerCase()}`, { credentials: 'same-origin' }).then((response) => {
@@ -32,7 +31,7 @@ export function submit(move) {
 
 export const SUCCESS = 'SUCCESS'
 export function success(state) {
-  console.log(`Successfully received server response: ${JSON.stringify(state)}`)
+  console.log(`Success, server response : ${JSON.stringify(state)}`)
   return ({
     type: SUCCESS,
     state,

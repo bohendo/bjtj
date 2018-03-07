@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export default class Dealer extends React.Component { 

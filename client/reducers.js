@@ -13,16 +13,16 @@ import {
  */
 
 const initialState = {
-  message: 'Log into MetaMask to play',
+  message: '',
   moves: [],
   playerHands: [],
   dealerCards: [],
   bet: 1,
-  chips: 5,
+  chips: 0,
   waiting: false,
   dealerAddr: '',
   dealerBal: 0,
-  authenticated: false
+  authed: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -34,7 +34,7 @@ const reducer = (state = initialState, action) => {
       ))
     case AUTH:
       return (Object.assign({}, state,
-        { authenticated: action.res }
+        { authed: action.res }
       ))
     case SUBMIT:
       return (Object.assign({}, state,

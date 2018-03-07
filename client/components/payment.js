@@ -84,7 +84,14 @@ export default class Chips extends React.Component {
 
     const txt = [10, 22]
 
-    const addrlink = `https://etherscan.io/address/${this.props.dealerAddr}`
+    const etherscan = `https://etherscan.io/address/${this.props.dealerAddr}`
+
+    const canTip = this.props.authed
+    const canCashout = this.props.authed && this.props.chips > 0
+
+    const shade = (shouldShow) => {
+
+    }
 
     return (
 <g>
@@ -93,7 +100,7 @@ export default class Chips extends React.Component {
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
   <text x={x(3)} y={y(20)} fontSize={fs}>
-    Dealer address: <a href={addrlink}>{this.props.dealerAddr.substring(0,5)}...</a>
+    Dealer address: <a href={etherscan}>{this.props.dealerAddr.substring(0,7)}...</a>
   </text>
 
   <text x={x(3)} y={y(40)} fontSize={fs}>
@@ -101,7 +108,8 @@ export default class Chips extends React.Component {
   </text>
 
   {/* Buy 5 chips */}
-  <g onClick={this.tip} cursor="pointer">
+  <g onClick={(canTip) ? this.tip : ()=>{/*noop*/}} cursor="pointer">
+     {/*cursor={ (canTip) ? "pointer" : "default"}>*/}
     <rect x={x(tip[0])} y={y(tip[1])} width={w(tip[2])} height={h(tip[3])}
           rx="5" ry="5" fill="#00f" stroke={blk}/>
     <rect x={x(tip[0])+2.5} y={y(tip[1])+2.5} width={w(tip[2])-5} height={h(tip[3])-5}
@@ -110,9 +118,12 @@ export default class Chips extends React.Component {
       Tip 5 mETH
     </text>
   </g>
+  {(!canTip) ?
+    <rect x={x(tip[0])} y={y(tip[1])} width={w(tip[2])} height={h(tip[3])} rx="5" ry="5" fill="#000" fillOpacity="0.6"/>
+  : null }
 
   {/* Cash out all chips */}
-  <g onClick={this.cashout} cursor="pointer">
+  <g onClick={(canCashout) ? this.cashout : ()=>{/*noop*/}} cursor="pointer">
     <rect x={x(cashout[0])} y={y(cashout[1])} width={w(cashout[2])} height={h(cashout[3])}
           rx="5" ry="5" fill="#00f" stroke={blk}/>
     <rect x={x(cashout[0])+2.5} y={y(cashout[1])+2.5} width={w(cashout[2])-5} height={h(cashout[3])-5}
@@ -121,6 +132,9 @@ export default class Chips extends React.Component {
       Cashout
     </text>
   </g>
+  {(!canCashout) ?
+    <rect x={x(cashout[0])} y={y(cashout[1])} width={w(cashout[2])} height={h(cashout[3])} rx="5" ry="5" fill="#000" fillOpacity="0.6"/>
+  : null }
 
   {/* Chips */}
   <text x={x(40)} y={y(90)} fontSize={fs}>
