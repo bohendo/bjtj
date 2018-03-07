@@ -100,7 +100,7 @@ export default class Chips extends React.Component {
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
   <text x={x(3)} y={y(20)} fontSize={fs}>
-    Dealer address: <a href={etherscan}>{this.props.dealerAddr.substring(0,7)}...</a>
+    Dealer address: <a href={etherscan} textDecoration="underline">{this.props.dealerAddr.substring(0,7)}...</a>
   </text>
 
   <text x={x(3)} y={y(40)} fontSize={fs}>

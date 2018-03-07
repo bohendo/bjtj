@@ -18,16 +18,14 @@ const die = (msg) => {
 
 const handleMove = (req, res, move) => {
   log(`Handling ${move} for ${req.id.substring(0,10)}`)
-  return db.getState(req.id).then(state=>{
 
-    // use our bj reducer to apply some move to our old bj state
-    const newState = bj(state, { type: move })
-    return db.updateState(req.id, newState).then(() => {
-      // send the public part of this bj state after our update has been saved
-      return res.json(newState.public)
-    }).catch(die)
-
+  // use our bj reducer to apply some move to our old bj state
+  const newState = bj(req.state, { type: move })
+  return db.updateState(req.id, newState).then(() => {
+    // send the public part of this bj state after our update has been saved
+    return res.json(newState.public)
   }).catch(die)
+
 }
 
 ////////////////////////////////////////
@@ -36,29 +34,22 @@ const router = express.Router()
 
 // Triggered the first time a player autographs our agreement
 router.get('/autograph', (req, res, next) => {
-  log(`New autograph received, initializing a BJ state for ${req.id.substring(0,10)}`)
-  const newState = bj()
-  return db.insertState(req.id, req.ag, newState).then(() => {
-    return res.json(Object.assign(newState.public,
-      { message: "Thanks for the autograph!", authenticated: true }
-    ))
-  }).catch(die)
+  log(`New autograph received, player ${req.id.substring(0,10)} is ready to go`)
+  return res.json({ message: "Thanks for the autograph!", authenticated: true })
 })
 
 router.get('/refresh', (req, res, next) => {
   // get fresh data from eth and db
   eth.dealerData().then(dealerData => {
     log(`Dealer balance: ${dealerData.dealerBal}`)
-    db.getState(req.id).then(state => {
 
       // sync & save our bj state before sending it to the client
-      const newState = bj(state, { type: 'SYNC' })
+      const newState = bj(req.state, { type: 'SYNC' })
       db.updateState(req.id, newState).then(() => {
         log(`Refreshed eth & state data for ${req.id.substring(0,10)}`)
-        res.json(Object.assign(state.public, dealerData))
+        res.json(Object.assign(newState.public, dealerData))
       }).catch(die)
 
-    }).catch(die)
   }).catch(die)
 })
 
@@ -70,9 +61,10 @@ router.get('/cashout', (req, res, next) => {
 
       // save this txhash message into this player's game state
       const txHash = receipt.transactionHash
-      db.getState(req.id).then(state => {
+      db.getState(req.id, req.ag).then(state => {
 
-        const newState = bj(state)
+        if (!state) { log(`State err: ${JSON.stringify(state)}`) }
+        const newState = bj(state, { type: 'SYNC' })
         state.public.message = `Cashout tx: ${txHash}`
 
         db.updateState(req.id, newState).then(() => {

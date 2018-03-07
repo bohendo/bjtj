@@ -42,7 +42,14 @@ const auth = (req, res, next) => {
 
   req.id = id
   req.ag = ag
-  return next()
+
+  // ensure this player's bj gamestate has been initialized
+  // getState will return an existing gamestate or create & return a new one
+  return db.getState(req.id, req.ag).then((state) => {
+    req.state = state
+    return next()
+  })
+
 }
 
 export default auth

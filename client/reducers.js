@@ -13,14 +13,14 @@ import {
  */
 
 const initialState = {
-  message: '',
-  moves: [],
+  message: 'Hmm, trying to remember if I know you..',
+  moves: ['refresh'],
   playerHands: [],
   dealerCards: [],
-  bet: 1,
+  bet: 0,
   chips: 0,
   waiting: false,
-  dealerAddr: '',
+  dealerAddr: '0x?????',
   dealerBal: 0,
   authed: false
 }

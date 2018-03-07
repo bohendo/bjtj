@@ -91,7 +91,6 @@ const sync = (state) => {
     ns.public.playerHands[0].isDone = true
     ns.public.playerHands[0].isActive = false
     ns.public.dealerCards = [ns.private.hiddenCard].concat(ns.public.dealerCards.filter(c => c.rank !== '?'))
-    ns.private.hiddenCard = null
     if (ns.public.chips >= ns.public.bet) {
       ns.public.moves.push('deal')
     }

@@ -61,30 +61,27 @@ query(q).catch(die(q)).then(rows => {
   log(`Successfully connected to DB & found ${rows[0].count} bjvm states`)
 })
 
+
 ////////////////////////////////////////
 // Define Exported Object
 const db = {}
 
-db.insertState = (account, signature, state) => {
-  const q1 = `SELECT state FROM bjvm_states WHERE account='${account}';`
-  return query(q1).catch(die(q1)).then(rows => {
-    if (rows && rows.length > 0) { return log(`WARN Account ${account} already has a bj state..`) }
-
-    log(`Initializing new state for ${account.substring(0,10)}`)
-    const q2 = `INSERT INTO bjvm_states (account, signature, state, timestamp) VALUES (
-      '${account}', '${signature}', ${connection.escape(JSON.stringify(state))},
-      '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
-    return query(q2).catch(die(q2))
-
-  })
-}
-
-db.getState = (account) => {
-  log(`Fetching state for ${account.substring(0,10)}`)
-  const q = `SELECT state from bjvm_states WHERE account='${account}';`
-  return query(q).catch(die(q)).then(res=>{
+db.getState = (account, signature) => {
+  const q1 = `SELECT state from bjvm_states WHERE account='${account}';`
+  return query(q1).catch(die(q1)).then(rows=>{
     // parse the saved state string to return an object
-    return (res && res[0] && res[0].state) ? JSON.parse(res[0].state) : null
+    if (rows && rows[0] && rows[0].state) {
+      log(`Fetched state for ${account.substring(0,10)}`)
+      return JSON.parse(rows[0].state)
+    }
+    // insert a new state if one doesn't exist yet
+    const newState = bj()
+    const q2 = `INSERT INTO bjvm_states (account, signature, state, timestamp) VALUES (
+      '${account}', '${signature}',
+      ${connection.escape(JSON.stringify(newState))},
+      '${new Date().toISOString().slice(0,19).replace('T', ' ')}');`
+    // return our new state after inserting it
+    return query(q2).catch(die(q2)).then(() => newState)
   })
 }
 

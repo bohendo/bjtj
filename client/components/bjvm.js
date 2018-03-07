@@ -33,14 +33,15 @@ export default class BJVM extends React.Component {
 
       if (bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
         if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} has an autographed cookie, awesome`)
-        // If we'd previously been talking about metamask or cookies, we're good
+        // If we'd previously been talking about metamask or cookies, relax we're good now
         if (this.props.message.match(/(MetaMask)|(cookie)/)) {
-          this.props.msg('Thanks for the autograph!')
+          this.props.msg(`Thanks for the autograph ${bjvm_id[1].substring(2,8)}!`)
+          this.props.submit('refresh')
         }
         return this.props.auth(true)
       } else {
         if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} is missing an autographed cookie, bummer`)
-        this.props.msg('Autograph this cookie to start playing')
+        this.props.msg(`Hey ${bjvm_id[1].substring(2,8)}, autograph this cookie to play`)
         return this.props.auth(false)
       }
 
@@ -89,11 +90,24 @@ export default class BJVM extends React.Component {
     const moves = (this.props.authed) ? this.props.moves : []
     moves.push(`refresh`) // user can always refresh
 
-    const message = this.props.message
-    message.replace(/0x[0-9a-f]{65}/, (match) => {
-      console.log(`match`)
-      return `<a href="https://etherscan.io/tx/${match}">${match.substring(0,10)}...</a>`
-    })
+    // if this message contains a tx hash, replace it with an etherscan link
+    const txhash = this.props.message.match(/0x[0-9a-f]{64}/)
+    var message
+    if (txhash) {
+      const etherscan = `https://etherscan.io/tx/${txhash[0]}`
+      message = <g>
+        <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
+        <text x="20" y="70" fontSize="20">
+          Cashout tx: <a href={etherscan} textDecoration="underline">{txhash[0].substring(0,15)}...</a>
+        </text>
+      </g>
+
+    } else {
+      message = <g>
+        <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
+        <text x="20" y="70" fontSize="20">{this.props.message}</text>
+      </g>
+    }
 
     return (
 
@@ -105,8 +119,7 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
-    <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-    <text x="20" y="70" fontSize="20">{message}</text>
+    {message}
 
     <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet}
              dealerAddr={this.props.dealerAddr} dealerBal={this.props.dealerBal}
