@@ -78626,7 +78626,7 @@ var Hand = function (_React$Component) {
       var output = [];
 
       // for debugging
-      if (true) {
+      if (false) {
         output.push(_react2.default.createElement('rect', { x: x(0), y: y(0), width: w(100), height: w(75),
           fill: 'none', stroke: 'black' }));
       }
