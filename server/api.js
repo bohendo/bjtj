@@ -39,17 +39,11 @@ router.get('/autograph', (req, res, next) => {
 })
 
 router.get('/refresh', (req, res, next) => {
-  // get fresh data from eth and db
-  eth.dealerData().then(dealerData => {
-    log(`Dealer balance: ${dealerData.dealerBal}`)
-
-      // sync & save our bj state before sending it to the client
-      const newState = bj(req.state, { type: 'SYNC' })
-      db.updateState(req.id, newState).then(() => {
-        log(`Refreshed eth & state data for ${req.id.substring(0,10)}`)
-        res.json(Object.assign(newState.public, dealerData))
-      }).catch(die)
-
+  // sync & save our bj state before sending it to the client
+  const newState = bj(req.state, { type: 'SYNC' })
+  db.updateState(req.id, newState).then(() => {
+    log(`Refreshed game state for ${req.id.substring(0,10)}`)
+    res.json(newState.public)
   }).catch(die)
 })
 

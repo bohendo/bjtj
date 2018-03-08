@@ -17,13 +17,14 @@ const log = (msg) => {
 ////////////////////////////////////////
 // Internal utility functions
 
-const secret = 'secret' //fs.readFileSync(`/run/secrets/${process.env.ETH_ADDRESS}`, 'utf8')
+const from = process.env.ETH_ADDRESS
+const secret = fs.readFileSync(`/run/secrets/${from}`, 'utf8')
 
 var web3 // will provide either via ws or ipc
 if (process.env.NODE_ENV === 'development') {
   web3 = new Web3('ws://ethprovider_ganache:8545')
 } else {
-  web3 = new Web3(new Web3.providers.IpcProvider(
+  var web3 = new Web3(new Web3.providers.IpcProvider(
     process.env.ETH_PROVIDER,
     new net.Socket()
   ))
@@ -36,43 +37,47 @@ const getDealer = () => {
       die(`Dealer contract hasn't been deployed to network ${id}`)
     }
 
-    const dealerAddr = dealerData.networks[id].address
-    return (new web3.eth.Contract(dealerData.abi, dealerAddr))
+    const address = dealerData.networks[id].address
+    return (new web3.eth.Contract(dealerData.abi, address))
 
   }).catch(die)
 }
+
+// Test Eth connection: print stats or die
+web3.eth.net.getId().then((id)=>{
+
+  const msg = `Make sure you've loaded account ${from.substring(0,10)} into this ethprovider`
+  return web3.eth.getAccounts().then(accounts => {
+    if (!accounts.includes(from)) die(msg)
+
+    return getDealer().then(dealer => {
+      const address = dealer.options.address
+
+      return web3.eth.getBalance(address).then((bal) => {
+        const balance = web3.utils.fromWei(bal,'milli')
+
+        log(`Connected to network ${id}; Dealer at ${address.substring(0,10)} has balance ${balance} mETH`)
+
+      }).catch(die)
+    }).catch(die)
+  }).catch(die)
+}).catch(die)
 
 ////////////////////////////////////////
 // Exported object methods
 
 const eth = {}
 
-eth.dealerData = () => {
-  return getDealer().then(dealer => {
-    var dealerAddr = dealer.options.address
-    return web3.eth.getBalance(dealerAddr).then((bal) => {
-      return ({ dealerAddr: dealerAddr, dealerBal: web3.utils.fromWei(bal, 'milli') })
-    })
-  })
-}
-// Confirm our ethereum connection
-eth.dealerData().then((dealerData) => {
-  log(`Dealer at address ${dealerData.dealerAddr.substring(0,10)} has balace ${dealerData.dealerBal} mETH`)
-})
-
 eth.cashout = (addr, chips) => {
   log(`Cashing out ${chips} chips to ${addr.substring(0,10)}`)
-  return web3.eth.getAccounts().then(accounts => {
-    if (accounts.length === 0) die(`Please load an account in this ethprovider first`)
-    var myAddr = accounts[0]
+  return getDealer().then(dealer => {
 
-    return web3.eth.personal.unlockAccount(myAddr, secret).then(res => {
-      if (!res) die(`Unable to unlock account ${myAddr}`)
-      return getDealer().then(dealer => {
-        return dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from: myAddr })
-      })
+    return web3.eth.personal.unlockAccount(from, secret).then(res => {
+    if (!res) die(`Unable to unlock account ${from}`)
+
+      return dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from })
+
     }).catch(die)
-
   }).catch(die)
 }
 

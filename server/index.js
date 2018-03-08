@@ -14,7 +14,7 @@ app.use(require('helmet')())
 
 app.use(express.static('/root/static'))
 
-app.use(require('universal-cookie-express')())
+app.use(require('cookie-parser')())
 app.use(require('body-parser').text())
 
 // vending machine buttons

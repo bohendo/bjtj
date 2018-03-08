@@ -23,15 +23,22 @@ const verify = (usr, sig) => {
 const auth = (req, res, next) => {
   log(`New req received for ${req.path}`)
 
-  let id = req.universalCookies.get('bjvm_id') // id for IDentifier aka account
-  let ag = req.universalCookies.get('bjvm_ag') // ag for AutoGraph aka signature
-  if (! id || id.length !== 42 || ! ag || ag.length !== 132) {
+  let id = req.cookies.bjvm_id // id for IDentifier aka account
+  let ag = req.cookies.bjvm_ag // ag for AutoGraph aka signature
+  if (! id || ! ag) {
     log(`No signature cookies, aborting`)
     return res.json({ message: "I dont' talk to people without a cookie" })
   }
 
   id = id.toLowerCase()
   ag = ag.toLowerCase()
+
+  // Make sure both the id and ag cookies are properly formatted
+  if (!id.match(/0x[0-9a-f]{40}/) || !ag.match(/0x[0-9a-f]{130}/)) {
+    log(`These cookies are invalid, aborting`)
+    return res.json({ message: "These cookies don't look right" })
+  }
+
 
   if (!verify(id, ag)) { // autograph is valid
     log(`Player ${id.substring(0,10)} provided an invalid signature`)
