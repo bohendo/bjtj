@@ -24,7 +24,7 @@ export default class Hand extends React.Component {
     let output = []
 
     // for debugging
-    if (false) {
+    if (true) {
       output.push(
         <rect x={x(0)} y={y(0)} width={w(100)} height={w(75)}
               fill="none" stroke="black"/>

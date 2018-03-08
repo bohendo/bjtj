@@ -79,8 +79,8 @@ export default class Chips extends React.Component {
 
     const btn_h = 47.5
 
-    const tip     = [2.5,  47.5,  52.5, 25]
-    const cashout = [60, 47.5,  37.5, 25]
+    const tip     = [10, 40, 80, 16]
+    const cashout = [10, 60, 80, 16]
 
     const txt = [10, 22]
 
@@ -99,13 +99,15 @@ export default class Chips extends React.Component {
   <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
         rx="5" ry="5" fill={bg} stroke={blk}/>
 
-  <text x={x(3)} y={y(20)} fontSize={fs}>
-    Dealer address: <a href={etherscan} textDecoration="underline">{this.props.dealerAddr.substring(0,7)}...</a>
-  </text>
+  <rect x={x(5)} y={y(2.5)} width={w(90)} height={h(15)}
+        rx="5" ry="5" fill={fg} stroke={blk}/>
 
-  <text x={x(3)} y={y(40)} fontSize={fs}>
-    Dealer balance: {this.props.dealerBal} mETH
-  </text>
+  <a href={etherscan} textDecoration="underline">
+    <text x={x(7.5)} y={y(12.5)} fontSize={fs}>Dealer Address</text>
+  </a>
+
+  <text x={x(5)} y={y(27.5)} fontSize={fs}>Dealer balance:</text>
+  <text x={x(10)} y={y(37.5)} fontSize={fs}>{this.props.dealerBal} mETH</text>
 
   {/* Buy 5 chips */}
   <g onClick={(canTip) ? this.tip : ()=>{/*noop*/}} cursor="pointer">
@@ -137,12 +139,12 @@ export default class Chips extends React.Component {
   : null }
 
   {/* Chips */}
-  <text x={x(40)} y={y(90)} fontSize={fs}>
+  <text x={x(5)} y={y(85)} fontSize={fs}>
     Bet per Hand: {this.props.bet}
   </text>
 
   {/* Bet */}
-  <text x={x(3)} y={y(90)} fontSize={fs}>
+  <text x={x(5)} y={y(95)} fontSize={fs}>
     Chips: {this.props.chips}
   </text>
 

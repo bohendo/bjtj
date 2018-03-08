@@ -67,7 +67,7 @@ export default class BJVM extends React.Component {
     // Magic Numbers & Strings
 
     let height = 400
-    let width = 600
+    let width = 500
     let depth = 25
     let fill = "#171"
     let stroke = "#eee"
@@ -121,16 +121,16 @@ export default class BJVM extends React.Component {
 
     {message}
 
-    <Payment x="340" y="110" w="250" h="125" chips={this.props.chips} bet={this.props.bet}
+    <Payment x="340" y="90" w="150" h="175" chips={this.props.chips} bet={this.props.bet}
              dealerAddr={this.props.dealerAddr} dealerBal={this.props.dealerBal}
              msg={this.props.msg} submit={this.props.submit} authed={this.props.authed}/>
 
-    <Ctrls x="340" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
+    <Ctrls x="235" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
 
     <Dealer x="25" y="90" w="90" h="180"/>
     <Hand x="130" y="100" w="200" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
 
-    <Hand x="130" y="260" w="200" hand={this.props.playerHands} />
+    <Hand x="25" y="260" w="200" hand={this.props.playerHands} />
 
     {auth}
 
