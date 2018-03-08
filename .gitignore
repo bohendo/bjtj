@@ -1,12 +1,10 @@
 # Downloaded
 node_modules
 
-# Generated
-build
-
 # Temporary
 *.swp
 
 # Secret
 *.secret
 
+build/*-image
