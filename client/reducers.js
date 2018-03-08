@@ -20,8 +20,6 @@ const initialState = {
   bet: 0,
   chips: 0,
   waiting: false,
-  dealerAddr: '0x?????',
-  dealerBal: 0,
   authed: false
 }
 

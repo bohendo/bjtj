@@ -5,61 +5,86 @@ export default class Chips extends React.Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      dealer: undefined,
-      dealerAddr: '0x0000000000000000000000000000000000000000',
-      dealerBal: 0,
-    }
+    this.state = { network: false, address: false, balance: false }
 
     this.cashout = this.cashout.bind(this)
     this.tip = this.tip.bind(this)
   }
 
-  componentWillMount() {
-    web3.eth.net.getId().then((id)=>{
-
-      if (!dealerData.networks[id]) {
-        return console.error(`Dealer contract hasn't been deployed to network ${id}`)
+  ethSync() {
+    web3.eth.net.getId().then((network)=>{
+      if (!dealerData.networks[network]) {
+        return console.error(`Dealer contract hasn't been deployed to network ${network}`)
       }
-
-      const dealerAddr = dealerData.networks[id].address
-
-      return web3.eth.getBalance(dealerAddr).then((bal) => {
-        const dealerBal = web3.utils.fromWei(bal,'milli')
-        return this.setState({
-          dealer: new web3.eth.Contract(dealerData.abi, dealerAddr),
-          dealerAddr, dealerBal
-        })
+      const address = dealerData.networks[network].address
+      return web3.eth.getBalance(address).then((bal) => {
+        const balance = web3.utils.fromWei(bal,'milli')
+        return this.setState({ network, address, balance })
       })
-
     })
+  }
+
+  componentDidMount() {
+    this.ethSync()
+    this.ethWatcher = setInterval(() => {
+      this.ethSync()
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.ethWatcher)
   }
 
   cashout() {
     console.log(`cashout() activated!`)
-
     if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!this.props.dealerAddr) return this.props.msg(`Sorry, can't find the dealer`)
-    // send request to server
+    if (!this.state.address) return this.props.msg(`Oops, I can't connect to MetaMask`)
     this.props.submit('cashout')
-
   }
 
   tip() {
     console.log(`tip() activated!`)
     if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!this.props.dealerAddr) return this.props.msg(`Sorry, can't find the dealer`)
+    if (!this.state.address) return this.props.msg(`Oops, I can't connect to MetaMask`)
 
     return web3.eth.getAccounts().then(accounts=>{
       return web3.eth.sendTransaction({
         from: accounts[0],
-        to: this.props.dealerAddr,
+        to: this.state.address,
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
-      }).catch((err)=>{console.log(`tx rejected`)})
-    }).catch((err)=>{console.log(`couldn't get accounts`)})
+      }).catch((err)=>{console.log(`tx error: ${err}`)})
+    }).catch((err)=>{console.log(`Error connecting to MetaMask`)})
+  }
+
+  button(label, fn, enabled, x, y, w, h) {
+
+    const boarder = <rect
+      x={x} y={y} width={w} height={h}
+      rx="5" ry="5" fill="#00f" stroke="#000"/>
+
+    const background = <rect
+      x={x+2} y={y+2} width={w-4} height={h-4}
+      rx="5" ry="5" fill="#ccf" stroke="#000"/>
+
+    const text = <text
+      x={x+10} y={y+20} fontSize="16">{label}
+    </text>
+
+    const shade = enabled ? null : <rect
+        x={x} y={y} width={w} height={h}
+        rx="5" ry="5" fill="#000" fillOpacity="0.6"/>
+
+    return (<g>
+      <g onClick={ enabled ? fn : ()=>{/*noop*/}} cursor="pointer">
+        {boarder}
+        {background}
+        {text}
+      </g>
+      {shade}
+    </g>
+    )
   }
 
   render() {
@@ -72,81 +97,48 @@ export default class Chips extends React.Component {
     const w = (n) => Number(this.props.w)*n/100;
     const h = (n) => Number(this.props.h)*n/100;
 
-    const bg = '#88f';
-    const fg = '#ccf';
+    // put button position coordinates all in one place
+    const pos = {
+      tip:     { x: x(10), y: y(41), w: w(80), h: h(15) },
+      cashout: { x: x(10), y: y(59), w: w(80), h: h(15) }
+    }
+
+    // 
+    const can = {
+      tip: this.props.authed,
+      cashout: this.props.authed && this.props.chips > 0
+    }
+
+    const bg = '#99f';
+    const fg = '#ddf';
     const blk = '#000'; 
     const fs = 16; // fs for Font Size
 
-    const btn_h = 47.5
+    const etherscan = `https://etherscan.io/address/${this.state.address}`
 
-    const tip     = [10, 40, 80, 16]
-    const cashout = [10, 60, 80, 16]
 
-    const txt = [10, 22]
+    return (<g>
 
-    const etherscan = `https://etherscan.io/address/${this.props.dealerAddr}`
+      <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
+            rx="5" ry="5" fill={bg} stroke={blk}/>
 
-    const canTip = this.props.authed
-    const canCashout = this.props.authed && this.props.chips > 0
 
-    const shade = (shouldShow) => {
-
-    }
-
-    return (
-<g>
-
-  <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)}
-        rx="5" ry="5" fill={bg} stroke={blk}/>
-
-  <rect x={x(5)} y={y(2.5)} width={w(90)} height={h(15)}
-        rx="5" ry="5" fill={fg} stroke={blk}/>
-
-  <a href={etherscan} textDecoration="underline">
-    <text x={x(7.5)} y={y(12.5)} fontSize={fs}>Dealer Address</text>
-  </a>
-
-  <text x={x(5)} y={y(27.5)} fontSize={fs}>Dealer balance:</text>
-  <text x={x(10)} y={y(37.5)} fontSize={fs}>{this.props.dealerBal} mETH</text>
-
-  {/* Buy 5 chips */}
-  <g onClick={(canTip) ? this.tip : ()=>{/*noop*/}} cursor="pointer">
-     {/*cursor={ (canTip) ? "pointer" : "default"}>*/}
-    <rect x={x(tip[0])} y={y(tip[1])} width={w(tip[2])} height={h(tip[3])}
-          rx="5" ry="5" fill="#00f" stroke={blk}/>
-    <rect x={x(tip[0])+2.5} y={y(tip[1])+2.5} width={w(tip[2])-5} height={h(tip[3])-5}
+      <a href={etherscan}>
+        <rect x={x(5)} y={y(4)} width={w(90)} height={h(12)}
           rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(tip[0])+txt[0]} y={y(tip[1])+txt[1]} fontSize="18">
-      Tip 5 mETH
-    </text>
-  </g>
-  {(!canTip) ?
-    <rect x={x(tip[0])} y={y(tip[1])} width={w(tip[2])} height={h(tip[3])} rx="5" ry="5" fill="#000" fillOpacity="0.6"/>
-  : null }
+        <text x={x(7.5)} y={y(13)} fontSize={fs}>Dealer Address</text>
+      </a>
 
-  {/* Cash out all chips */}
-  <g onClick={(canCashout) ? this.cashout : ()=>{/*noop*/}} cursor="pointer">
-    <rect x={x(cashout[0])} y={y(cashout[1])} width={w(cashout[2])} height={h(cashout[3])}
-          rx="5" ry="5" fill="#00f" stroke={blk}/>
-    <rect x={x(cashout[0])+2.5} y={y(cashout[1])+2.5} width={w(cashout[2])-5} height={h(cashout[3])-5}
-          rx="5" ry="5" fill={fg} stroke={blk}/>
-    <text x={x(cashout[0])+txt[0]} y={y(cashout[1])+txt[1]} fontSize="18">
-      Cashout
-    </text>
-  </g>
-  {(!canCashout) ?
-    <rect x={x(cashout[0])} y={y(cashout[1])} width={w(cashout[2])} height={h(cashout[3])} rx="5" ry="5" fill="#000" fillOpacity="0.6"/>
-  : null }
+      <text x={x(7.5)} y={y(26)} fontSize={fs}>Dealer balance</text>
+      <text x={x(15)} y={y(36)} fontSize={fs}>{this.state.balance} mETH</text>
 
-  {/* Chips */}
-  <text x={x(5)} y={y(85)} fontSize={fs}>
-    Bet per Hand: {this.props.bet}
-  </text>
+      {this.button('Tip 5 mETH', this.tip, can.tip,
+        pos.tip.x, pos.tip.y, pos.tip.w, pos.tip.h)}
+      {this.button('Cashout', this.cashout, can.cashout,
+        pos.cashout.x, pos.cashout.y, pos.cashout.w, pos.cashout.h)}
 
-  {/* Bet */}
-  <text x={x(5)} y={y(95)} fontSize={fs}>
-    Chips: {this.props.chips}
-  </text>
+      <text x={x(7.5)} y={y(84)} fontSize={fs}> Bet per Hand: {this.props.bet} </text>
+      <text x={x(7.5)} y={y(94)} fontSize={fs}> Chips: {this.props.chips} </text>
 
 </g>
     );

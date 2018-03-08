@@ -28,7 +28,7 @@ export default class BJVM extends React.Component {
         console.log(`Found new ethereum account: ${accounts[0].toLowerCase().substring(0,10)}...`)
         // Save this ethereum address as a cookie that will expire in 90 days
         const later = new Date(new Date().getTime() + (90 * 24*60*60*1000)).toUTCString()
-        document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}`
+        document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}; path=/;`
       }
 
       if (bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
@@ -96,16 +96,14 @@ export default class BJVM extends React.Component {
     if (txhash) {
       const etherscan = `https://etherscan.io/tx/${txhash[0]}`
       message = <g>
-        <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-        <text x="20" y="70" fontSize="20">
+        <text x="20" y="68" fontSize="20">
           Cashout tx: <a href={etherscan} textDecoration="underline">{txhash[0].substring(0,15)}...</a>
         </text>
       </g>
 
     } else {
       message = <g>
-        <rect x="15" y="42.5" width="460" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-        <text x="20" y="70" fontSize="20">{this.props.message}</text>
+        <text x="20" y="68" fontSize="20">{this.props.message}</text>
       </g>
     }
 
@@ -119,18 +117,18 @@ export default class BJVM extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
+    <rect x="15" y="40" width="470" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
     {message}
 
-    <Payment x="340" y="90" w="150" h="175" chips={this.props.chips} bet={this.props.bet}
-             dealerAddr={this.props.dealerAddr} dealerBal={this.props.dealerBal}
+    <Payment x="335" y="90" w="150" h="190" chips={this.props.chips} bet={this.props.bet}
              msg={this.props.msg} submit={this.props.submit} authed={this.props.authed}/>
 
-    <Ctrls x="235" y="275" w="250" h="125" submit={this.props.submit} moves={this.props.moves} />
+    <Ctrls x="235" y="290" w="250" h="120" submit={this.props.submit} moves={this.props.moves} />
 
-    <Dealer x="25" y="90" w="90" h="180"/>
-    <Hand x="130" y="100" w="200" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
+    <Dealer x="15" y="90" w="90" h="180"/>
 
-    <Hand x="25" y="260" w="200" hand={this.props.playerHands} />
+    <Hand x="115" y="100" w="210" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
+    <Hand x="15" y="260" w="210" hand={this.props.playerHands} />
 
     {auth}
 

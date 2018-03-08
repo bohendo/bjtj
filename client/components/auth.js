@@ -29,8 +29,8 @@ export default class Auth extends React.Component {
 
           // Save this ethereum address as a cookie that will expire in 90 days
           const later = new Date(new Date().getTime() + (90 * 24*60*60*1000)).toUTCString()
-          document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}`
-          document.cookie = `bjvm_ag=${res.result}; expires=${later}`
+          document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}; path=/`
+          document.cookie = `bjvm_ag=${res.result}; expires=${later}; path=/`
 
           // send id & autograph to server
           this.props.submit('autograph')
