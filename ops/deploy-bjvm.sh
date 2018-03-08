@@ -50,6 +50,8 @@ cat -> /tmp/bjvm/docker-compose.yml <<EOF
 version: '3.4'
 
 networks:
+  blog_front:
+    external: true
   blog_back:
     external: true
 
@@ -72,6 +74,7 @@ services:
     deploy:
       mode: global
     networks:
+      - blog_front
       - blog_back
     secrets:
       - wp_mysql
