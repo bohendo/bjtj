@@ -4,7 +4,7 @@
   "description": "Blackjack Vending Machine",
   "main": "build/server.bundle.js",
   "scripts": {
-    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js --config ./ops/webpack.client.js & docker service logs -f bjvm_nodejs &"
+    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js --config ./ops/webpack.client.js & docker service logs -f bjvm &"
   },
   "author": "Bo Henderson",
   "license": "GPLv3",
@@ -29,6 +29,7 @@
     "babel-preset-node6": "^11.0.0",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0-beta",
+    "cookie-parser": "^1.4.3",
     "es6-promise": "^4.1.1",
     "eth-sig-util": "^1.4.2",
     "express": "^4.16.1",
@@ -46,8 +47,6 @@
     "redux-thunk": "^2.2.0",
     "truffle": "^4.1.0",
     "truffle-contract": "^3.0.1",
-    "universal-cookie": "^2.1.0",
-    "universal-cookie-express": "^2.1.0",
     "web3": "^1.0.0-beta.26"
   }
 }

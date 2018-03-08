@@ -25,15 +25,15 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 ##### RULES #####
 # first rule is the default
 
-all: nodejs-image
+all: bjvm-image
 	@true
 
-deploy: nodejs-image
-	docker push `whoami`/bjvm_nodejs:$v
+deploy: bjvm-image
+	docker push `whoami`/bjvm:$v
 
-build/nodejs-image: nodejs.Dockerfile server.bundle.js client.bundle.js
-	docker build -f ops/nodejs.Dockerfile -t `whoami`/bjvm_nodejs:$v -t bjvm_nodejs:$v .
-	touch build/nodejs-image
+build/bjvm-image: Dockerfile server.bundle.js client.bundle.js
+	docker build -f ops/Dockerfile -t `whoami`/bjvm:$v -t bjvm:$v .
+	touch build/bjvm-image
 
 server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)
 	$(webpack) --config ops/webpack.server.js

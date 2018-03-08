@@ -6,87 +6,53 @@
 set -e
 
 NODE_ENV="development"
+ETH_PROVIDER="/tmp/ipc/geth.ipc"
 
-[[ -n "$ETH_PROVIDER" ]] | ETH_PROVIDER="/tmp/ipc/geth.ipc"
+if [[ -z "$ETH_ADDRESS" ]]
+then
+  echo "Set an ETH_ADDRESS environment variable first"
+  exit 1
+fi
 
 me=`whoami` # docker.io username
 v=latest
-
-########################################
-# Initialize docker secrets
-secrets="wp_mysql"
-for secret in $secrets
-do
-  if [[ -z "`docker secret ls -qf name=$secret`" ]]
-  then
-    id=`head -c27 /dev/urandom | base64 | tr -d '\n\r' | docker secret create $secret -`
-    echo "Created new secret: $secret with id $id"
-  fi
-done
 
 ########################################
 # Setup bind mounts for easy development
 if [[ "$NODE_ENV" == "development" ]]
 then
 
-  bindserver=''
   serverbundle="`pwd`/build/server.bundle.js"
-  [[ -f "$serverbundle" ]] && bindserver="- $serverbundle:/root/server.bundle.js"
+  if [[ -f "$serverbundle" ]]
+  then
+    bindserver="--mount=type=bind,source=$serverbundle,destination=/root/server.bundle.js"
+  fi
 
-  bindclient=''
   clientbundle="`pwd`/build/static/client.bundle.js"
-  [[ -f "$clientbundle" ]] && bindclient="- $clientbundle:/root/static/client.bundle.js"
+  if [[ -f "$clientbundle" ]]
+  then
+    bindclient="--mount=type=bind,source=$clientbundle,destination=/root/static/client.bundle.js"
+  fi
 fi
 
 ########################################
 # Pull updated images
-nodejs="$me/bjvm_nodejs:$v"
-docker pull $nodejs
 
-########################################
-# Create a docker-compose.yml & deploy
-mkdir -p /tmp/bjvm
-cat -> /tmp/bjvm/docker-compose.yml <<EOF
-version: '3.4'
-
-networks:
-  blog_front:
-    external: true
-  blog_back:
-    external: true
-
-volumes:
-  ethprovider_ipc:
-    external: true
-
-secrets:
-  wp_mysql:
-    external: true
-
-services:
-
-  nodejs:
-    image: $nodejs
-    environment:
-      - NODE_ENV=$NODE_ENV
-      - ETH_PROVIDER=$ETH_PROVIDER
-      - ETH_ADDRESS=$ETH_ADDRESS
-    deploy:
-      mode: global
-    networks:
-      - blog_front
-      - blog_back
-    secrets:
-      - wp_mysql
-    ports:
-      - "3000:3000"
-    volumes:
-      - ethprovider_ipc:/tmp/ipc
-      $bindserver
-      $bindclient
-
-EOF
-
-docker stack deploy -c /tmp/bjvm/docker-compose.yml bjvm
-rm -rf /tmp/bjvm
+docker pull "$me/bjvm:$v"
+docker service create \
+  --name="bjvm" \
+  --mode="global" \
+  --secret="$ETH_ADDRESS" \
+  --secret="wp_mysql" \
+  --network="blog_front" \
+  --network="blog_back" \
+  --mount="type=volume,source=ethprovider_ipc,destination=/tmp/ipc" \
+  $bindserver \
+  $bindclient \
+  --env="NODE_ENV=$NODE_ENV" \
+  --env="ETH_PROVIDER=$ETH_PROVIDER" \
+  --env="ETH_ADDRESS=$ETH_ADDRESS" \
+  --publish="3000:3000" \
+  --detach \
+  "$me/bjvm:$v"
 
