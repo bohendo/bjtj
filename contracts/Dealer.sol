@@ -3,8 +3,7 @@ pragma solidity ^0.4.0;
 contract Dealer {
 
     address public pitboss;
-
-    uint public constant ethLimit = 1 ether;
+    uint public constant ceiling = 0.25 ether;
 
     event Deposit(address indexed _from, uint _value);
 
@@ -12,25 +11,26 @@ contract Dealer {
       pitboss = msg.sender;
     }
 
-    function overflow() public {
-      if (msg.sender == pitboss && this.balance > ethLimit) {
-        pitboss.transfer(this.balance - ethLimit);
-      }
-    }
-
-    function cashout(address winner, uint amount) public {
-      if (msg.sender == pitboss) {
-        winner.transfer(amount);
-      }
-    }
-
-    function kill() public {
-      if (msg.sender == pitboss) {
-        selfdestruct(pitboss);
-      }
-    }
-
     function () public payable {
       Deposit(msg.sender, msg.value);
     }
+
+    modifier pitbossOnly {
+      require(msg.sender == pitboss);
+      _;
+    }
+
+    function cashout(address winner, uint amount) public pitbossOnly {
+      winner.transfer(amount);
+    }
+
+    function overflow() public pitbossOnly {
+      require (this.balance > ceiling);
+      pitboss.transfer(this.balance - ceiling);
+    }
+
+    function kill() public pitbossOnly {
+      selfdestruct(pitboss);
+    }
+
 }
