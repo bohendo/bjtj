@@ -73,12 +73,6 @@ router.get('/cashout', (req, res, next) => {
       return res.json({ message })
     }
 
-    message = "Error sending cashout tx.. Try again later"
-    if (receipt.status === "0x00") {
-      log(`WARNING failed to sent cashout tx, ${req.id.substring(0,10)} couldn't cash out`)
-      return res.json({ message })
-    }
-
     // if everything went well, subtract some chips from the player's game state
     db.cashout(req.id, receipt).then((newState) => {
       return res.json(newState.public)

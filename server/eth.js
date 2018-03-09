@@ -91,14 +91,9 @@ eth.cashout = (addr, chips) => {
         if (!res) die(`Unable to unlock account ${from}`)
         return dealer.methods.cashout(addr, amount).send({ from }).then((receipt) => {
 
+          log(`Sent ${receipt.chipsCashed} mETH to ${addr.substring(0,10)}: ${receipt.transactionHash}`)
+
           receipt.chipsCashed = web3.utils.fromWei(String(amount), 'milli')
-
-          if (receipt.status === "0x00") {
-            log(`Error sending tx: ${JSON.stringify(receipt)}`)
-          } else {
-            log(`Sent ${receipt.chipsCashed} mETH to ${addr.substring(0,10)}: ${receipt.transactionHash}`)
-          }
-
           return receipt
 
         }).catch(die)
