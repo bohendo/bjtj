@@ -25,11 +25,11 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 ##### RULES #####
 # first rule is the default
 
-all: bjvm-image dealer.js
+all: bjtj-image dealer.js
 	@true
 
-deploy: bjvm-image
-	docker push `whoami`/bjvm:$v
+deploy: bjtj-image
+	docker push `whoami`/bjtj:$v
 
 build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	echo 'var dealerData = ' | tr -d '\n\r' > build/dealer.js
@@ -37,9 +37,9 @@ build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	echo >> build/dealer.js
 	cat ops/preload-dealer.js >> build/dealer.js
 
-build/bjvm-image: Dockerfile server.bundle.js client.bundle.js
-	docker build -f ops/Dockerfile -t `whoami`/bjvm:$v -t bjvm:$v .
-	touch build/bjvm-image
+build/bjtj-image: Dockerfile server.bundle.js client.bundle.js
+	docker build -f ops/Dockerfile -t `whoami`/bjtj:$v -t bjtj:$v .
+	touch build/bjtj-image
 
 server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)
 	$(webpack) --config ops/webpack.server.js

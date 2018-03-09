@@ -1,10 +1,10 @@
 {
-  "name": "bjvm",
+  "name": "bjtj",
   "version": "0.6.0",
-  "description": "Blackjack Vending Machine",
+  "description": "Blackjack Tip Jar",
   "main": "build/server.bundle.js",
   "scripts": {
-    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js --config ./ops/webpack.client.js & docker service logs -f bjvm &"
+    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js --config ./ops/webpack.client.js & docker service logs -f bjtj &"
   },
   "author": "Bo Henderson",
   "license": "GPLv3",

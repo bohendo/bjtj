@@ -6,7 +6,7 @@
 set -e
 
 NODE_ENV="development"
-ETH_PROVIDER="/tmp/ipc/geth.ipc"
+ETH_PROVIDER="/tmp/ipc/parity.ipc"
 
 me=`whoami` # docker.io username
 v=latest
@@ -54,9 +54,9 @@ fi
 ########################################
 # Pull updated images
 
-docker pull "$me/bjvm:$v"
+docker pull "$me/bjtj:$v"
 docker service create \
-  --name="bjvm" \
+  --name="bjtj" \
   --mode="global" \
   --secret="$ETH_ADDRESS" \
   --secret="wp_mysql" \
@@ -70,5 +70,5 @@ docker service create \
   --env="ETH_ADDRESS=$ETH_ADDRESS" \
   --publish="3000:3000" \
   --detach \
-  "$me/bjvm:$v"
+  "$me/bjtj:$v"
 
