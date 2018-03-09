@@ -27,7 +27,7 @@ const shuffle = () => {
 
 const initialState = {
   public: {
-    message: 'Click Deal when you are ready!',
+    message: `If you tip me, I'll give you 1 chip per mETH :)`,
     moves: ['deal'],
     playerHands: [],
     dealerCards: [],
