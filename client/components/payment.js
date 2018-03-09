@@ -54,7 +54,7 @@ export default class Chips extends React.Component {
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
-      }).catch((err)=>{console.log(`tx error: ${err}`)})
+      }).catch((err)=>{console.log(`tx rejected`)})
     }).catch((err)=>{console.log(`Error connecting to MetaMask`)})
   }
 

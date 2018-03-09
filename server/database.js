@@ -102,27 +102,26 @@ db.saveAction = (account, action) => {
   return query(q).catch(die(q))
 }
 
-db.cashout = (account) => {
+db.cashout = (account, receipt) => {
   const q1 = `SELECT state FROM bjvm_states WHERE account='${account}';`
   return query(q1).catch(die(q1)).then((rows) => {
     if (!rows || !rows[0] || !rows[0].state) {
       die('cashout')(`Couldn't find state for ${account.substring(0,10)}`)
     }
+
     const state = JSON.parse(rows[0].state)
 
-    // short circuit if this accont doesn't have any chips
-    const chips = state.public.chips
-    if (chips === 0) { return 0 }
+    state.public.chips -= receipt.chipsCashed
+    state.public.message = `Cashed out ${receipt.chipsCashed} chips: ${receipt.transactionHash}`
 
-    state.public.chips = 0
-    log(`Account ${account.substring(0,10)} cashed out ${chips} chips`)
+    log(`Removed ${receipt.chipsCashed} chips from account ${account.substring(0,10)}`)
 
-    // when promises resolve, return the number of chips we removed from this account
+    // when promises resolve, return the new state we just saved
     const q2 = `UPDATE bjvm_states
-      SET state=${connection.escape(JSON.stringify(bj(state, { type: 'SYNC' })))},
+      SET state=${connection.escape(JSON.stringify(state))},
       timestamp='${new Date().toISOString().slice(0,19).replace('T', ' ')}'
       WHERE account='${account}';`
-    return query(q2).catch(die(q2)).then(() => chips)
+    return query(q2).catch(die(q2)).then(() => state)
   })
 }
 

@@ -14,10 +14,11 @@ const log = (msg) => {
   if (true) console.log(`${new Date().toISOString()} [ETH] ${msg}`)
 }
 
+
 ////////////////////////////////////////
 // Internal utility functions
 
-const from = process.env.ETH_ADDRESS
+const from = process.env.ETH_ADDRESS.toLowerCase()
 const secret = fs.readFileSync(`/run/secrets/${from}`, 'utf8')
 
 var web3 // will provide either via ws or ipc
@@ -29,6 +30,8 @@ if (process.env.NODE_ENV === 'development') {
     new net.Socket()
   ))
 }
+
+const BN = web3.utils.BN
 
 const getDealer = () => {
   return web3.eth.net.getId().then((id)=>{
@@ -48,7 +51,7 @@ web3.eth.net.getId().then((id)=>{
 
   const msg = `Make sure you've loaded account ${from.substring(0,10)} into this ethprovider`
   return web3.eth.getAccounts().then(accounts => {
-    if (!accounts.includes(from)) die(msg)
+    if (!accounts.map(a=>a.toLowerCase()).includes(from)) die(msg)
 
     return getDealer().then(dealer => {
       const address = dealer.options.address
@@ -70,13 +73,36 @@ const eth = {}
 
 eth.cashout = (addr, chips) => {
   log(`Cashing out ${chips} chips to ${addr.substring(0,10)}`)
-  return getDealer().then(dealer => {
+  return getDealer().then((dealer) => {
 
-    return web3.eth.personal.unlockAccount(from, secret).then(res => {
-    if (!res) die(`Unable to unlock account ${from}`)
+    // does the dealer have enough money to cash out all these chips?
+    return web3.eth.getBalance(dealer.options.address).then((bal) => {
+      var amount = web3.utils.toWei(String(chips), 'milli')
 
-      return dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).send({ from })
+      log(`comparing ${bal} vs ${amount}...`)
+      // if not, cash out as many chips as we can
+      if (new BN(bal).lt(new BN(amount))) { amount = bal }
 
+      // unless we can't cash out any, then short-circuit
+      if (new BN(amount).eq(new BN(0))) { return({ chipsCashed: 0, transactionHash: null }) }
+
+      // send cashout tx
+      return web3.eth.personal.unlockAccount(from, secret).then((res) => {
+        if (!res) die(`Unable to unlock account ${from}`)
+        return dealer.methods.cashout(addr, amount).send({ from }).then((receipt) => {
+
+          receipt.chipsCashed = web3.utils.fromWei(String(amount), 'milli')
+
+          if (receipt.status === "0x00") {
+            log(`Error sending tx: ${JSON.stringify(receipt)}`)
+          } else {
+            log(`Sent ${receipt.chipsCashed} mETH to ${addr.substring(0,10)}: ${receipt.transactionHash}`)
+          }
+
+          return receipt
+
+        }).catch(die)
+      }).catch(die)
     }).catch(die)
   }).catch(die)
 }
