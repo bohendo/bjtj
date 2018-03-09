@@ -8,14 +8,30 @@ set -e
 NODE_ENV="development"
 ETH_PROVIDER="/tmp/ipc/geth.ipc"
 
+me=`whoami` # docker.io username
+v=latest
+
+
+########################################
+# Check & setup the ETH_ADDRESS we're deploying with
+
+if [[ "$NODE_ENV" == "development" ]]
+then
+  ETH_ADDRESS="0x627306090abab3a6e1400e9345bc60c78a8bef57"
+  if [[ -z "`docker secret ls -q -f name=$ETH_ADDRESS`" ]]
+  then
+    id=`echo 'ganache' | tr -d '\n\r' | docker secret create $ETH_ADDRESS -`
+    echo "Created docker secret $ETH_ADDRESS with id $id"
+  fi
+fi
+
+# Make sure it's been exported externally in production
 if [[ -z "$ETH_ADDRESS" ]]
 then
   echo "Set an ETH_ADDRESS environment variable first"
   exit 1
 fi
 
-me=`whoami` # docker.io username
-v=latest
 
 ########################################
 # Setup bind mounts for easy development
