@@ -45,6 +45,9 @@ export default class BJVM extends React.Component {
         return this.props.auth(false)
       }
 
+    }).catch((err) => {
+      console.error('Error connecting to web3, please refresh the page')
+      clearInterval(this.cookieWatcher)
     })
   }
 

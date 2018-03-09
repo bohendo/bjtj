@@ -21,6 +21,9 @@ export default class Chips extends React.Component {
         const balance = web3.utils.fromWei(bal,'milli')
         return this.setState({ network, address, balance })
       })
+    }).catch((err) => {
+      console.error('Error connecting to web3, please refresh the page')
+      clearInterval(this.ethWatcher)
     })
   }
 
