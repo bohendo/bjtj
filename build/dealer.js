@@ -2302,8 +2302,8 @@ var dealerData = {
     "1": {
       "events": {},
       "links": {},
-      "address": "0x879663D24D1dCC512192F688c9e9877943D783B8",
-      "transactionHash": "0x5cab85da275d85e5033b024ff60bf19be167b8f9d33c4423796709e4768d932e"
+      "address": "0x13Ea3e8f20fdABb3996D7580DF50143b93E4ba27",
+      "transactionHash": "0x82b39bf40c8b35bdcf329d830cea648212fbd1749b6e77dbc47b770058a507f0"
     },
     "5777": {
       "events": {},

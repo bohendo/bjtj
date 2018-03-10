@@ -23,7 +23,8 @@ const verify = (usr, sig) => {
 const auth = (req, res, next) => {
   log(`New req received for ${req.path}`)
 
-  let id = req.cookies.bjvm_id // id for IDentifier aka account
+  // Make sure this request has id and ag cookies
+  let id = req.cookies.bjvm_id // id for IDentifier aka eth address
   let ag = req.cookies.bjvm_ag // ag for AutoGraph aka signature
   if (! id || ! ag) {
     log(`No signature cookies, aborting`)
@@ -38,7 +39,6 @@ const auth = (req, res, next) => {
     log(`These cookies are invalid, aborting`)
     return res.json({ message: "These cookies don't look right" })
   }
-
 
   if (!verify(id, ag)) { // autograph is valid
     log(`Player ${id.substring(0,10)} provided an invalid signature`)

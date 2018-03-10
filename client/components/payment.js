@@ -18,7 +18,7 @@ export default class Chips extends React.Component {
       }
       const address = dealerData.networks[network].address
       return web3.eth.getBalance(address).then((bal) => {
-        const balance = web3.utils.fromWei(bal,'milli')
+        const balance = Math.floor(web3.utils.fromWei(bal,'milli'))
         return this.setState({ network, address, balance })
       })
     }).catch((err) => {

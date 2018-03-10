@@ -84045,7 +84045,7 @@ var Chips = function (_React$Component) {
         }
         var address = _Dealer2.default.networks[network].address;
         return web3.eth.getBalance(address).then(function (bal) {
-          var balance = web3.utils.fromWei(bal, 'milli');
+          var balance = Math.floor(web3.utils.fromWei(bal, 'milli'));
           return _this2.setState({ network: network, address: address, balance: balance });
         });
       }).catch(function (err) {

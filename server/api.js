@@ -19,13 +19,11 @@ const die = (msg) => {
 const handleMove = (req, res, move) => {
   log(`Handling ${move} for ${req.id.substring(0,10)}`)
 
-  // use our bj reducer to apply some move to our old bj state
-  const newState = bj(req.state, { type: move })
-  return db.updateState(req.id, newState).then(() => {
-    // send the public part of this bj state after our update has been saved
-    return res.json(newState.public)
-  }).catch(die)
+  return db.action(req.id, move).then((newState) => {
 
+    return res.json(newState.public)
+
+  }).catch(die)
 }
 
 ////////////////////////////////////////
@@ -39,45 +37,49 @@ router.get('/autograph', (req, res, next) => {
 })
 
 router.get('/refresh', (req, res, next) => {
-  // if our message contains a txHash, preserve it when refreshing
-  var message
-  if (req.state.public.message.match(/0x[0-9a-f]{65}/)) {
-    message = req.state.public.message    
-  } else {
-    message = false
-  }
-  // sync & save our bj state before sending it to the client
-  const newState = bj(req.state, { type: 'SYNC' })
-  if (message) { newState.public.message = message }
-
-  db.updateState(req.id, newState).then(() => {
+  db.action(req.id, 'SYNC').then((newState) => {
     log(`Refreshed game state for ${req.id.substring(0,10)}`)
-    res.json(newState.public)
+
+      return res.json(newState.public)
+
   }).catch(die)
 })
 
 router.get('/cashout', (req, res, next) => {
 
-  let message = "Hey you don't have any chips"
-  if (req.state.public.chips === 0) {
+  const message = "Hey you don't have any chips"
+  if (req.state.public.chips < 1) {
     log(`${req.id.substring(0,10)} doesn't have any chips to cash out`)
     return res.json({ message })
   }
 
-  eth.cashout(req.id, req.state.public.chips).then((receipt) => {
-    let message
+  return eth.getDealerBalance().then((dealerBal) => {
 
-    message = "Oh no, the dealer's broke.. Try again later"
-    if (receipt.chipsCashed === 0) {
+    const message = "Oh no, the dealer's broke.. Try again later"
+    if (dealerBal < 1) {
       log(`WARNING Dealer's broke, ${req.id.substring(0,10)} couldn't cash out`)
       return res.json({ message })
     }
 
-    // if everything went well, subtract some chips from the player's game state
-    db.cashout(req.id, receipt).then((newState) => {
-      return res.json(newState.public)
-    }).catch(die)
+    const playerBal = req.state.public.chips
+    var toCash = (dealerBal > playerBal) ? playerBal : dealerBal
+    log(`Cashing out ${toCash} (Dealer has ${dealerBal} vs Player has ${playerBal})`)
 
+    return eth.cashout(req.id, toCash).then((txHash) => {
+
+      const message = `Cashout tx: ${txHash}`
+      log(message)
+
+      // if we successfully send a tx, subtract some chips from the player's game state
+      db.addChips(req.id, -1 * toCash).then((newState) => {
+        db.newMessage(req.id, message).then((newState) => {
+
+          return res.json(newState.public)
+
+        }).catch(die)
+      }).catch(die)
+
+    }).catch(die)
   }).catch(die)
 
 })
