@@ -28,7 +28,7 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 all: bjtj-image dealer.js
 	@true
 
-deploy: bjtj-image
+deploy: bjtj-image dealer.js
 	docker push `whoami`/bjtj:$v
 
 build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh

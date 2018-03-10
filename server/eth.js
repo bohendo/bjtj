@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === 'development') {
 var ethGasStation = 'https://ethgasstation.info/json/ethgasAPI.json'
 
 const from = process.env.ETH_ADDRESS.toLowerCase()
-const secret = fs.readFileSync(`/run/secrets/${from}`, 'utf8')
 
 ////////////////////////////////////////
 // Utilities
@@ -76,13 +75,16 @@ const getGasPrice = () => {
 const sendTx = (tx) => {
 
   tx.from = process.env.ETH_ADDRESS.toLowerCase()
+
   return getGasPrice().then((gasPrice) => {
-    tx.gasPrice = gasPrice * 1.2
+    tx.gasPrice = gasPrice * 1.5
 
     return web3.eth.estimateGas(tx).then(gas=>{
       tx.gas = gas * 2
 
-      return web3.eth.personal.unlockAccount(tx.from, secret, 'utf8').then((res) => {
+      return web3.eth.personal.unlockAccount(tx.from, fs.readFileSync(`/run/secrets/${tx.from}`, 'utf8')).then((res) => {
+
+          log(`Sending tx: ${JSON.stringify(tx, null, 2)}`)
 
           // send the transaction
           return new Promise((resolve, reject) => {
