@@ -32,7 +32,7 @@ const initialState = {
     playerHands: [],
     dealerCards: [],
     bet: 1,
-    chips: 0,
+    chips: 3,
   },
   private: {
     deck: shuffle(),

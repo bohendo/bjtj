@@ -134,7 +134,7 @@ getDealer().then(dealer => {
   dealer.events.Deposit((err, res) => {
     if (err) { die(err) }
     const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
-    const from = res.returnValues._from
+    const from = res.returnValues._from.toLowerCase()
     log(`Deposit detected: ${chips} mETH from ${from.substring(0,10)} `)
     db.addChips(from, Number(chips))
   })
