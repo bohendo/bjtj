@@ -16,6 +16,6 @@ hydrate(
   <Provider store={createStore(reducer, undefined, applyMiddleware(thunkMW))}>
     <Container />
   </Provider>,
-  document.getElementById('bjvm_root'),
+  document.getElementById('bjtj_root'),
 )
 

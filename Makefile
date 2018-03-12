@@ -50,6 +50,6 @@ client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 $(artifacts): $(sol)
 	truffle compile
 
-node_modules: package.json package-lock.json
+node_modules: package.json
 	npm install
 

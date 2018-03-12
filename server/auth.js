@@ -24,8 +24,8 @@ const auth = (req, res, next) => {
   log(`New req received for ${req.path}`)
 
   // Make sure this request has id and ag cookies
-  let id = req.cookies.bjvm_id // id for IDentifier aka eth address
-  let ag = req.cookies.bjvm_ag // ag for AutoGraph aka signature
+  let id = req.cookies.bjtj_id // id for IDentifier aka eth address
+  let ag = req.cookies.bjtj_ag // ag for AutoGraph aka signature
   if (! id || ! ag) {
     log(`No signature cookies, aborting`)
     return res.json({ message: "I dont' talk to people without a cookie" })

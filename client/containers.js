@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import BJVM from './components/bjvm.js'
+import BJTJ from './components/bjtj.js'
 import { message, auth, submit } from './actions'
 
 const mapStateToProps = state => state
@@ -15,6 +15,6 @@ const mapDispatchToProps = dispatch => {
 const Container = connect(
   mapStateToProps,
   mapDispatchToProps
-)(BJVM)
+)(BJTJ)
 
 export default Container

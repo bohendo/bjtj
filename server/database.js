@@ -52,23 +52,23 @@ const query = (q) => {
 
 connection.connect((err) => { if (err) die('connect')(err) })
 
-query(`CREATE TABLE IF NOT EXISTS bjvm_states (
+query(`CREATE TABLE IF NOT EXISTS bjtj_states (
   account   CHAR(42)      PRIMARY KEY,
   signature CHAR(132)     NOT NULL,
   state     VARCHAR(2048) NOT NULL,
   timestamp DATETIME      NOT NULL);`)
 
-query(`CREATE TABLE IF NOT EXISTS bjvm_actions (
+query(`CREATE TABLE IF NOT EXISTS bjtj_actions (
   account   CHAR(42)      NOT NULL,
   action    VARCHAR(1024) NOT NULL,
   timestamp DATETIME      NOT NULL,
   PRIMARY KEY (account, timestamp));`)
 
 // Confirm db connection or die
-let q = `SELECT count(account) as count from bjvm_states;`
+let q = `SELECT count(account) as count from bjtj_states;`
 query(q).catch(die(q)).then(rows => {
   if (!rows || !rows[0]) die(q)(`Got an invalid db response: ${JSON.stringify(rows)}`)
-  log(`Successfully connected to DB & found ${rows[0].count} bjvm states`)
+  log(`Successfully connected to DB & found ${rows[0].count} bjtj states`)
 })
 
 
@@ -77,7 +77,7 @@ query(q).catch(die(q)).then(rows => {
 
 const selectState = (account) => {
   log(`${account.substring(0, 10)} SELECTing state`)
-  const q = `SELECT state from bjvm_states WHERE account='${account}';`
+  const q = `SELECT state from bjtj_states WHERE account='${account}';`
   return query(q).catch(warn(q)).then((rows) => {
     if (rows && rows[0] && rows[0].state) {
       return JSON.parse(rows[0].state)
@@ -92,7 +92,7 @@ const initState = (account, signature) => {
   log(`${account.substring(0, 10)} Initializing new game state`)
   const state = bj()
   const stateString = connection.escape(JSON.stringify(state))
-  const q = `INSERT INTO bjvm_states
+  const q = `INSERT INTO bjtj_states
     ( account,    signature,    state,    timestamp ) VALUES (
     '${account}', '${signature}', ${stateString}, '${now()}');`
   return query(q).catch(warn(q)).then(() => state)
@@ -100,7 +100,7 @@ const initState = (account, signature) => {
 
 const setState = (account, state) => {
   log(`${account.substring(0,10)} Updating state`)
-  const q = `UPDATE bjvm_states SET
+  const q = `UPDATE bjtj_states SET
     state=${connection.escape(JSON.stringify(state))},
     timestamp='${now()}'
     WHERE account='${account}';`

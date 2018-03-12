@@ -8,7 +8,7 @@ import Payment from './payment.js'
 
 import { verify } from '../verify'
 
-export default class BJVM extends React.Component {
+export default class BJTJ extends React.Component {
 
   cookieSync(shouldLog) {
 
@@ -19,29 +19,29 @@ export default class BJVM extends React.Component {
         return this.props.msg('Please unlock MetaMask')
       }
 
-      // get all cookies & look for ones that match bjvm_id and bjvm_ag
+      // get all cookies & look for ones that match bjtj_id and bjtj_ag
       const cookies = document.cookie;
-      const bjvm_id = cookies.match(/bjvm_id=(0x[0-9a-f]+)/)
-      const bjvm_ag = cookies.match(/bjvm_ag=(0x[0-9a-f]+)/)
+      const bjtj_id = cookies.match(/bjtj_id=(0x[0-9a-f]+)/)
+      const bjtj_ag = cookies.match(/bjtj_ag=(0x[0-9a-f]+)/)
 
-      if (!bjvm_id || bjvm_id[1] !== accounts[0].toLowerCase()) {
+      if (!bjtj_id || bjtj_id[1] !== accounts[0].toLowerCase()) {
         console.log(`Found new ethereum account: ${accounts[0].toLowerCase().substring(0,10)}...`)
         // Save this ethereum address as a cookie that will expire in 90 days
         const later = new Date(new Date().getTime() + (90 * 24*60*60*1000)).toUTCString()
-        document.cookie = `bjvm_id=${accounts[0].toLowerCase()}; expires=${later}; path=/;`
+        document.cookie = `bjtj_id=${accounts[0].toLowerCase()}; expires=${later}; path=/;`
       }
 
-      if (bjvm_ag && verify(bjvm_id[1], bjvm_ag[1])) {
-        if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} has an autographed cookie, awesome`)
+      if (bjtj_ag && verify(bjtj_id[1], bjtj_ag[1])) {
+        if (shouldLog) console.log(`${bjtj_id[1].substring(0,10)} has an autographed cookie, awesome`)
         // If we'd previously been talking about metamask or cookies, relax we're good now
         if (this.props.message.match(/(MetaMask)|(cookie)/)) {
-          this.props.msg(`Thanks for the autograph ${bjvm_id[1].substring(2,8)}!`)
+          this.props.msg(`Thanks for the autograph ${bjtj_id[1].substring(2,8)}!`)
           this.props.submit('refresh')
         }
         return this.props.auth(true)
       } else {
-        if (shouldLog) console.log(`${bjvm_id[1].substring(0,10)} is missing an autographed cookie, bummer`)
-        this.props.msg(`Hey ${bjvm_id[1].substring(2,8)}, autograph this cookie to play`)
+        if (shouldLog) console.log(`${bjtj_id[1].substring(0,10)} is missing an autographed cookie, bummer`)
+        this.props.msg(`Hey ${bjtj_id[1].substring(2,8)}, autograph this cookie to play`)
         return this.props.auth(false)
       }
 
@@ -113,7 +113,7 @@ export default class BJVM extends React.Component {
     return (
 
 <div class="center canvas">
-  <svg height={height+depth} width={width+depth} id="bjvm-svg">
+  <svg height={height+depth} width={width+depth} id="bjtj-svg">
 
     <rect x="0" y={depth} height={height} width={width}
           fill={fill} stroke={stroke} />
