@@ -18,14 +18,6 @@ const log = (msg) => {
   if (true) console.log(`${new Date().toISOString()} [DB] ${msg}`)
 }
 
-// We can recover from some errors
-const warn = (query) => {
-  return (msg) => {
-    console.error(`${new Date().toISOString()} [DB] WARNING while executing: ${query}`)
-    console.error(`${new Date().toISOString()} [DB] Error: ${msg}`)
-  }
-}
-
 // Crash gracefully & informatively
 const die = (query) => {
   return (msg) => {
@@ -78,7 +70,7 @@ query(q).catch(die(q)).then(rows => {
 const selectState = (account) => {
   log(`${account.substring(0, 10)} SELECTing state`)
   const q = `SELECT state from bjtj_states WHERE account='${account}';`
-  return query(q).catch(warn(q)).then((rows) => {
+  return query(q).catch(die(q)).then((rows) => {
     if (rows && rows[0] && rows[0].state) {
       return JSON.parse(rows[0].state)
     }
@@ -95,7 +87,7 @@ const initState = (account, signature) => {
   const q = `INSERT INTO bjtj_states
     ( account,    signature,    state,    timestamp ) VALUES (
     '${account}', '${signature}', ${stateString}, '${now()}');`
-  return query(q).catch(warn(q)).then(() => state)
+  return query(q).catch(die(q)).then(() => state)
 }
 
 const setState = (account, state) => {
@@ -104,7 +96,7 @@ const setState = (account, state) => {
     state=${connection.escape(JSON.stringify(state))},
     timestamp='${now()}'
     WHERE account='${account}';`
-  return query(q).catch(warn(q))
+  return query(q).catch(die(q))
 }
 
 const reduceState = (account, reducer) => {
