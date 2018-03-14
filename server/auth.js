@@ -1,6 +1,7 @@
-import db from './database'
 import sigUtil from 'eth-sig-util'
 import agreement from '../Agreement.txt'
+
+import db from './db'
 
 ////////////////////////////////////////
 // Internal Utilities

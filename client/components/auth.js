@@ -33,7 +33,6 @@ export default class Auth extends React.Component {
           document.cookie = `bjtj_ag=${res.result}; expires=${later}; path=/`
 
           // send id & autograph to server
-          this.props.submit('autograph')
           this.props.submit('refresh')
           this.props.msg('Thanks for the autograph!')
         } else {

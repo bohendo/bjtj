@@ -96796,7 +96796,6 @@ var Auth = function (_React$Component) {
             document.cookie = 'bjtj_ag=' + res.result + '; expires=' + later + '; path=/';
 
             // send id & autograph to server
-            _this2.props.submit('autograph');
             _this2.props.submit('refresh');
             _this2.props.msg('Thanks for the autograph!');
           } else {

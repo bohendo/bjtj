@@ -4,7 +4,7 @@ import Web3 from 'web3'
 import https from 'https'
 
 import dealerData from '../build/contracts/Dealer.json'
-import db from './database'
+import db from './db'
 
 var web3 // will provide either via ws or ipc
 if (process.env.NODE_ENV === 'development') {
@@ -20,7 +20,6 @@ if (process.env.NODE_ENV === 'development') {
 // Internal global variables
 
 var ethGasStation = 'https://ethgasstation.info/json/ethgasAPI.json'
-
 const from = process.env.ETH_ADDRESS.toLowerCase()
 
 ////////////////////////////////////////
@@ -73,58 +72,32 @@ const getGasPrice = () => {
 }
 
 const sendTx = (tx) => {
+  return new Promise((resolve, reject) => {
 
-  tx.from = process.env.ETH_ADDRESS.toLowerCase()
+    return getGasPrice().then((gasPrice) => {
+      tx.gasPrice = gasPrice * 1.5
 
-  return getGasPrice().then((gasPrice) => {
-    tx.gasPrice = gasPrice * 1.5
+      return web3.eth.estimateGas(tx).then(gas=>{
+        tx.gas = gas * 2
 
-    return web3.eth.estimateGas(tx).then(gas=>{
-      tx.gas = gas * 2
-
-      return web3.eth.personal.unlockAccount(tx.from, fs.readFileSync(`/run/secrets/${tx.from}`, 'utf8')).then((res) => {
+        return web3.eth.personal.unlockAccount(
+          tx.from, fs.readFileSync(`/run/secrets/${tx.from}`, 'utf8')
+        ).then((res) => {
 
           log(`Sending tx: ${JSON.stringify(tx, null, 2)}`)
 
           // send the transaction
-          return new Promise((resolve, reject) => {
-            web3.eth.sendTransaction(tx).once('transactionHash', (txHash) => {
-              return resolve(txHash)
-            }).catch((error) => {
-              return reject(error)
-            })
+          return web3.eth.sendTransaction(tx).once('transactionHash', (hash) => {
+            return resolve(hash)
+          }).catch((error) => {
+            return reject(error)
           })
           
+        }).catch(die)
       }).catch(die)
     }).catch(die)
-  }).catch(die)
-}
 
-////////////////////////////////////////
-// Exported object methods
-
-const eth = {}
-
-// returns number of chips aka mETH dealer has
-eth.getDealerBalance = () => {
-  return getDealer().then((dealer) => {
-    return web3.eth.getBalance(dealer.options.address).then((balance) => {
-      return web3.utils.fromWei(balance, 'milli')
-    }).catch(die)
-  }).catch(die)
-}
-
-eth.cashout = (addr, chips) => {
-  return getDealer().then((dealer) => {
-
-    log(`Cashing out ${chips} Wei to ${addr.substring(0,10)}`)
-
-    return sendTx({
-      to: dealer.options.address,
-      data: dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).encodeABI()
-    })
-
-  }).catch(die)
+  }) // end new Promise
 }
 
 ////////////////////////////////////////
@@ -133,10 +106,19 @@ eth.cashout = (addr, chips) => {
 getDealer().then(dealer => {
   dealer.events.Deposit((err, res) => {
     if (err) { die(err) }
-    const chips = web3.utils.fromWei(res.returnValues._value, 'milli')
-    const from = res.returnValues._from.toLowerCase()
-    log(`Deposit detected: ${chips} mETH from ${from.substring(0,10)} `)
-    db.addChips(from, Number(chips))
+
+    // tx.value in units of micro Ether aka 10^12 Wei
+    // tx.value = 1 million means payment of 1 ETH
+    const tx = {
+      hash: res.transactionHash.toLowerCase(),
+      from: res.returnValues._from.toLowerCase(),
+      to: dealer.options.address.toLowerCase(),
+      value: String(web3.utils.fromWei(res.returnValues._value, 'micro'))
+    }
+
+    log(`Deposit detected: ${tx.value} uETH from ${tx.from.substring(0,10)}`)
+    db.savePayment(tx)
+
   })
 })
 
@@ -161,5 +143,39 @@ web3.eth.net.getId().then((id)=>{
     }).catch(die)
   }).catch(die)
 }).catch(die)
+
+////////////////////////////////////////
+// Exported object methods
+
+const eth = {}
+
+// returns number of whole uETH the dealer has
+eth.getDealerBalance = () => {
+  return getDealer().then((dealer) => {
+    return web3.eth.getBalance(dealer.options.address).then((balance) => {
+      return web3.utils.fromWei(balance, 'milli')
+    }).catch(die)
+  }).catch(die)
+}
+
+eth.cashout = (addr, chips) => {
+  log(`Cashing out ${chips} mETH to ${addr.substring(0,10)}`)
+
+  return getDealer().then((dealer) => {
+    return sendTx({
+      from,
+      to: dealer.options.address,
+      data: dealer.methods.cashout(addr, web3.utils.toWei(String(chips), 'milli')).encodeABI()
+    }).then((hash) => {
+      return db.savePayment({
+        to: addr,
+        from: dealer.options.address,
+        hash: hash,
+        value: String(chips * 1000)
+      }).then(() => hash)
+    })
+
+  }).catch(die)
+}
 
 export default eth
