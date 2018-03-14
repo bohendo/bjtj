@@ -15,7 +15,9 @@
 
 `server/blackjack` exports an object with one method: `reduce(state, action) => state`. Given a black jack game state and an action, it gives you a new state.
 
+## Statistics
 
+According to the [Wizard of Odds](https://wizardofodds.com/games/blackjack/basics/), playing with a simple basic blackjack strategy provides a house edge of about 0.48%. Because you're betting 1 mETH per hand, that works out to 0.0048 mETH or a donation of 0.03 USD per hand.
 
 ## Motivation
 

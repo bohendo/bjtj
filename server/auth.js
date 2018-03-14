@@ -22,7 +22,8 @@ const verify = (usr, sig) => {
 // Define Exported Object
 
 const auth = (req, res, next) => {
-  log(`New req received for ${req.path}`)
+  const ip = req.headers['x-real-ip'] || req.connection.remoteAddress
+  log(`New req received for ${req.path} from ${ip}`)
 
   // Make sure this request has id and ag cookies
   let id = req.cookies.bjtj_id // id for IDentifier aka eth address
