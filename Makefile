@@ -1,17 +1,18 @@
 
+$(shell mkdir -p build/static)
+
 ##### MAGIC VARIABLES #####
+
+v=latest
+me=$(shell whoami)
 
 SHELL=/bin/bash # default: /bin/sh
 VPATH=src:ops:build:build/static # search path for prereqs & targets
-
-$(shell mkdir -p build/static)
 
 webpack=node_modules/.bin/webpack
 
 ##### CALCULATED VARIABLES #####
 
-#v=$(shell grep "\"version\"" package.json | egrep -o [0-9.]*)
-v=latest
 
 # Input files
 client=$(shell find client -type f)
@@ -29,7 +30,7 @@ all: bjtj-image dealer.js
 	@true
 
 deploy: bjtj-image dealer.js
-	docker push `whoami`/bjtj:$v
+	docker push $(me)/bjtj:$v
 
 build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	echo 'var dealerData = ' | tr -d '\n\r' > build/dealer.js
@@ -38,7 +39,7 @@ build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	cat ops/preload-dealer.js >> build/dealer.js
 
 build/bjtj-image: Dockerfile server.bundle.js client.bundle.js
-	docker build -f ops/Dockerfile -t `whoami`/bjtj:$v -t bjtj:$v .
+	docker build -f ops/Dockerfile -t $(me)/bjtj:$v -t bjtj:$v .
 	touch build/bjtj-image
 
 server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)

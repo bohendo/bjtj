@@ -3,11 +3,13 @@ import mysql from 'mysql'
 
 import bj from './bj'
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'mysql',
   user: 'wordpress',
   password: fs.readFileSync('/run/secrets/wp_mysql','utf8'),
-  database: 'wordpress'
+  database: 'wordpress',
+  supportBigNumbers: true,
+  bigNumberStrings: false // unless it's too big to cast to a Number()
 })
 
 ////////////////////////////////////////
@@ -35,7 +37,7 @@ const now = () => {
 // Wrap MySQL's callback into a Promise
 const query = (q) => {
   return new Promise((resolve, reject) => {
-    connection.query(q, (err, rows) => {
+    pool.query(q, (err, rows) => {
       if (err) reject(err)
       else resolve(rows)
     })
@@ -44,8 +46,6 @@ const query = (q) => {
 
 ////////////////////////////////////////
 // DB Initialization
-
-connection.connect((err) => { if (err) die('connect')(err) })
 
 query(`CREATE TABLE IF NOT EXISTS bjtj_states (
   account   CHAR(42)      PRIMARY KEY,
@@ -99,7 +99,7 @@ const initState = (account, signature) => {
   // a & s for lowercase Account & Signature
   const a = account.toLowerCase()
   const s = signature.toLowerCase()
-  const state = connection.escape(JSON.stringify(bj()))
+  const state = mysql.escape(JSON.stringify(bj()))
   const q = `INSERT INTO bjtj_states
     ( account, signature,    state,  timestamp ) VALUES
     (  '${a}',    '${s}', ${state}, '${now()}' );`
@@ -111,7 +111,7 @@ const initState = (account, signature) => {
 const setState = (account, state) => {
   const a = account.toLowerCase() // a for lowercase Account
   const q = `UPDATE bjtj_states SET
-    state=${connection.escape(JSON.stringify(state))},
+    state=${mysql.escape(JSON.stringify(state))},
     timestamp='${now()}'
     WHERE account='${a}';`
 
@@ -194,7 +194,12 @@ db.sync = (account, state) => {
 
       const promises = payments.map(payment => {
         // ignore any fractions of a mETH
-        let chips = payment.value/1000
+        let chips = payment.value
+        if (typeof chips === 'number') {
+          chips = chips / 1000
+        } else if (typeof chips === 'string') {
+          chips = Number(chips.substring(0, chips.length-3))
+        }
         if (payment.recipient === account) { chips *= -1 }
 
         state.public.chips += chips
