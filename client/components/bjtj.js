@@ -1,5 +1,6 @@
 import React from 'react'
 
+import Message from './message.js'
 import Hand from './hand.js'
 import Dealer from './dealer.js'
 import Auth from './auth.js'
@@ -69,9 +70,9 @@ export default class BJTJ extends React.Component {
     ////////////////////////////////////////
     // Magic Numbers & Strings
 
-    let height = 400
-    let width = 500
-    let depth = 25
+    let height = 600
+    let width = 300
+    let depth = 15
     let fill = "#171"
     let stroke = "#eee"
 
@@ -88,27 +89,10 @@ export default class BJTJ extends React.Component {
 
     const auth = (this.props.authed) ?
       null : 
-      <Auth x="175" y="147.5" w="250" h="200" msg={this.props.msg} submit={this.props.submit} />
+      <Auth x="15" y="400" w="270" h="200" msg={this.props.msg} submit={this.props.submit} />
 
     const moves = (this.props.authed) ? this.props.moves : []
     moves.push(`refresh`) // user can always refresh
-
-    // if this message contains a tx hash, replace it with an etherscan link
-    const txhash = this.props.message.match(/0x[0-9a-f]{64}/)
-    var message
-    if (txhash) {
-      const etherscan = `https://etherscan.io/tx/${txhash[0]}`
-      message = <g>
-        <text x="20" y="68" fontSize="20">
-          Cashout tx: <a href={etherscan} textDecoration="underline">{txhash[0].substring(0,15)}...</a>
-        </text>
-      </g>
-
-    } else {
-      message = <g>
-        <text x="20" y="68" fontSize="20">{this.props.message}</text>
-      </g>
-    }
 
     return (
 
@@ -120,18 +104,19 @@ export default class BJTJ extends React.Component {
     <polygon points={top_panel} fill={fill} stroke={stroke} />
     <polygon points={right_panel} fill={fill} stroke={stroke} />
 
-    <rect x="15" y="40" width="470" height="40" rx="5" ry="5" fill="#cfc" stroke="black" />
-    {message}
+    <Message x="15" y="30" w="270" h="35" message={this.props.message} />
 
-    <Payment x="335" y="90" w="150" h="190" chips={this.props.chips} bet={this.props.bet}
-             msg={this.props.msg} submit={this.props.submit} authed={this.props.authed}/>
+    <Dealer x="15" y="75" w="90" h="170"/>
+    <Hand x="110" y="85" w="180" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
 
-    <Ctrls x="235" y="290" w="250" h="120" submit={this.props.submit} moves={this.props.moves} />
+    <Payment x="15" y="240" w="270" h="75" chips={this.props.chips} bet={this.props.bet}
+             msg={this.props.msg} submit={this.props.submit}
+             authed={this.props.authed} waiting={this.props.waiting}/>
 
-    <Dealer x="15" y="90" w="90" h="180"/>
+    <Hand x="15" y="322" w="200" hand={this.props.playerHands} />
 
-    <Hand x="115" y="100" w="210" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
-    <Hand x="15" y="260" w="210" hand={this.props.playerHands} />
+    <Ctrls x="15" y="480" w="270" h="120" submit={this.props.submit}
+           moves={this.props.moves} waiting={this.props.waiting} />
 
     {auth}
 

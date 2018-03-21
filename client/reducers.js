@@ -35,9 +35,10 @@ const reducer = (state = initialState, action) => {
         { authed: action.res }
       ))
     case SUBMIT:
-      return (Object.assign({}, state,
-        { waiting: true },
-      ))
+      return (Object.assign({}, state, {
+        message: 'Waiting for the dealer to respond..',
+        waiting: true
+      }))
     case SUCCESS:
       return (Object.assign({}, state,
         action.state,

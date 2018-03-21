@@ -71,7 +71,7 @@ var global = __webpack_require__(5);
 var core = __webpack_require__(32);
 var hide = __webpack_require__(19);
 var redefine = __webpack_require__(20);
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -5796,6 +5796,20 @@ module.exports = Object.getPrototypeOf || function (O) {
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(455);
+} else {
+  module.exports = require('./cjs/react.development.js');
+}
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /*
  This file is part of web3.js.
 
@@ -6123,7 +6137,7 @@ module.exports = {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 module.exports = assert;
@@ -6140,7 +6154,7 @@ assert.equal = function assertEqual(l, r, msg) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
@@ -6166,7 +6180,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -6177,7 +6191,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6190,20 +6204,6 @@ module.exports = function (method, arg) {
     arg ? method.call(null, function () { /* empty */ }, 1) : method.call(null);
   });
 };
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (true) {
-  module.exports = __webpack_require__(455);
-} else {
-  module.exports = require('./cjs/react.development.js');
-}
 
 
 /***/ }),
@@ -6472,7 +6472,7 @@ module.exports = function (KEY, exec) {
 // 4 -> Array#every
 // 5 -> Array#find
 // 6 -> Array#findIndex
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var IObject = __webpack_require__(69);
 var toObject = __webpack_require__(14);
 var toLength = __webpack_require__(13);
@@ -6539,7 +6539,7 @@ module.exports = function (TYPE, $create) {
  */
 
 var _ = __webpack_require__(196);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var BN = __webpack_require__(495);
 var SolidityParam = __webpack_require__(197);
 
@@ -6812,7 +6812,7 @@ module.exports = {
 "use strict";
 
 
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 var inherits = __webpack_require__(1);
 
 exports.inherits = inherits;
@@ -7078,7 +7078,7 @@ if (__webpack_require__(11)) {
   var $export = __webpack_require__(0);
   var $typed = __webpack_require__(87);
   var $buffer = __webpack_require__(126);
-  var ctx = __webpack_require__(27);
+  var ctx = __webpack_require__(28);
   var anInstance = __webpack_require__(54);
   var propertyDesc = __webpack_require__(46);
   var hide = __webpack_require__(19);
@@ -7999,7 +7999,7 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var call = __webpack_require__(161);
 var isArrayIter = __webpack_require__(117);
 var anObject = __webpack_require__(4);
@@ -8163,7 +8163,7 @@ module.exports = {
 var _ = __webpack_require__(487);
 var errors = __webpack_require__(17).errors;
 var formatters = __webpack_require__(17).formatters;
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var promiEvent = __webpack_require__(191);
 var Subscriptions = __webpack_require__(93).subscriptions;
 
@@ -9481,7 +9481,7 @@ module.exports = Hash
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -9500,7 +9500,7 @@ exports.f = {}.propertyIsEnumerable;
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 var TAG = __webpack_require__(9)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -9663,7 +9663,7 @@ function objectToString(o) {
 
 
 var utils = __webpack_require__(39);
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 function BlockHash() {
   this.pending = null;
@@ -9834,7 +9834,7 @@ exports.f = Object.getOwnPropertySymbols;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
@@ -9846,7 +9846,7 @@ module.exports = Array.isArray || function isArray(arg) {
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(7);
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 var MATCH = __webpack_require__(9)('match');
 module.exports = function (it) {
   var isRegExp;
@@ -10122,7 +10122,7 @@ module.exports = function (COLLECTION) {
 // https://tc39.github.io/proposal-setmap-offrom/
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(16);
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var forOf = __webpack_require__(55);
 
 module.exports = function (COLLECTION) {
@@ -10401,7 +10401,7 @@ module.exports = {
 
 var core = __webpack_require__(57);
 var Method = __webpack_require__(58);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 
 
 var Net = function () {
@@ -11086,7 +11086,7 @@ module.exports = {
   set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
     function (test, buggy, set) {
       try {
-        set = __webpack_require__(27)(Function.call, __webpack_require__(23).f(Object.prototype, '__proto__').set, 2);
+        set = __webpack_require__(28)(Function.call, __webpack_require__(23).f(Object.prototype, '__proto__').set, 2);
         set(test, []);
         buggy = !(test instanceof Array);
       } catch (e) { buggy = true; }
@@ -11444,7 +11444,7 @@ addToUnscopables('entries');
 /* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var invoke = __webpack_require__(154);
 var html = __webpack_require__(105);
 var cel = __webpack_require__(101);
@@ -11487,7 +11487,7 @@ if (!setTask || !clearTask) {
     delete queue[id];
   };
   // Node.js 0.8-
-  if (__webpack_require__(28)(process) == 'process') {
+  if (__webpack_require__(29)(process) == 'process') {
     defer = function (id) {
       process.nextTick(ctx(run, id, 1));
     };
@@ -11539,7 +11539,7 @@ var macrotask = __webpack_require__(123).set;
 var Observer = global.MutationObserver || global.WebKitMutationObserver;
 var process = global.process;
 var Promise = global.Promise;
-var isNode = __webpack_require__(28)(process) == 'process';
+var isNode = __webpack_require__(29)(process) == 'process';
 
 module.exports = function () {
   var head, last, notify;
@@ -15806,7 +15806,7 @@ function isBuffer(b) {
 // ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var util = __webpack_require__(684);
+var util = __webpack_require__(685);
 var hasOwn = Object.prototype.hasOwnProperty;
 var pSlice = Array.prototype.slice;
 var functionsHaveNames = (function () {
@@ -16442,7 +16442,7 @@ module.exports = 1 / $parseFloat(__webpack_require__(107) + '-0') !== -Infinity 
 /* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 module.exports = function (it, msg) {
   if (typeof it != 'number' && cof(it) != 'Number') throw TypeError(msg);
   return +it;
@@ -16671,7 +16671,7 @@ module.exports = __webpack_require__(86)(MAP, function (get) {
 var dP = __webpack_require__(12).f;
 var create = __webpack_require__(51);
 var redefineAll = __webpack_require__(56);
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var anInstance = __webpack_require__(54);
 var forOf = __webpack_require__(55);
 var $iterDefine = __webpack_require__(113);
@@ -17034,7 +17034,7 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 var isArray = __webpack_require__(80);
 var isObject = __webpack_require__(7);
 var toLength = __webpack_require__(13);
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var IS_CONCAT_SPREADABLE = __webpack_require__(9)('isConcatSpreadable');
 
 function flattenIntoArray(target, original, source, sourceLen, start, depth, mapper, thisArg) {
@@ -21566,7 +21566,7 @@ module.exports = {
 
 
 
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var BigNumber = __webpack_require__(8);
 
 
@@ -23841,7 +23841,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 var core = __webpack_require__(57);
 var Method = __webpack_require__(58);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var Net = __webpack_require__(94);
 
 var formatters = __webpack_require__(17).formatters;
@@ -23989,7 +23989,7 @@ module.exports = Personal;
  */
 
 var _ = __webpack_require__(196);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 
 var f = __webpack_require__(38);
 
@@ -28701,7 +28701,7 @@ exports.g1_256 = g1_256;
 var utils = __webpack_require__(39);
 var common = __webpack_require__(74);
 var shaCommon = __webpack_require__(218);
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 var sum32 = utils.sum32;
 var sum32_4 = utils.sum32_4;
@@ -28812,7 +28812,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 var utils = __webpack_require__(39);
 var common = __webpack_require__(74);
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
@@ -30767,7 +30767,7 @@ var storeShape = __WEBPACK_IMPORTED_MODULE_0_prop_types___default.a.shape({
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hoist_non_react_statics___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_hoist_non_react_statics__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(635);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_Subscription__ = __webpack_require__(636);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_PropTypes__ = __webpack_require__(236);
@@ -31583,6 +31583,7 @@ function submit(move) {
   console.log('Sending request to server: ' + move);
   return function (dispatch) {
     // utilizes redux-thunk
+    dispatch({ type: SUBMIT });
 
     return (0, _isomorphicFetch2.default)('/api/' + move.toLowerCase(), { credentials: 'same-origin' }).then(function (response) {
       return response.json().then(function (state) {
@@ -31619,8 +31620,8 @@ function failure(error) {
 /* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ethUtil = __webpack_require__(672)
-const ethAbi = __webpack_require__(688)
+const ethUtil = __webpack_require__(673)
+const ethAbi = __webpack_require__(689)
 
 module.exports = {
 
@@ -31745,7 +31746,7 @@ function padWithZeroes (number, length) {
 
 "use strict";
 
-module.exports = __webpack_require__(679)(__webpack_require__(683))
+module.exports = __webpack_require__(680)(__webpack_require__(684))
 
 
 /***/ }),
@@ -32006,7 +32007,7 @@ var _ethSigUtil = __webpack_require__(247);
 
 var _ethSigUtil2 = _interopRequireDefault(_ethSigUtil);
 
-var _Agreement = __webpack_require__(694);
+var _Agreement = __webpack_require__(695);
 
 var _Agreement2 = _interopRequireDefault(_Agreement);
 
@@ -32036,7 +32037,7 @@ exports.verify = verify;
 
 __webpack_require__(253);
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -32881,7 +32882,7 @@ $export($export.G + $export.F * (parseFloat != $parseFloat), { parseFloat: $pars
 
 var global = __webpack_require__(5);
 var has = __webpack_require__(18);
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 var inheritIfRequired = __webpack_require__(108);
 var toPrimitive = __webpack_require__(33);
 var fails = __webpack_require__(6);
@@ -33989,7 +33990,7 @@ $export($export.S, 'Array', { isArray: __webpack_require__(80) });
 
 "use strict";
 
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(14);
 var call = __webpack_require__(161);
@@ -34065,7 +34066,7 @@ var toIObject = __webpack_require__(22);
 var arrayJoin = [].join;
 
 // fallback for not array-like strings
-$export($export.P + $export.F * (__webpack_require__(69) != Object || !__webpack_require__(29)(arrayJoin)), 'Array', {
+$export($export.P + $export.F * (__webpack_require__(69) != Object || !__webpack_require__(30)(arrayJoin)), 'Array', {
   join: function join(separator) {
     return arrayJoin.call(toIObject(this), separator === undefined ? ',' : separator);
   }
@@ -34080,7 +34081,7 @@ $export($export.P + $export.F * (__webpack_require__(69) != Object || !__webpack
 
 var $export = __webpack_require__(0);
 var html = __webpack_require__(105);
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 var toAbsoluteIndex = __webpack_require__(50);
 var toLength = __webpack_require__(13);
 var arraySlice = [].slice;
@@ -34127,7 +34128,7 @@ $export($export.P + $export.F * (fails(function () {
   // V8 bug
   test.sort(null);
   // Old WebKit
-}) || !__webpack_require__(29)($sort)), 'Array', {
+}) || !__webpack_require__(30)($sort)), 'Array', {
   // 22.1.3.25 Array.prototype.sort(comparefn)
   sort: function sort(comparefn) {
     return comparefn === undefined
@@ -34145,7 +34146,7 @@ $export($export.P + $export.F * (fails(function () {
 
 var $export = __webpack_require__(0);
 var $forEach = __webpack_require__(37)(0);
-var STRICT = __webpack_require__(29)([].forEach, true);
+var STRICT = __webpack_require__(30)([].forEach, true);
 
 $export($export.P + $export.F * !STRICT, 'Array', {
   // 22.1.3.10 / 15.4.4.18 Array.prototype.forEach(callbackfn [, thisArg])
@@ -34186,7 +34187,7 @@ module.exports = function (original) {
 var $export = __webpack_require__(0);
 var $map = __webpack_require__(37)(1);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].map, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].map, true), 'Array', {
   // 22.1.3.15 / 15.4.4.19 Array.prototype.map(callbackfn [, thisArg])
   map: function map(callbackfn /* , thisArg */) {
     return $map(this, callbackfn, arguments[1]);
@@ -34203,7 +34204,7 @@ $export($export.P + $export.F * !__webpack_require__(29)([].map, true), 'Array',
 var $export = __webpack_require__(0);
 var $filter = __webpack_require__(37)(2);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].filter, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].filter, true), 'Array', {
   // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
   filter: function filter(callbackfn /* , thisArg */) {
     return $filter(this, callbackfn, arguments[1]);
@@ -34220,7 +34221,7 @@ $export($export.P + $export.F * !__webpack_require__(29)([].filter, true), 'Arra
 var $export = __webpack_require__(0);
 var $some = __webpack_require__(37)(3);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].some, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].some, true), 'Array', {
   // 22.1.3.23 / 15.4.4.17 Array.prototype.some(callbackfn [, thisArg])
   some: function some(callbackfn /* , thisArg */) {
     return $some(this, callbackfn, arguments[1]);
@@ -34237,7 +34238,7 @@ $export($export.P + $export.F * !__webpack_require__(29)([].some, true), 'Array'
 var $export = __webpack_require__(0);
 var $every = __webpack_require__(37)(4);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].every, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].every, true), 'Array', {
   // 22.1.3.5 / 15.4.4.16 Array.prototype.every(callbackfn [, thisArg])
   every: function every(callbackfn /* , thisArg */) {
     return $every(this, callbackfn, arguments[1]);
@@ -34254,7 +34255,7 @@ $export($export.P + $export.F * !__webpack_require__(29)([].every, true), 'Array
 var $export = __webpack_require__(0);
 var $reduce = __webpack_require__(162);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].reduce, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].reduce, true), 'Array', {
   // 22.1.3.18 / 15.4.4.21 Array.prototype.reduce(callbackfn [, initialValue])
   reduce: function reduce(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments[1], false);
@@ -34271,7 +34272,7 @@ $export($export.P + $export.F * !__webpack_require__(29)([].reduce, true), 'Arra
 var $export = __webpack_require__(0);
 var $reduce = __webpack_require__(162);
 
-$export($export.P + $export.F * !__webpack_require__(29)([].reduceRight, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(30)([].reduceRight, true), 'Array', {
   // 22.1.3.19 / 15.4.4.22 Array.prototype.reduceRight(callbackfn [, initialValue])
   reduceRight: function reduceRight(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments[1], true);
@@ -34290,7 +34291,7 @@ var $indexOf = __webpack_require__(78)(false);
 var $native = [].indexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].indexOf(1, -0) < 0;
 
-$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(29)($native)), 'Array', {
+$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(30)($native)), 'Array', {
   // 22.1.3.11 / 15.4.4.14 Array.prototype.indexOf(searchElement [, fromIndex])
   indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
     return NEGATIVE_ZERO
@@ -34314,7 +34315,7 @@ var toLength = __webpack_require__(13);
 var $native = [].lastIndexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].lastIndexOf(1, -0) < 0;
 
-$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(29)($native)), 'Array', {
+$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(30)($native)), 'Array', {
   // 22.1.3.14 / 15.4.4.15 Array.prototype.lastIndexOf(searchElement [, fromIndex])
   lastIndexOf: function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
     // convert -0 to +0
@@ -34619,7 +34620,7 @@ __webpack_require__(84)('split', 2, function (defined, SPLIT, $split) {
 
 var LIBRARY = __webpack_require__(48);
 var global = __webpack_require__(5);
-var ctx = __webpack_require__(27);
+var ctx = __webpack_require__(28);
 var classof = __webpack_require__(71);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(7);
@@ -35874,7 +35875,7 @@ $export($export.S, 'System', { global: __webpack_require__(5) });
 
 // https://github.com/ljharb/proposal-is-error
 var $export = __webpack_require__(0);
-var cof = __webpack_require__(28);
+var cof = __webpack_require__(29);
 
 $export($export.S, 'Error', {
   isError: function isError(it) {
@@ -36288,7 +36289,7 @@ $metadata.exp({ metadata: function metadata(metadataKey, metadataValue) {
 var $export = __webpack_require__(0);
 var microtask = __webpack_require__(124)();
 var process = __webpack_require__(5).process;
-var isNode = __webpack_require__(28)(process) == 'process';
+var isNode = __webpack_require__(29)(process) == 'process';
 
 $export($export.G, {
   asap: function asap(fn) {
@@ -37452,7 +37453,7 @@ var Net = __webpack_require__(94);
 var Personal = __webpack_require__(194);
 var Shh = __webpack_require__(597);
 var Bzz = __webpack_require__(598);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 
 var Web3 = function Web3() {
     var _this = this;
@@ -39393,7 +39394,7 @@ module.exports = {
 
 
 var _ = __webpack_require__(462);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var Iban = __webpack_require__(189);
 
 /**
@@ -56052,7 +56053,7 @@ oboe.drop = function() {
 
 var formatters = __webpack_require__(17).formatters;
 var Method = __webpack_require__(58);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 
 
 var extend = function (pckg) {
@@ -65162,7 +65163,7 @@ var core = __webpack_require__(57);
 var helpers = __webpack_require__(17);
 var Subscriptions = __webpack_require__(93).subscriptions;
 var Method = __webpack_require__(58);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var Net = __webpack_require__(94);
 
 var Personal = __webpack_require__(194);
@@ -65643,7 +65644,7 @@ module.exports = Eth;
 var _ = __webpack_require__(494);
 var core = __webpack_require__(57);
 var Method = __webpack_require__(58);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var Subscription = __webpack_require__(93).subscription;
 var formatters = __webpack_require__(17).formatters;
 var errors = __webpack_require__(17).errors;
@@ -71769,7 +71770,7 @@ var Bytes = __webpack_require__(130);
 var cryp = (typeof global === 'undefined') ? __webpack_require__(95) : __webpack_require__(95);
 var scryptsy = __webpack_require__(592);
 var uuid = __webpack_require__(594);
-var utils = __webpack_require__(25);
+var utils = __webpack_require__(26);
 var helpers = __webpack_require__(17);
 
 var isNot = function(value) {
@@ -81410,7 +81411,7 @@ exports.padSplit = function padSplit(num, size, group) {
 "use strict";
 
 
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 function Cipher(options) {
   this.options = options;
@@ -81558,7 +81559,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 "use strict";
 
 
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 var inherits = __webpack_require__(1);
 
 var des = __webpack_require__(141);
@@ -81708,7 +81709,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 "use strict";
 
 
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 var inherits = __webpack_require__(1);
 
 var proto = {};
@@ -81780,7 +81781,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
 "use strict";
 
 
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 var inherits = __webpack_require__(1);
 
 var des = __webpack_require__(141);
@@ -82362,7 +82363,7 @@ module.exports = {"_from":"elliptic@^6.2.3","_id":"elliptic@6.4.0","_inBundle":f
 
 var utils = exports;
 var BN = __webpack_require__(8);
-var minAssert = __webpack_require__(26);
+var minAssert = __webpack_require__(27);
 var minUtils = __webpack_require__(217);
 
 utils.assert = minAssert;
@@ -84981,7 +84982,7 @@ var sh = [
 
 
 var utils = __webpack_require__(39);
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -86069,7 +86070,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 var hash = __webpack_require__(143);
 var utils = __webpack_require__(217);
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 function HmacDRBG(options) {
   if (!(this instanceof HmacDRBG))
@@ -87238,7 +87239,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
 var Reporter = __webpack_require__(76).Reporter;
 var EncoderBuffer = __webpack_require__(76).EncoderBuffer;
 var DecoderBuffer = __webpack_require__(76).DecoderBuffer;
-var assert = __webpack_require__(26);
+var assert = __webpack_require__(27);
 
 // Supported tags
 var tags = [
@@ -92887,7 +92888,7 @@ if (true) {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(30),l=__webpack_require__(622),B=__webpack_require__(91),C=__webpack_require__(92),ba=__webpack_require__(623),da=__webpack_require__(624),ea=__webpack_require__(625),fa=__webpack_require__(626),ia=__webpack_require__(629),D=__webpack_require__(181);
+var aa=__webpack_require__(25),l=__webpack_require__(622),B=__webpack_require__(91),C=__webpack_require__(92),ba=__webpack_require__(623),da=__webpack_require__(624),ea=__webpack_require__(625),fa=__webpack_require__(626),ia=__webpack_require__(629),D=__webpack_require__(181);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -93473,7 +93474,7 @@ module.exports = focusNode;
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createProvider;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(235);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
@@ -95538,7 +95539,10 @@ var reducer = function reducer() {
     case _actions.AUTH:
       return Object.assign({}, state, { authed: action.res });
     case _actions.SUBMIT:
-      return Object.assign({}, state, { waiting: true });
+      return Object.assign({}, state, {
+        message: 'Waiting for the dealer to respond..',
+        waiting: true
+      });
     case _actions.SUCCESS:
       return Object.assign({}, state, action.state, { waiting: false });
     case _actions.FAILURE:
@@ -96073,27 +96077,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _hand = __webpack_require__(668);
+var _message = __webpack_require__(668);
+
+var _message2 = _interopRequireDefault(_message);
+
+var _hand = __webpack_require__(669);
 
 var _hand2 = _interopRequireDefault(_hand);
 
-var _dealer = __webpack_require__(670);
+var _dealer = __webpack_require__(671);
 
 var _dealer2 = _interopRequireDefault(_dealer);
 
-var _auth = __webpack_require__(671);
+var _auth = __webpack_require__(672);
 
 var _auth2 = _interopRequireDefault(_auth);
 
-var _ctrls = __webpack_require__(695);
+var _ctrls = __webpack_require__(696);
 
 var _ctrls2 = _interopRequireDefault(_ctrls);
 
-var _payment = __webpack_require__(696);
+var _payment = __webpack_require__(697);
 
 var _payment2 = _interopRequireDefault(_payment);
 
@@ -96182,9 +96190,9 @@ var BJTJ = function (_React$Component) {
       ////////////////////////////////////////
       // Magic Numbers & Strings
 
-      var height = 400;
-      var width = 500;
-      var depth = 25;
+      var height = 600;
+      var width = 300;
+      var depth = 15;
       var fill = "#171";
       var stroke = "#eee";
 
@@ -96197,42 +96205,10 @@ var BJTJ = function (_React$Component) {
       ////////////////////////////////////////
       // DOM
 
-      var auth = this.props.authed ? null : _react2.default.createElement(_auth2.default, { x: '175', y: '147.5', w: '250', h: '200', msg: this.props.msg, submit: this.props.submit });
+      var auth = this.props.authed ? null : _react2.default.createElement(_auth2.default, { x: '15', y: '400', w: '270', h: '200', msg: this.props.msg, submit: this.props.submit });
 
       var moves = this.props.authed ? this.props.moves : [];
       moves.push('refresh'); // user can always refresh
-
-      // if this message contains a tx hash, replace it with an etherscan link
-      var txhash = this.props.message.match(/0x[0-9a-f]{64}/);
-      var message;
-      if (txhash) {
-        var etherscan = 'https://etherscan.io/tx/' + txhash[0];
-        message = _react2.default.createElement(
-          'g',
-          null,
-          _react2.default.createElement(
-            'text',
-            { x: '20', y: '68', fontSize: '20' },
-            'Cashout tx: ',
-            _react2.default.createElement(
-              'a',
-              { href: etherscan, textDecoration: 'underline' },
-              txhash[0].substring(0, 15),
-              '...'
-            )
-          )
-        );
-      } else {
-        message = _react2.default.createElement(
-          'g',
-          null,
-          _react2.default.createElement(
-            'text',
-            { x: '20', y: '68', fontSize: '20' },
-            this.props.message
-          )
-        );
-      }
 
       return _react2.default.createElement(
         'div',
@@ -96244,14 +96220,15 @@ var BJTJ = function (_React$Component) {
             fill: fill, stroke: stroke }),
           _react2.default.createElement('polygon', { points: top_panel, fill: fill, stroke: stroke }),
           _react2.default.createElement('polygon', { points: right_panel, fill: fill, stroke: stroke }),
-          _react2.default.createElement('rect', { x: '15', y: '40', width: '470', height: '40', rx: '5', ry: '5', fill: '#cfc', stroke: 'black' }),
-          message,
-          _react2.default.createElement(_payment2.default, { x: '335', y: '90', w: '150', h: '190', chips: this.props.chips, bet: this.props.bet,
-            msg: this.props.msg, submit: this.props.submit, authed: this.props.authed }),
-          _react2.default.createElement(_ctrls2.default, { x: '235', y: '290', w: '250', h: '120', submit: this.props.submit, moves: this.props.moves }),
-          _react2.default.createElement(_dealer2.default, { x: '15', y: '90', w: '90', h: '180' }),
-          _react2.default.createElement(_hand2.default, { x: '115', y: '100', w: '210', hand: [{ cards: this.props.dealerCards, isActive: true }] }),
-          _react2.default.createElement(_hand2.default, { x: '15', y: '260', w: '210', hand: this.props.playerHands }),
+          _react2.default.createElement(_message2.default, { x: '15', y: '30', w: '270', h: '35', message: this.props.message }),
+          _react2.default.createElement(_dealer2.default, { x: '15', y: '75', w: '90', h: '170' }),
+          _react2.default.createElement(_hand2.default, { x: '110', y: '85', w: '180', hand: [{ cards: this.props.dealerCards, isActive: true }] }),
+          _react2.default.createElement(_payment2.default, { x: '15', y: '240', w: '270', h: '75', chips: this.props.chips, bet: this.props.bet,
+            msg: this.props.msg, submit: this.props.submit,
+            authed: this.props.authed, waiting: this.props.waiting }),
+          _react2.default.createElement(_hand2.default, { x: '15', y: '322', w: '200', hand: this.props.playerHands }),
+          _react2.default.createElement(_ctrls2.default, { x: '15', y: '480', w: '270', h: '120', submit: this.props.submit,
+            moves: this.props.moves, waiting: this.props.waiting }),
           auth
         )
       );
@@ -96276,11 +96253,122 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _card = __webpack_require__(669);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Message = function (_React$Component) {
+  _inherits(Message, _React$Component);
+
+  function Message() {
+    _classCallCheck(this, Message);
+
+    return _possibleConstructorReturn(this, (Message.__proto__ || Object.getPrototypeOf(Message)).apply(this, arguments));
+  }
+
+  _createClass(Message, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var x = function x(n) {
+        return Number(_this2.props.x) + Number(_this2.props.w) * n / 100;
+      };
+      var y = function y(n) {
+        return Number(_this2.props.y) + Number(_this2.props.h) * n / 100;
+      };
+      var w = function w(n) {
+        return Number(_this2.props.w) * n / 100;
+      };
+      var h = function h(n) {
+        return Number(_this2.props.h) * n / 100;
+      };
+
+      var txt_h = 64;
+      var fs = 18;
+
+      // if this message contains a tx hash, replace it with an etherscan link
+      var txhash = this.props.message.match(/0x[0-9a-f]{64}/);
+      var message;
+      if (txhash) {
+        var etherscan = "https://etherscan.io/tx/" + txhash[0];
+        message = _react2.default.createElement(
+          "g",
+          null,
+          _react2.default.createElement(
+            "text",
+            { x: x(2.5), y: y(txt_h), fontSize: fs, textLength: w(95), lengthAdjust: "spacingAndGlyphs" },
+            "Cashout tx: ",
+            _react2.default.createElement(
+              "a",
+              { href: etherscan, textDecoration: "underline" },
+              txhash[0].substring(0, 15),
+              "..."
+            )
+          )
+        );
+      } else if (this.props.message.length < 25) {
+        message = _react2.default.createElement(
+          "g",
+          null,
+          _react2.default.createElement(
+            "text",
+            { x: x(2.5), y: y(txt_h), fontSize: fs },
+            this.props.message
+          )
+        );
+      } else {
+        message = _react2.default.createElement(
+          "g",
+          null,
+          _react2.default.createElement(
+            "text",
+            { x: x(2.5), y: y(txt_h), fontSize: fs, textLength: w(95), lengthAdjust: "spacingAndGlyphs" },
+            this.props.message
+          )
+        );
+      }
+
+      return _react2.default.createElement(
+        "g",
+        null,
+        _react2.default.createElement("rect", { x: x(0), y: y(0), width: w(100), height: h(100), rx: "5", ry: "5", fill: "#cfc", stroke: "black" }),
+        message
+      );
+    }
+  }]);
+
+  return Message;
+}(_react2.default.Component);
+
+exports.default = Message;
+
+/***/ }),
+/* 669 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(25);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _card = __webpack_require__(670);
 
 var _card2 = _interopRequireDefault(_card);
 
@@ -96392,7 +96480,7 @@ var Hand = function (_React$Component) {
 exports.default = Hand;
 
 /***/ }),
-/* 669 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96404,7 +96492,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -96623,7 +96711,7 @@ var Card = function (_React$Component) {
 exports.default = Card;
 
 /***/ }),
-/* 670 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96635,7 +96723,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -96725,7 +96813,7 @@ var Dealer = function (_React$Component) {
 exports.default = Dealer;
 
 /***/ }),
-/* 671 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96737,7 +96825,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -96869,7 +96957,7 @@ var Auth = function (_React$Component) {
 exports.default = Auth;
 
 /***/ }),
-/* 672 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96877,14 +96965,14 @@ exports.default = Auth;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var createKeccakHash = __webpack_require__(673);
+var createKeccakHash = __webpack_require__(674);
 var secp256k1 = __webpack_require__(248);
 var assert = __webpack_require__(146);
 var rlp = __webpack_require__(250);
 var BN = __webpack_require__(8);
 var createHash = __webpack_require__(44);
 var Buffer = __webpack_require__(3).Buffer;
-Object.assign(exports, __webpack_require__(687));
+Object.assign(exports, __webpack_require__(688));
 
 /**
  * the max integer that this VM can handle (a ```BN```)
@@ -97567,22 +97655,22 @@ exports.defineProperties = function (self, fields, data) {
 };
 
 /***/ }),
-/* 673 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-module.exports = __webpack_require__(674)(__webpack_require__(677))
-
-
-/***/ }),
 /* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var createKeccak = __webpack_require__(675)
-var createShake = __webpack_require__(676)
+module.exports = __webpack_require__(675)(__webpack_require__(678))
+
+
+/***/ }),
+/* 675 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var createKeccak = __webpack_require__(676)
+var createShake = __webpack_require__(677)
 
 module.exports = function (KeccakState) {
   var Keccak = createKeccak(KeccakState)
@@ -97611,7 +97699,7 @@ module.exports = function (KeccakState) {
 
 
 /***/ }),
-/* 675 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97702,7 +97790,7 @@ module.exports = function (KeccakState) {
 
 
 /***/ }),
-/* 676 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97784,13 +97872,13 @@ module.exports = function (KeccakState) {
 
 
 /***/ }),
-/* 677 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Buffer = __webpack_require__(3).Buffer
-var keccakState = __webpack_require__(678)
+var keccakState = __webpack_require__(679)
 
 function Keccak () {
   // much faster than `new Array(50)`
@@ -97861,7 +97949,7 @@ module.exports = Keccak
 
 
 /***/ }),
-/* 678 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98055,13 +98143,13 @@ exports.p1600 = function (s) {
 
 
 /***/ }),
-/* 679 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var assert = __webpack_require__(680)
-var der = __webpack_require__(681)
+var assert = __webpack_require__(681)
+var der = __webpack_require__(682)
 var messages = __webpack_require__(249)
 
 function initCompressedValue (value, defaultValue) {
@@ -98307,7 +98395,7 @@ module.exports = function (secp256k1) {
 
 
 /***/ }),
-/* 680 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98359,13 +98447,13 @@ exports.isNumberInInterval = function (number, x, y, message) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 681 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Buffer = __webpack_require__(3).Buffer
-var bip66 = __webpack_require__(682)
+var bip66 = __webpack_require__(683)
 
 var EC_PRIVKEY_EXPORT_DER_COMPRESSED = Buffer.from([
   // begin
@@ -98559,7 +98647,7 @@ exports.signatureImportLax = function (sig) {
 
 
 /***/ }),
-/* 682 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
@@ -98678,7 +98766,7 @@ module.exports = {
 
 
 /***/ }),
-/* 683 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98945,7 +99033,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 
 
 /***/ }),
-/* 684 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -99473,7 +99561,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(685);
+exports.isBuffer = __webpack_require__(686);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -99517,7 +99605,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(686);
+exports.inherits = __webpack_require__(687);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -99538,7 +99626,7 @@ function hasOwnProperty(obj, prop) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10), __webpack_require__(31)))
 
 /***/ }),
-/* 685 */
+/* 686 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -99549,7 +99637,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 686 */
+/* 687 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -99578,7 +99666,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 687 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99805,17 +99893,17 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 688 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(689)
-
-
-/***/ }),
 /* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const utils = __webpack_require__(690)
+module.exports = __webpack_require__(690)
+
+
+/***/ }),
+/* 690 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const utils = __webpack_require__(691)
 const BN = __webpack_require__(8)
 
 var ABI = function () {
@@ -100376,10 +100464,10 @@ module.exports = ABI
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 690 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const SHA3 = __webpack_require__(691)
+/* WEBPACK VAR INJECTION */(function(Buffer) {const SHA3 = __webpack_require__(692)
 const secp256k1 = __webpack_require__(248)
 const assert = __webpack_require__(146)
 const rlp = __webpack_require__(250)
@@ -101084,17 +101172,17 @@ exports.defineProperties = function (self, fields, data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 691 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(692).SHA3Hash
-
-
-/***/ }),
 /* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const Sha3 = __webpack_require__(693)
+module.exports = __webpack_require__(693).SHA3Hash
+
+
+/***/ }),
+/* 693 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const Sha3 = __webpack_require__(694)
 
 const hashLengths = [ 224, 256, 384, 512 ]
 
@@ -101132,7 +101220,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 693 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*
@@ -101571,13 +101659,13 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 694 */
+/* 695 */
 /***/ (function(module, exports) {
 
 module.exports = "I understand and agree that\nthis game is an elaborate tip jar.\nAlthough I expect to be able to\nexchange my chips for Ether,\nI am at peace knowing that the\nsite owner may, at any time and\nfor any reason, be unable or\nunwilling to refund my chips.\n"
 
 /***/ }),
-/* 695 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101589,7 +101677,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -101665,7 +101753,7 @@ var Ctrls = function (_React$Component) {
           type.charAt(0).toUpperCase() + type.slice(1)
         );
 
-        var shade = !_this2.props.moves.includes(type) ? _react2.default.createElement("rect", {
+        var shade = !_this2.props.moves.includes(type) || _this2.props.waiting ? _react2.default.createElement("rect", {
           x: x, y: y, width: w, height: h,
           rx: "5", ry: "5", fill: "black", fillOpacity: "0.6" }) : null;
 
@@ -101705,7 +101793,7 @@ var Ctrls = function (_React$Component) {
 exports.default = Ctrls;
 
 /***/ }),
-/* 696 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101717,11 +101805,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(30);
+var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Dealer = __webpack_require__(697);
+var _Dealer = __webpack_require__(698);
 
 var _Dealer2 = _interopRequireDefault(_Dealer);
 
@@ -101872,19 +101960,19 @@ var Chips = function (_React$Component) {
 
       // put button position coordinates all in one place
       var pos = {
-        tip: { x: x(10), y: y(41), w: w(80), h: h(15) },
-        cashout: { x: x(10), y: y(59), w: w(80), h: h(15) }
+        tip: { x: x(5), y: y(52), w: w(45), h: h(38) },
+        cashout: { x: x(55), y: y(52), w: w(40), h: h(38) }
+      };
 
-        // 
-      };var can = {
-        tip: this.props.authed,
-        cashout: this.props.authed && this.props.chips > 0
+      var can = {
+        tip: this.props.authed && !this.props.waiting,
+        cashout: this.props.authed && !this.props.waiting && this.props.chips > 0
       };
 
       var bg = '#99f';
       var fg = '#ddf';
       var blk = '#000';
-      var fs = 16; // fs for Font Size
+      var fs = 14; // fs for Font Size
 
       var etherscan = 'https://etherscan.io/address/' + this.state.address;
 
@@ -101895,41 +101983,50 @@ var Chips = function (_React$Component) {
           rx: '5', ry: '5', fill: bg, stroke: blk }),
         _react2.default.createElement(
           'a',
-          { href: etherscan },
-          _react2.default.createElement('rect', { x: x(5), y: y(4), width: w(90), height: h(12),
+          { href: etherscan, target: '_blank' },
+          _react2.default.createElement('rect', { x: x(5), y: y(10), width: w(45), height: h(30),
             rx: '5', ry: '5', fill: fg, stroke: blk }),
           _react2.default.createElement(
             'text',
-            { x: x(7.5), y: y(13), fontSize: fs },
-            'Dealer Address'
+            { x: x(7), y: y(32), fontSize: '14' },
+            'Dealer Contract'
           )
         ),
         _react2.default.createElement(
           'text',
-          { x: x(7.5), y: y(26), fontSize: fs },
-          'Dealer balance'
+          { x: x(55), y: y(25), fontSize: fs },
+          'Dealer balance:'
         ),
         _react2.default.createElement(
           'text',
-          { x: x(15), y: y(36), fontSize: fs },
+          { x: x(60), y: y(45), fontSize: fs },
           this.state.balance,
           ' mETH'
         ),
         this.button('Tip 5 mETH', this.tip, can.tip, pos.tip.x, pos.tip.y, pos.tip.w, pos.tip.h),
         this.button('Cashout', this.cashout, can.cashout, pos.cashout.x, pos.cashout.y, pos.cashout.w, pos.cashout.h),
+        _react2.default.createElement('rect', { x: x(75), y: y(105), width: w(25), height: h(140),
+          rx: '5', ry: '5', fill: bg, stroke: blk }),
         _react2.default.createElement(
           'text',
-          { x: x(7.5), y: y(84), fontSize: fs },
-          ' Bet per Hand: ',
-          this.props.bet,
-          ' '
+          { x: x(77.5), y: y(135), fontSize: fs },
+          'Bet per'
         ),
         _react2.default.createElement(
           'text',
-          { x: x(7.5), y: y(94), fontSize: fs },
-          ' Chips: ',
-          this.props.chips,
-          ' '
+          { x: x(77.5), y: y(155), fontSize: fs },
+          'hand: ',
+          this.props.bet
+        ),
+        _react2.default.createElement(
+          'text',
+          { x: x(77.5), y: y(190), fontSize: fs },
+          'Chips:'
+        ),
+        _react2.default.createElement(
+          'text',
+          { x: x(77.5), y: y(230), fontSize: '26' },
+          this.props.chips
         )
       );
     }
@@ -101941,7 +102038,7 @@ var Chips = function (_React$Component) {
 exports.default = Chips;
 
 /***/ }),
-/* 697 */
+/* 698 */
 /***/ (function(module, exports) {
 
 module.exports = {"contractName":"Dealer","abi":[{"constant":true,"inputs":[],"name":"ceiling","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pitboss","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Deposit","type":"event"},{"constant":false,"inputs":[{"name":"winner","type":"address"},{"name":"amount","type":"uint256"}],"name":"cashout","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"overflow","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}],"bytecode":"0x6060604052341561000f57600080fd5b336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506104438061005e6000396000f30060606040526004361061006c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680624264c3146100bc57806341c0e1b5146100d1578063753ed1bd146100e6578063a026348c1461010f578063b7b172b314610164575b3373ffffffffffffffffffffffffffffffffffffffff167fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c346040518082815260200191505060405180910390a2005b34156100c757600080fd5b6100cf6101a6565b005b34156100dc57600080fd5b6100e46102b2565b005b34156100f157600080fd5b6100f9610347565b6040518082815260200191505060405180910390f35b341561011a57600080fd5b610122610353565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561016f57600080fd5b6101a4600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091908035906020019091905050610378565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561020157600080fd5b6703782dace9d900003073ffffffffffffffffffffffffffffffffffffffff163111151561022e57600080fd5b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166108fc6703782dace9d900003073ffffffffffffffffffffffffffffffffffffffff1631039081150290604051600060405180830381858888f1935050505015156102b057600080fd5b565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561030d57600080fd5b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16ff5b6703782dace9d9000081565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415156103d357600080fd5b8173ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f19350505050151561041357600080fd5b50505600a165627a7a7230582072d5fb7cf1c74f03d1760bd4b366d996df8b455dae32738cdfaed0373e64047f0029","deployedBytecode":"0x60606040526004361061006c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680624264c3146100bc57806341c0e1b5146100d1578063753ed1bd146100e6578063a026348c1461010f578063b7b172b314610164575b3373ffffffffffffffffffffffffffffffffffffffff167fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c346040518082815260200191505060405180910390a2005b34156100c757600080fd5b6100cf6101a6565b005b34156100dc57600080fd5b6100e46102b2565b005b34156100f157600080fd5b6100f9610347565b6040518082815260200191505060405180910390f35b341561011a57600080fd5b610122610353565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561016f57600080fd5b6101a4600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091908035906020019091905050610378565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561020157600080fd5b6703782dace9d900003073ffffffffffffffffffffffffffffffffffffffff163111151561022e57600080fd5b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166108fc6703782dace9d900003073ffffffffffffffffffffffffffffffffffffffff1631039081150290604051600060405180830381858888f1935050505015156102b057600080fd5b565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561030d57600080fd5b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16ff5b6703782dace9d9000081565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415156103d357600080fd5b8173ffffffffffffffffffffffffffffffffffffffff166108fc829081150290604051600060405180830381858888f19350505050151561041357600080fd5b50505600a165627a7a7230582072d5fb7cf1c74f03d1760bd4b366d996df8b455dae32738cdfaed0373e64047f0029","sourceMap":"25:703:0:-;;;180:60;;;;;;;;223:10;213:7;;:20;;;;;;;;;;;;;;;;;;25:703;;;;;;","deployedSourceMap":"25:703:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;289:10;281:30;;;301:9;281:30;;;;;;;;;;;;;;;;;;25:703;514:134;;;;;;;;;;;;;;654:71;;;;;;;;;;;;;;76:41;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;48:22;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;405:103;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;514:134;375:7;;;;;;;;;;;361:21;;:10;:21;;;353:30;;;;;;;;107:10;570:4;:12;;;:22;561:32;;;;;;;;601:7;;;;;;;;;;;:16;;:40;107:10;618:4;:12;;;:22;601:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;514:134::o;654:71::-;375:7;;;;;;;;;;;361:21;;:10;:21;;;353:30;;;;;;;;710:7;;;;;;;;;;;697:21;;;76:41;107:10;76:41;:::o;48:22::-;;;;;;;;;;;;;:::o;405:103::-;375:7;;;;;;;;;;;361:21;;:10;:21;;;353:30;;;;;;;;478:6;:15;;:23;494:6;478:23;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;405:103;;:::o","source":"pragma solidity ^0.4.0;\n\ncontract Dealer {\n\n    address public pitboss;\n    uint public constant ceiling = 0.25 ether;\n\n    event Deposit(address indexed _from, uint _value);\n\n    function Dealer() public {\n      pitboss = msg.sender;\n    }\n\n    function () public payable {\n      Deposit(msg.sender, msg.value);\n    }\n\n    modifier pitbossOnly {\n      require(msg.sender == pitboss);\n      _;\n    }\n\n    function cashout(address winner, uint amount) public pitbossOnly {\n      winner.transfer(amount);\n    }\n\n    function overflow() public pitbossOnly {\n      require (this.balance > ceiling);\n      pitboss.transfer(this.balance - ceiling);\n    }\n\n    function kill() public pitbossOnly {\n      selfdestruct(pitboss);\n    }\n\n}\n","sourcePath":"/home/bohendo/all/Documents/bjtj/contracts/Dealer.sol","ast":{"absolutePath":"/home/bohendo/all/Documents/bjtj/contracts/Dealer.sol","exportedSymbols":{"Dealer":[92]},"id":93,"nodeType":"SourceUnit","nodes":[{"id":1,"literals":["solidity","^","0.4",".0"],"nodeType":"PragmaDirective","src":"0:23:0"},{"baseContracts":[],"contractDependencies":[],"contractKind":"contract","documentation":null,"fullyImplemented":true,"id":92,"linearizedBaseContracts":[92],"name":"Dealer","nodeType":"ContractDefinition","nodes":[{"constant":false,"id":3,"name":"pitboss","nodeType":"VariableDeclaration","scope":92,"src":"48:22:0","stateVariable":true,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":2,"name":"address","nodeType":"ElementaryTypeName","src":"48:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"public"},{"constant":true,"id":6,"name":"ceiling","nodeType":"VariableDeclaration","scope":92,"src":"76:41:0","stateVariable":true,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":4,"name":"uint","nodeType":"ElementaryTypeName","src":"76:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":{"argumentTypes":null,"hexValue":"302e3235","id":5,"isConstant":false,"isLValue":false,"isPure":true,"kind":"number","lValueRequested":false,"nodeType":"Literal","src":"107:10:0","subdenomination":"ether","typeDescriptions":{"typeIdentifier":"t_rational_250000000000000000_by_1","typeString":"int_const 250000000000000000"},"value":"0.25"},"visibility":"public"},{"anonymous":false,"id":12,"name":"Deposit","nodeType":"EventDefinition","parameters":{"id":11,"nodeType":"ParameterList","parameters":[{"constant":false,"id":8,"indexed":true,"name":"_from","nodeType":"VariableDeclaration","scope":12,"src":"138:21:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":7,"name":"address","nodeType":"ElementaryTypeName","src":"138:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"internal"},{"constant":false,"id":10,"indexed":false,"name":"_value","nodeType":"VariableDeclaration","scope":12,"src":"161:11:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":9,"name":"uint","nodeType":"ElementaryTypeName","src":"161:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":null,"visibility":"internal"}],"src":"137:36:0"},"src":"124:50:0"},{"body":{"id":20,"nodeType":"Block","src":"205:35:0","statements":[{"expression":{"argumentTypes":null,"id":18,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftHandSide":{"argumentTypes":null,"id":15,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"213:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"nodeType":"Assignment","operator":"=","rightHandSide":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":16,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"223:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":17,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"223:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"src":"213:20:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":19,"nodeType":"ExpressionStatement","src":"213:20:0"}]},"id":21,"implemented":true,"isConstructor":true,"isDeclaredConst":false,"modifiers":[],"name":"Dealer","nodeType":"FunctionDefinition","parameters":{"id":13,"nodeType":"ParameterList","parameters":[],"src":"195:2:0"},"payable":false,"returnParameters":{"id":14,"nodeType":"ParameterList","parameters":[],"src":"205:0:0"},"scope":92,"src":"180:60:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":31,"nodeType":"Block","src":"273:45:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"expression":{"argumentTypes":null,"id":25,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"289:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":26,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"289:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},{"argumentTypes":null,"expression":{"argumentTypes":null,"id":27,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"301:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":28,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"value","nodeType":"MemberAccess","referencedDeclaration":null,"src":"301:9:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_address","typeString":"address"},{"typeIdentifier":"t_uint256","typeString":"uint256"}],"id":24,"name":"Deposit","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":12,"src":"281:7:0","typeDescriptions":{"typeIdentifier":"t_function_event_nonpayable$_t_address_$_t_uint256_$returns$__$","typeString":"function (address,uint256)"}},"id":29,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"281:30:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":30,"nodeType":"ExpressionStatement","src":"281:30:0"}]},"id":32,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[],"name":"","nodeType":"FunctionDefinition","parameters":{"id":22,"nodeType":"ParameterList","parameters":[],"src":"255:2:0"},"payable":true,"returnParameters":{"id":23,"nodeType":"ParameterList","parameters":[],"src":"273:0:0"},"scope":92,"src":"246:72:0","stateMutability":"payable","superFunction":null,"visibility":"public"},{"body":{"id":42,"nodeType":"Block","src":"345:54:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_address","typeString":"address"},"id":38,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":35,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"361:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":36,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"361:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"nodeType":"BinaryOperation","operator":"==","rightExpression":{"argumentTypes":null,"id":37,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"375:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"src":"361:21:0","typeDescriptions":{"typeIdentifier":"t_bool","typeString":"bool"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_bool","typeString":"bool"}],"id":34,"name":"require","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":107,"src":"353:7:0","typeDescriptions":{"typeIdentifier":"t_function_require_pure$_t_bool_$returns$__$","typeString":"function (bool) pure"}},"id":39,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"353:30:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":40,"nodeType":"ExpressionStatement","src":"353:30:0"},{"id":41,"nodeType":"PlaceholderStatement","src":"391:1:0"}]},"id":43,"name":"pitbossOnly","nodeType":"ModifierDefinition","parameters":{"id":33,"nodeType":"ParameterList","parameters":[],"src":"345:0:0"},"src":"324:75:0","visibility":"internal"},{"body":{"id":58,"nodeType":"Block","src":"470:38:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"id":55,"name":"amount","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":47,"src":"494:6:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_uint256","typeString":"uint256"}],"expression":{"argumentTypes":null,"id":52,"name":"winner","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":45,"src":"478:6:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":54,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"transfer","nodeType":"MemberAccess","referencedDeclaration":null,"src":"478:15:0","typeDescriptions":{"typeIdentifier":"t_function_transfer_nonpayable$_t_uint256_$returns$__$","typeString":"function (uint256)"}},"id":56,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"478:23:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":57,"nodeType":"ExpressionStatement","src":"478:23:0"}]},"id":59,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":50,"modifierName":{"argumentTypes":null,"id":49,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"458:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"458:11:0"}],"name":"cashout","nodeType":"FunctionDefinition","parameters":{"id":48,"nodeType":"ParameterList","parameters":[{"constant":false,"id":45,"name":"winner","nodeType":"VariableDeclaration","scope":59,"src":"422:14:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":44,"name":"address","nodeType":"ElementaryTypeName","src":"422:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"internal"},{"constant":false,"id":47,"name":"amount","nodeType":"VariableDeclaration","scope":59,"src":"438:11:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":46,"name":"uint","nodeType":"ElementaryTypeName","src":"438:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":null,"visibility":"internal"}],"src":"421:29:0"},"payable":false,"returnParameters":{"id":51,"nodeType":"ParameterList","parameters":[],"src":"470:0:0"},"scope":92,"src":"405:103:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":80,"nodeType":"Block","src":"553:95:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_uint256","typeString":"uint256"},"id":68,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":65,"name":"this","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":115,"src":"570:4:0","typeDescriptions":{"typeIdentifier":"t_contract$_Dealer_$92","typeString":"contract Dealer"}},"id":66,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"balance","nodeType":"MemberAccess","referencedDeclaration":null,"src":"570:12:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"nodeType":"BinaryOperation","operator":">","rightExpression":{"argumentTypes":null,"id":67,"name":"ceiling","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":6,"src":"585:7:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"src":"570:22:0","typeDescriptions":{"typeIdentifier":"t_bool","typeString":"bool"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_bool","typeString":"bool"}],"id":64,"name":"require","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":107,"src":"561:7:0","typeDescriptions":{"typeIdentifier":"t_function_require_pure$_t_bool_$returns$__$","typeString":"function (bool) pure"}},"id":69,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"561:32:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":70,"nodeType":"ExpressionStatement","src":"561:32:0"},{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_uint256","typeString":"uint256"},"id":77,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":74,"name":"this","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":115,"src":"618:4:0","typeDescriptions":{"typeIdentifier":"t_contract$_Dealer_$92","typeString":"contract Dealer"}},"id":75,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"balance","nodeType":"MemberAccess","referencedDeclaration":null,"src":"618:12:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"nodeType":"BinaryOperation","operator":"-","rightExpression":{"argumentTypes":null,"id":76,"name":"ceiling","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":6,"src":"633:7:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"src":"618:22:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_uint256","typeString":"uint256"}],"expression":{"argumentTypes":null,"id":71,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"601:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":73,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"transfer","nodeType":"MemberAccess","referencedDeclaration":null,"src":"601:16:0","typeDescriptions":{"typeIdentifier":"t_function_transfer_nonpayable$_t_uint256_$returns$__$","typeString":"function (uint256)"}},"id":78,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"601:40:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":79,"nodeType":"ExpressionStatement","src":"601:40:0"}]},"id":81,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":62,"modifierName":{"argumentTypes":null,"id":61,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"541:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"541:11:0"}],"name":"overflow","nodeType":"FunctionDefinition","parameters":{"id":60,"nodeType":"ParameterList","parameters":[],"src":"531:2:0"},"payable":false,"returnParameters":{"id":63,"nodeType":"ParameterList","parameters":[],"src":"553:0:0"},"scope":92,"src":"514:134:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":90,"nodeType":"Block","src":"689:36:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"id":87,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"710:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_address","typeString":"address"}],"id":86,"name":"selfdestruct","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":110,"src":"697:12:0","typeDescriptions":{"typeIdentifier":"t_function_selfdestruct_nonpayable$_t_address_$returns$__$","typeString":"function (address)"}},"id":88,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"697:21:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":89,"nodeType":"ExpressionStatement","src":"697:21:0"}]},"id":91,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":84,"modifierName":{"argumentTypes":null,"id":83,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"677:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"677:11:0"}],"name":"kill","nodeType":"FunctionDefinition","parameters":{"id":82,"nodeType":"ParameterList","parameters":[],"src":"667:2:0"},"payable":false,"returnParameters":{"id":85,"nodeType":"ParameterList","parameters":[],"src":"689:0:0"},"scope":92,"src":"654:71:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"}],"scope":93,"src":"25:703:0"}],"src":"0:729:0"},"legacyAST":{"absolutePath":"/home/bohendo/all/Documents/bjtj/contracts/Dealer.sol","exportedSymbols":{"Dealer":[92]},"id":93,"nodeType":"SourceUnit","nodes":[{"id":1,"literals":["solidity","^","0.4",".0"],"nodeType":"PragmaDirective","src":"0:23:0"},{"baseContracts":[],"contractDependencies":[],"contractKind":"contract","documentation":null,"fullyImplemented":true,"id":92,"linearizedBaseContracts":[92],"name":"Dealer","nodeType":"ContractDefinition","nodes":[{"constant":false,"id":3,"name":"pitboss","nodeType":"VariableDeclaration","scope":92,"src":"48:22:0","stateVariable":true,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":2,"name":"address","nodeType":"ElementaryTypeName","src":"48:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"public"},{"constant":true,"id":6,"name":"ceiling","nodeType":"VariableDeclaration","scope":92,"src":"76:41:0","stateVariable":true,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":4,"name":"uint","nodeType":"ElementaryTypeName","src":"76:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":{"argumentTypes":null,"hexValue":"302e3235","id":5,"isConstant":false,"isLValue":false,"isPure":true,"kind":"number","lValueRequested":false,"nodeType":"Literal","src":"107:10:0","subdenomination":"ether","typeDescriptions":{"typeIdentifier":"t_rational_250000000000000000_by_1","typeString":"int_const 250000000000000000"},"value":"0.25"},"visibility":"public"},{"anonymous":false,"id":12,"name":"Deposit","nodeType":"EventDefinition","parameters":{"id":11,"nodeType":"ParameterList","parameters":[{"constant":false,"id":8,"indexed":true,"name":"_from","nodeType":"VariableDeclaration","scope":12,"src":"138:21:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":7,"name":"address","nodeType":"ElementaryTypeName","src":"138:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"internal"},{"constant":false,"id":10,"indexed":false,"name":"_value","nodeType":"VariableDeclaration","scope":12,"src":"161:11:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":9,"name":"uint","nodeType":"ElementaryTypeName","src":"161:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":null,"visibility":"internal"}],"src":"137:36:0"},"src":"124:50:0"},{"body":{"id":20,"nodeType":"Block","src":"205:35:0","statements":[{"expression":{"argumentTypes":null,"id":18,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftHandSide":{"argumentTypes":null,"id":15,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"213:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"nodeType":"Assignment","operator":"=","rightHandSide":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":16,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"223:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":17,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"223:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"src":"213:20:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":19,"nodeType":"ExpressionStatement","src":"213:20:0"}]},"id":21,"implemented":true,"isConstructor":true,"isDeclaredConst":false,"modifiers":[],"name":"Dealer","nodeType":"FunctionDefinition","parameters":{"id":13,"nodeType":"ParameterList","parameters":[],"src":"195:2:0"},"payable":false,"returnParameters":{"id":14,"nodeType":"ParameterList","parameters":[],"src":"205:0:0"},"scope":92,"src":"180:60:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":31,"nodeType":"Block","src":"273:45:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"expression":{"argumentTypes":null,"id":25,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"289:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":26,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"289:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},{"argumentTypes":null,"expression":{"argumentTypes":null,"id":27,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"301:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":28,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"value","nodeType":"MemberAccess","referencedDeclaration":null,"src":"301:9:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_address","typeString":"address"},{"typeIdentifier":"t_uint256","typeString":"uint256"}],"id":24,"name":"Deposit","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":12,"src":"281:7:0","typeDescriptions":{"typeIdentifier":"t_function_event_nonpayable$_t_address_$_t_uint256_$returns$__$","typeString":"function (address,uint256)"}},"id":29,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"281:30:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":30,"nodeType":"ExpressionStatement","src":"281:30:0"}]},"id":32,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[],"name":"","nodeType":"FunctionDefinition","parameters":{"id":22,"nodeType":"ParameterList","parameters":[],"src":"255:2:0"},"payable":true,"returnParameters":{"id":23,"nodeType":"ParameterList","parameters":[],"src":"273:0:0"},"scope":92,"src":"246:72:0","stateMutability":"payable","superFunction":null,"visibility":"public"},{"body":{"id":42,"nodeType":"Block","src":"345:54:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_address","typeString":"address"},"id":38,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":35,"name":"msg","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":104,"src":"361:3:0","typeDescriptions":{"typeIdentifier":"t_magic_message","typeString":"msg"}},"id":36,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"sender","nodeType":"MemberAccess","referencedDeclaration":null,"src":"361:10:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"nodeType":"BinaryOperation","operator":"==","rightExpression":{"argumentTypes":null,"id":37,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"375:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"src":"361:21:0","typeDescriptions":{"typeIdentifier":"t_bool","typeString":"bool"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_bool","typeString":"bool"}],"id":34,"name":"require","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":107,"src":"353:7:0","typeDescriptions":{"typeIdentifier":"t_function_require_pure$_t_bool_$returns$__$","typeString":"function (bool) pure"}},"id":39,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"353:30:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":40,"nodeType":"ExpressionStatement","src":"353:30:0"},{"id":41,"nodeType":"PlaceholderStatement","src":"391:1:0"}]},"id":43,"name":"pitbossOnly","nodeType":"ModifierDefinition","parameters":{"id":33,"nodeType":"ParameterList","parameters":[],"src":"345:0:0"},"src":"324:75:0","visibility":"internal"},{"body":{"id":58,"nodeType":"Block","src":"470:38:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"id":55,"name":"amount","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":47,"src":"494:6:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_uint256","typeString":"uint256"}],"expression":{"argumentTypes":null,"id":52,"name":"winner","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":45,"src":"478:6:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":54,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"transfer","nodeType":"MemberAccess","referencedDeclaration":null,"src":"478:15:0","typeDescriptions":{"typeIdentifier":"t_function_transfer_nonpayable$_t_uint256_$returns$__$","typeString":"function (uint256)"}},"id":56,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"478:23:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":57,"nodeType":"ExpressionStatement","src":"478:23:0"}]},"id":59,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":50,"modifierName":{"argumentTypes":null,"id":49,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"458:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"458:11:0"}],"name":"cashout","nodeType":"FunctionDefinition","parameters":{"id":48,"nodeType":"ParameterList","parameters":[{"constant":false,"id":45,"name":"winner","nodeType":"VariableDeclaration","scope":59,"src":"422:14:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"},"typeName":{"id":44,"name":"address","nodeType":"ElementaryTypeName","src":"422:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"value":null,"visibility":"internal"},{"constant":false,"id":47,"name":"amount","nodeType":"VariableDeclaration","scope":59,"src":"438:11:0","stateVariable":false,"storageLocation":"default","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"},"typeName":{"id":46,"name":"uint","nodeType":"ElementaryTypeName","src":"438:4:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"value":null,"visibility":"internal"}],"src":"421:29:0"},"payable":false,"returnParameters":{"id":51,"nodeType":"ParameterList","parameters":[],"src":"470:0:0"},"scope":92,"src":"405:103:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":80,"nodeType":"Block","src":"553:95:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_uint256","typeString":"uint256"},"id":68,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":65,"name":"this","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":115,"src":"570:4:0","typeDescriptions":{"typeIdentifier":"t_contract$_Dealer_$92","typeString":"contract Dealer"}},"id":66,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"balance","nodeType":"MemberAccess","referencedDeclaration":null,"src":"570:12:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"nodeType":"BinaryOperation","operator":">","rightExpression":{"argumentTypes":null,"id":67,"name":"ceiling","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":6,"src":"585:7:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"src":"570:22:0","typeDescriptions":{"typeIdentifier":"t_bool","typeString":"bool"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_bool","typeString":"bool"}],"id":64,"name":"require","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":107,"src":"561:7:0","typeDescriptions":{"typeIdentifier":"t_function_require_pure$_t_bool_$returns$__$","typeString":"function (bool) pure"}},"id":69,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"561:32:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":70,"nodeType":"ExpressionStatement","src":"561:32:0"},{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"commonType":{"typeIdentifier":"t_uint256","typeString":"uint256"},"id":77,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"leftExpression":{"argumentTypes":null,"expression":{"argumentTypes":null,"id":74,"name":"this","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":115,"src":"618:4:0","typeDescriptions":{"typeIdentifier":"t_contract$_Dealer_$92","typeString":"contract Dealer"}},"id":75,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"balance","nodeType":"MemberAccess","referencedDeclaration":null,"src":"618:12:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"nodeType":"BinaryOperation","operator":"-","rightExpression":{"argumentTypes":null,"id":76,"name":"ceiling","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":6,"src":"633:7:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}},"src":"618:22:0","typeDescriptions":{"typeIdentifier":"t_uint256","typeString":"uint256"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_uint256","typeString":"uint256"}],"expression":{"argumentTypes":null,"id":71,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"601:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}},"id":73,"isConstant":false,"isLValue":false,"isPure":false,"lValueRequested":false,"memberName":"transfer","nodeType":"MemberAccess","referencedDeclaration":null,"src":"601:16:0","typeDescriptions":{"typeIdentifier":"t_function_transfer_nonpayable$_t_uint256_$returns$__$","typeString":"function (uint256)"}},"id":78,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"601:40:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":79,"nodeType":"ExpressionStatement","src":"601:40:0"}]},"id":81,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":62,"modifierName":{"argumentTypes":null,"id":61,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"541:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"541:11:0"}],"name":"overflow","nodeType":"FunctionDefinition","parameters":{"id":60,"nodeType":"ParameterList","parameters":[],"src":"531:2:0"},"payable":false,"returnParameters":{"id":63,"nodeType":"ParameterList","parameters":[],"src":"553:0:0"},"scope":92,"src":"514:134:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"},{"body":{"id":90,"nodeType":"Block","src":"689:36:0","statements":[{"expression":{"argumentTypes":null,"arguments":[{"argumentTypes":null,"id":87,"name":"pitboss","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":3,"src":"710:7:0","typeDescriptions":{"typeIdentifier":"t_address","typeString":"address"}}],"expression":{"argumentTypes":[{"typeIdentifier":"t_address","typeString":"address"}],"id":86,"name":"selfdestruct","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":110,"src":"697:12:0","typeDescriptions":{"typeIdentifier":"t_function_selfdestruct_nonpayable$_t_address_$returns$__$","typeString":"function (address)"}},"id":88,"isConstant":false,"isLValue":false,"isPure":false,"kind":"functionCall","lValueRequested":false,"names":[],"nodeType":"FunctionCall","src":"697:21:0","typeDescriptions":{"typeIdentifier":"t_tuple$__$","typeString":"tuple()"}},"id":89,"nodeType":"ExpressionStatement","src":"697:21:0"}]},"id":91,"implemented":true,"isConstructor":false,"isDeclaredConst":false,"modifiers":[{"arguments":[],"id":84,"modifierName":{"argumentTypes":null,"id":83,"name":"pitbossOnly","nodeType":"Identifier","overloadedDeclarations":[],"referencedDeclaration":43,"src":"677:11:0","typeDescriptions":{"typeIdentifier":"t_modifier$__$","typeString":"modifier ()"}},"nodeType":"ModifierInvocation","src":"677:11:0"}],"name":"kill","nodeType":"FunctionDefinition","parameters":{"id":82,"nodeType":"ParameterList","parameters":[],"src":"667:2:0"},"payable":false,"returnParameters":{"id":85,"nodeType":"ParameterList","parameters":[],"src":"689:0:0"},"scope":92,"src":"654:71:0","stateMutability":"nonpayable","superFunction":null,"visibility":"public"}],"scope":93,"src":"25:703:0"}],"src":"0:729:0"},"compiler":{"name":"solc","version":"0.4.19+commit.c4cbbb05.Emscripten.clang"},"networks":{"1":{"events":{},"links":{},"address":"0x13Ea3e8f20fdABb3996D7580DF50143b93E4ba27","transactionHash":"0x82b39bf40c8b35bdcf329d830cea648212fbd1749b6e77dbc47b770058a507f0"},"5777":{"events":{},"links":{},"address":"0x345ca3e014aaf5dca488057592ee47305d9b3e10","transactionHash":"0x032de192e79e1baa57d2d293b6c49875498e6134772d013c7d964bc9b571f71c"}},"schemaVersion":"2.0.0","updatedAt":"2018-03-14T19:37:16.144Z"}

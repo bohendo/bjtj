@@ -102,20 +102,19 @@ export default class Chips extends React.Component {
 
     // put button position coordinates all in one place
     const pos = {
-      tip:     { x: x(10), y: y(41), w: w(80), h: h(15) },
-      cashout: { x: x(10), y: y(59), w: w(80), h: h(15) }
+      tip:     { x: x(5), y: y(52), w: w(45), h: h(38) },
+      cashout: { x: x(55), y: y(52), w: w(40), h: h(38) }
     }
 
-    // 
     const can = {
-      tip: this.props.authed,
-      cashout: this.props.authed && this.props.chips > 0
+      tip: this.props.authed && !this.props.waiting,
+      cashout: this.props.authed && !this.props.waiting && this.props.chips > 0
     }
 
     const bg = '#99f';
     const fg = '#ddf';
     const blk = '#000'; 
-    const fs = 16; // fs for Font Size
+    const fs = 14; // fs for Font Size
 
     const etherscan = `https://etherscan.io/address/${this.state.address}`
 
@@ -126,22 +125,29 @@ export default class Chips extends React.Component {
             rx="5" ry="5" fill={bg} stroke={blk}/>
 
 
-      <a href={etherscan}>
-        <rect x={x(5)} y={y(4)} width={w(90)} height={h(12)}
+      <a href={etherscan} target="_blank">
+        <rect x={x(5)} y={y(10)} width={w(45)} height={h(30)}
           rx="5" ry="5" fill={fg} stroke={blk}/>
-        <text x={x(7.5)} y={y(13)} fontSize={fs}>Dealer Address</text>
+        <text x={x(7)} y={y(32)} fontSize="14">Dealer Contract</text>
       </a>
 
-      <text x={x(7.5)} y={y(26)} fontSize={fs}>Dealer balance</text>
-      <text x={x(15)} y={y(36)} fontSize={fs}>{this.state.balance} mETH</text>
+      <text x={x(55)} y={y(25)} fontSize={fs}>Dealer balance:</text>
+      <text x={x(60)} y={y(45)} fontSize={fs}>{this.state.balance} mETH</text>
 
       {this.button('Tip 5 mETH', this.tip, can.tip,
         pos.tip.x, pos.tip.y, pos.tip.w, pos.tip.h)}
+
       {this.button('Cashout', this.cashout, can.cashout,
         pos.cashout.x, pos.cashout.y, pos.cashout.w, pos.cashout.h)}
 
-      <text x={x(7.5)} y={y(84)} fontSize={fs}> Bet per Hand: {this.props.bet} </text>
-      <text x={x(7.5)} y={y(94)} fontSize={fs}> Chips: {this.props.chips} </text>
+
+      <rect x={x(75)} y={y(105)} width={w(25)} height={h(140)}
+            rx="5" ry="5" fill={bg} stroke={blk}/>
+
+      <text x={x(77.5)} y={y(135)} fontSize={fs}>Bet per</text>
+      <text x={x(77.5)} y={y(155)} fontSize={fs}>hand: {this.props.bet}</text>
+      <text x={x(77.5)} y={y(190)} fontSize={fs}>Chips:</text>
+      <text x={x(77.5)} y={y(230)} fontSize="26">{this.props.chips}</text>
 
 </g>
     );

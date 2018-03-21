@@ -41,7 +41,7 @@ export default class Ctrls extends React.Component {
       const text = <text
         x={x+12.5} y={y+23} fontSize='20'>{type.charAt(0).toUpperCase() + type.slice(1)}</text>
 
-      const shade = (!this.props.moves.includes(type)) ?
+      const shade = (!this.props.moves.includes(type) || this.props.waiting) ?
         <rect
           x={x} y={y} width={w} height={h}
           rx="5" ry="5" fill="black" fillOpacity="0.6"/>

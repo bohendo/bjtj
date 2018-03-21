@@ -17,6 +17,7 @@ export const SUBMIT = 'SUBMIT'
 export function submit(move) {
   console.log(`Sending request to server: ${move}`)
   return function(dispatch) { // utilizes redux-thunk
+    dispatch({ type: SUBMIT })
 
     return fetch(`/api/${move.toLowerCase()}`, { credentials: 'same-origin' }).then((response) => {
       return response.json().then(state=>{
