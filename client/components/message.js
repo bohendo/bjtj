@@ -19,7 +19,7 @@ export default class Message extends React.Component {
       const etherscan = `https://etherscan.io/tx/${txhash[0]}`
       message = <g>
         <text x={x(2.5)} y={y(txt_h)} fontSize={fs} textLength={w(95)} lengthAdjust="spacingAndGlyphs">
-          Cashout tx: <a href={etherscan} textDecoration="underline">{txhash[0].substring(0,15)}...</a>
+          Cashout tx: <a href={etherscan} textDecoration="underline" target="_blank">{txhash[0].substring(0,15)}...</a>
         </text>
       </g>
 

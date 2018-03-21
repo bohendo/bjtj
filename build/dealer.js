@@ -2313,7 +2313,7 @@ var dealerData = {
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-14T19:37:16.144Z"
+  "updatedAt": "2018-03-21T20:17:35.456Z"
 }
 
 // build/contracts/Dealer.json will be pasted above by Makefile
