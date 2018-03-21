@@ -89,7 +89,7 @@ export default class BJTJ extends React.Component {
 
     const auth = (this.props.authed) ?
       null : 
-      <Auth x="15" y="400" w="270" h="200" msg={this.props.msg} submit={this.props.submit} />
+      <Auth x="25" y="300" w="250" h="200" msg={this.props.msg} submit={this.props.submit} />
 
     const moves = (this.props.authed) ? this.props.moves : []
     moves.push(`refresh`) // user can always refresh

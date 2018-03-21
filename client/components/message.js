@@ -33,10 +33,15 @@ export default class Message extends React.Component {
       </g>
     }
 
+    const triangle = `${x(25)},${y(95)} ${x(30)},${y(95)} ${x(25)},${y(150)}`
+
     return (
 <g>
 
+    <polygon points={triangle} fill="#cfc" stroke="black" strokeWidth="2"/>
     <rect x={x(0)} y={y(0)} width={w(100)} height={h(100)} rx="5" ry="5" fill="#cfc" stroke="black" />
+    <polygon points={triangle} fill="#cfc" stroke="transparent" />
+
     {message}
 
 </g>
