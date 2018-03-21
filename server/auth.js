@@ -23,9 +23,7 @@ const verify = (usr, sig) => {
 
 const auth = (req, res, next) => {
 
-  log(`New req received with headers: ${JSON.stringify(req.headers,null,2)}`)
-
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  const ip = req.headers['x-real-ip'] || req.connection.remoteAddress
   log(`New req received for ${req.path} from ${ip}`)
 
   // Make sure this request has id and ag cookies
