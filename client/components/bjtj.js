@@ -116,7 +116,7 @@ export default class BJTJ extends React.Component {
     <Hand x="15" y="322" w="200" hand={this.props.playerHands} />
 
     <Ctrls x="15" y="480" w="270" h="120" submit={this.props.submit}
-           moves={this.props.moves} waiting={this.props.waiting} />
+           moves={moves} waiting={this.props.waiting} />
 
     {auth}
 
