@@ -16,7 +16,7 @@ webpack=node_modules/.bin/webpack
 
 # Input files
 client=$(shell find client -type f)
-server=$(shell find server -type f)
+nodejs=$(shell find nodejs -type f)
 
 sol=$(shell find contracts -type f -name "*.sol")
 
@@ -38,12 +38,12 @@ build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	echo >> build/dealer.js
 	cat ops/preload-dealer.js >> build/dealer.js
 
-build/bjtj-image: Dockerfile server.bundle.js client.bundle.js
+build/bjtj-image: Dockerfile nodejs.bundle.js client.bundle.js
 	docker build -f ops/Dockerfile -t $(me)/bjtj:$v -t bjtj:$v .
 	touch build/bjtj-image
 
-server.bundle.js: node_modules webpack.server.js $(artifacts) $(server)
-	$(webpack) --config ops/webpack.server.js
+nodejs.bundle.js: node_modules webpack.nodejs.js $(artifacts) $(nodejs)
+	$(webpack) --config ops/webpack.nodejs.js
 
 client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js

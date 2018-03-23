@@ -38,10 +38,10 @@ fi
 if [[ "$NODE_ENV" == "development" ]]
 then
 
-  serverbundle="`pwd`/build/server.bundle.js"
-  if [[ -f "$serverbundle" ]]
+  nodejsbundle="`pwd`/build/nodejs.bundle.js"
+  if [[ -f "$nodejsbundle" ]]
   then
-    bindserver="--mount=type=bind,source=$serverbundle,destination=/root/server.bundle.js"
+    bindnodejs="--mount=type=bind,source=$nodejsbundle,destination=/root/nodejs.bundle.js"
   fi
 
   clientbundle="`pwd`/build/static/client.bundle.js"
@@ -63,7 +63,7 @@ docker service create \
   --network="blog_front" \
   --network="blog_back" \
   --mount="type=volume,source=ethprovider_ipc,destination=/tmp/ipc" \
-  $bindserver \
+  $bindnodejs \
   $bindclient \
   --env="NODE_ENV=$NODE_ENV" \
   --env="ETH_PROVIDER=$ETH_PROVIDER" \
