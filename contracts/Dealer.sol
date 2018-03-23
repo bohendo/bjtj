@@ -2,6 +2,14 @@ pragma solidity ^0.4.0;
 
 contract Dealer {
 
+    // TODO: Add an address=>info mapping
+    // add signup function that creates a new "dealer"
+    // style account with deposit/cashout events that
+    // the bjtj frontend connects to & backend listens for
+    // events are per dealer accout, gotta specify which dealer 
+    // when depositing too. Ideally dealers couldn't cashout to
+    // themselves but I see no way to enforce that..
+
     address public pitboss;
     uint public constant ceiling = 0.25 ether;
 
@@ -21,6 +29,7 @@ contract Dealer {
     }
 
     function cashout(address winner, uint amount) public pitbossOnly {
+      // are cashout events worth it?
       winner.transfer(amount);
     }
 

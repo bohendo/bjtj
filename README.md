@@ -1,21 +1,33 @@
 
 # Blackjack Tip Jar
 
-## High-Level Overview
+## Download & Deploy in WordPress
 
-`server/index` contains the core node/express request pipeline. All bjtj requests hit `server/auth` then `server/api`
+```
+wget https://raw.githubusercontent.com/bohendo/bjtj/master/build/bjtj.zip
+unzip bjtj.zip
+cp -r bjtj /var/www/wordpress/wp-content/plugins/bjtj
+# now go to the plugins page of wp-admin & activate it
 
-`server/auth` checks to ensure valid id & signature cookies are present. If that looks good, it attaches this player's gamestate to the request & passes it on to the `server/api`
+```
 
-`server/api` uses db, eth, and bj
+## Build & Deploy
 
-`server/database`
+```
 
-`server/eth`
+# download source code
+git clone giHigh-Level Overvie://github.com/bohendo/bjtj.git
+cd bjtj
 
-`server/blackjack` exports an object with one method: `reduce(state, action) => state`. Given a black jack game state and an action, it gives you a new state.
+# build everything & push images to docker hub
+make deploy
 
-## Statistics
+# deploy on localhost:3000
+bash ops/deploy.sh
+
+```
+
+## Game Stats
 
 According to the [Wizard of Odds](https://wizardofodds.com/games/blackjack/basics/), playing with a simple basic blackjack strategy provides a house edge of about 0.48%. Because you're betting 1 mETH per hand, that works out to 0.0048 mETH or a donation of 0.03 USD per hand.
 
@@ -33,7 +45,7 @@ The vending machine paradigm is ready to move online.
  - Simple payment for the customer: just send an ether payment to some address and you're good to go. No accounts or sensitive info needed. No need to even leave the page you're on. See the product you want, send funds to the appropriate address, and you're done.
  - Simple payment for the provider: No need to store (and potentially leak) your user's private info. Cutting out the account-managing machinery means the provider's back end can be simplified drastically.
 
-The idea of a single-page product + payment handler is the perfect use-case for cryptocurrencies yet I've had trouble finding examples online. Any discussion of crypto vending machines is focused on physical machines rather then utilizing what makes them awesome in a digital setting. Most of the really exciting innovations that are popping up requires special software whether that's OpenBazaar or Mist browser, neither of which are frictionless to install & setup especially for those with little technical knowledge.
+The idea of a single-page product + payment handler is the perfect use-case for cryptocurrencies yet I've had trouble finding examples online. Any discussion of crypto vending machines is focused on physical machines rather than utilizing what makes them awesome in a digital setting. Most of the really exciting innovations that are popping up requires special software whether that's OpenBazaar or Mist browser, neither of which are frictionless to install & setup especially for those with little technical knowledge.
 
 I see a future where authors will sell their books directly to consumers via these online vending machines without requiring any permission or extra software. Where bloggers and artists can replace tip-buttons with more engaging pay-to-play games. Where anyone who wants to be a casino, can be one and instead of going to a big, anonymous buildings to play slots, we play at our friend's or favorite blogger's casino knowing that the house always wins and that the winner in this case is an artist or family member who we believe deserves compensation.
 
