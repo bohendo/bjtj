@@ -7,4 +7,5 @@ node_modules
 # Secret
 *.secret
 
-build/*-image
+# Generated
+build
