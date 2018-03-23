@@ -13,10 +13,10 @@ webpack=node_modules/.bin/webpack
 
 ##### CALCULATED VARIABLES #####
 
-
 # Input files
 client=$(shell find client -type f)
 nodejs=$(shell find nodejs -type f)
+php=$(shell find php -type f)
 
 sol=$(shell find contracts -type f -name "*.sol")
 
@@ -26,8 +26,15 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 ##### RULES #####
 # first rule is the default
 
-all: bjtj-image dealer.js
+all: bjtj-image dealer.js bjtj.zip
 	@true
+
+bjtj.zip: client.bundle.js $(php)
+	cp -rf php build/bjtj
+	mkdir -p build/bjtj/js/
+	cp -f build/static/client.bundle.js build/bjtj/js/
+	zip -r build/bjtj.zip build/bjtj
+	rm -rf build/bjtj
 
 deploy: bjtj-image dealer.js
 	docker push $(me)/bjtj:$v
