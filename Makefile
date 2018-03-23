@@ -30,10 +30,10 @@ all: bjtj-image dealer.js bjtj.zip
 	@true
 
 bjtj.zip: client.bundle.js $(php)
-	cp -rf php build/bjtj
 	mkdir -p build/bjtj/js/
+	cp -rf php/* build/bjtj
 	cp -f build/static/client.bundle.js build/bjtj/js/
-	zip -r build/bjtj.zip build/bjtj
+	cd build && zip -r bjtj.zip bjtj/*
 	rm -rf build/bjtj
 
 deploy: bjtj-image dealer.js
