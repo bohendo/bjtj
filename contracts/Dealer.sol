@@ -37,6 +37,7 @@ contract thePit {
     }
 
     function deposit(address _dealer) public payable {
+      bankrolls[_dealer] = bankrolls[_dealer] + msg.value;
       emit Deposit(_dealer, msg.sender, msg.value);
     }
 
@@ -50,7 +51,7 @@ contract thePit {
       uint256 dealerBankroll = bankrolls[msg.sender];
       require(dealerBankroll >= amount);
       if(dealerBankroll >= ceiling + 0.1 ether){
-        bankrolls[msg.sender] =- dealerBankroll - ceiling;
+        bankrolls[msg.sender] = dealerBankroll - ceiling;
         msg.sender.transfer((dealerBankroll - ceiling) * 9 / 10);
         pitboss.transfer((dealerBankroll - ceiling) / 10);
         emit Overflow(msg.sender, (dealerBankroll - ceiling) * 9 / 10, pitboss, (dealerBankroll - ceiling) / 10);
