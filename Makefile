@@ -15,7 +15,6 @@ webpack=node_modules/.bin/webpack
 
 # Input files
 client=$(shell find client -type f)
-nodejs=$(shell find nodejs -type f)
 php=$(shell find php -type f)
 
 sol=$(shell find contracts -type f -name "*.sol")
@@ -26,7 +25,7 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 ##### RULES #####
 # first rule is the default
 
-all: bjtj-image dealer.js bjtj.zip
+all: dealer.js bjtj.zip
 	@true
 
 bjtj.zip: client.bundle.js $(php)
@@ -36,7 +35,7 @@ bjtj.zip: client.bundle.js $(php)
 	cd build && zip -r bjtj.zip bjtj/*
 	rm -rf build/bjtj
 
-deploy: bjtj-image dealer.js
+deploy:dealer.js
 	docker push $(me)/bjtj:$v
 
 build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
@@ -44,13 +43,6 @@ build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
 	cat build/contracts/Dealer.json >> build/dealer.js
 	echo >> build/dealer.js
 	cat ops/preload-dealer.js >> build/dealer.js
-
-build/bjtj-image: Dockerfile nodejs.bundle.js client.bundle.js
-	docker build -f ops/Dockerfile -t $(me)/bjtj:$v -t bjtj:$v .
-	touch build/bjtj-image
-
-nodejs.bundle.js: node_modules webpack.nodejs.js $(artifacts) $(nodejs)
-	$(webpack) --config ops/webpack.nodejs.js
 
 client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js
