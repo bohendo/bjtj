@@ -2,26 +2,15 @@ pragma solidity ^0.4.21;
 
 contract thePit {
 
-    // Just a first crack at it. 
-    
-    // TODO: Add an address=>info mapping
-    // only info is the dealers address mapped to their balance
-    
-    // add signup function that creates a new "dealer"
-    // There is no need for a dealer to sign up.  
-    // The transaction call linked on their webpage will deposit it into thier account.
-    // They transfer eth with a deposit to start their bank roll.
-    
-    // style account with deposit/cashout events that
-    // modified deposit, created cashout and overflow events
-    
-    // the bjtj frontend connects to & backend listens for
-    // events are per dealer account, gotta specify which dealer 
-    // DONE for the contract
-    
-    // when depositing too. Ideally dealers couldn't cashout to
-    // themselves but I see no way to enforce that..
-    // Agree
+    // TODO: Isolate magic numbers:
+    //   pitboss cut ie 10%
+    //   overflow margin ie 0.1 ether
+    //   maybe others?
+
+    // We might want to edit some of these magic numbers after deployment too..
+    // A function allowing the pitboss to raise/lower the ceiling might be useful
+
+    // Also, we gotta write some tests before deploying!
 
     address public pitboss;
     uint256 public constant ceiling = 0.25 ether;
