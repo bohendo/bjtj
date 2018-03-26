@@ -5,7 +5,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
-  entry: './client/index.js',
+  entry: './client/entry.js',
 
   output: {
     path: path.join(__dirname, '../build/static'),

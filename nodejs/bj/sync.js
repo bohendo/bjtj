@@ -1,5 +1,7 @@
 import assert from 'assert'
 
+// TODO: Extra cards delt after player blackjacks
+
 const log = (msg) => {
   if (true) console.log(`${new Date().toISOString()} [BJ] ${msg}`)
 }

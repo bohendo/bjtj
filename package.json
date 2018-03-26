@@ -4,7 +4,7 @@
   "description": "Blackjack Tip Jar",
   "main": "build/server.bundle.js",
   "scripts": {
-    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.server.js --config ./ops/webpack.client.js & docker service logs -f bjtj &"
+    "watch": "node_modules/.bin/webpack --watch --config ./ops/webpack.client.js"
   },
   "author": "Bo Henderson",
   "license": "GPLv3",

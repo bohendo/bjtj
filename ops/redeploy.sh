@@ -1,9 +1,7 @@
 #!/bin/bash
 
-docker service rm bjtj
+docker service rm blog_proxy blog_wordpress
 
 make deploy
 
-bash ops/deploy.sh
-
-docker service logs -f bjtj
+bash ops/dev-blog.sh

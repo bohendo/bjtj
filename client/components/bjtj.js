@@ -37,7 +37,6 @@ export default class BJTJ extends React.Component {
         // If we'd previously been talking about metamask or cookies, relax we're good now
         if (this.props.message.match(/(MetaMask)|(cookie)/)) {
           this.props.msg(`Thanks for the autograph ${bjtj_id[1].substring(2,8)}!`)
-          this.props.submit('refresh')
         }
         return this.props.auth(true)
       } else {

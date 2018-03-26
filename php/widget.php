@@ -1,5 +1,7 @@
 <?php
 
+// FYI: widget settings have a 'widget_' prefix in wp_options
+
 class bjtj_widget extends WP_Widget {
   function __construct() {
     $widget_ops = array(
