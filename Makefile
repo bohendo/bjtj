@@ -48,8 +48,8 @@ client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js
 
 $(artifacts): $(sol)
-	@echo $(artifacts) $(sol)
 	truffle compile
+	touch $(artifacts)
 
 node_modules: package.json
 	npm install
