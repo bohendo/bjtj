@@ -5,6 +5,21 @@ function bjtj_register_api() {
     'methods' => 'GET',
     'callback' => 'bjtj_make_move',
     'args' => array(
+
+      'id' => array(
+        'default' => '0x0',
+        'validate_callback' => function($param, $request, $key) {
+          return is_string($param) && strlen($param) == 42 && preg_match('/0x[0-9a-f]{40}/', $param);
+        }
+      ),
+
+      'ag' => array(
+        'default' => '0x0',
+        'validate_callback' => function($param, $request, $key) {
+          return is_string($param) && strlen($param) == 132 && preg_match('/0x[0-9a-f]{130}/', $param);
+        }
+      ),
+
       'move' => array(
         'default' => 'refresh',
         'validate_callback' => function($param, $request, $key) {
@@ -28,7 +43,9 @@ function bjtj_make_move( WP_REST_Request $request ) {
 
 function bjtj_auth( WP_REST_Request $request ) {
 
-  return false;
+  // $id = $request['']:
+
+  return true;
 }
 
 ?>

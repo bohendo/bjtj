@@ -27,12 +27,13 @@ export function submit(move) {
 
     if (!bjtj_id || !bjtj_ag || !verify(bjtj_id[1], bjtj_ag[1])) {
       console.log(`Access Denied ${bjtj_id[1]} ${bjtj_ag[1]}`)
-      return dispatch(failure('Gotta sign the cookie before talking to the dealer'))
+      return dispatch(failure('The dealer needs an autograph first'))
     }
     console.log('You are permitted')
 
     dispatch({ type: SUBMIT })
-    return fetch(`/wp-json/bjtj/v1/move?move=${move.toLowerCase()}&id=${bjtj_id[1]}&ag=${bjtj_ag[1]}`).then((response) => {
+    const query = `move=${move.toLowerCase()}&id=${bjtj_id[1]}&ag=${bjtj_ag[1]}`
+    return fetch(`/wp-json/bjtj/v1/move?${query}`).then((response) => {
       return response.json().then(state=>{
 
         dispatch(success(state))
