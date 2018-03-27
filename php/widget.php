@@ -14,32 +14,24 @@ class bjtj_widget extends WP_Widget {
   // settings form
   function form($instance) {
     $defaults = array(
-      'address' => '0x0000000000000000000000000000000000000000',
-      'provider' => 'http://localhost:8545'
+      'personal_message' => 'Enjoy this site? Support the author by playing around with the arcade game below, thanks!',
     );
     $instance = wp_parse_args( (array) $instance, $defaults);
-    $address = $instance['address'];
-    $provider = $instance['provider'];
+    $personal_message = $instance['personal_message'];
 
     // Print settings form fields
     echo '
-      <p>Address:
-        <input class="widefat" name="'.$this->get_field_name('address').'"
-               type="text" value="'.esc_attr($address).'" />
+      <p>Personal Message:
+        <textarea name="'.$this->get_field_name('personal_message').'"
+           >'.$personal_message.'</textarea>
       </p>
   
-      <p>Provider:
-        <input class="widefat" name="'.$this->get_field_name('provider').'"
-               type="text" value="'.esc_attr($provider).'" />
-      </p>
-
     ';
   }
 
   function update($new_instance, $old_instance) {
     $instance = $old_instance;
-    $instance['address'] = sanitize_text_field($new_instance['address']);
-    $instance['provider'] = sanitize_text_field($new_instance['provider']);
+    $instance['personal_message'] = sanitize_text_field($new_instance['personal_message']);
     return $instance;
   }
 
@@ -49,7 +41,7 @@ class bjtj_widget extends WP_Widget {
     echo $before_widget;
     echo '
       <h5>Blackjack Tip Jar</h5>
-      <p>Enjoy this site? Support the author by playing around with the arcade game below, thanks!</p>
+      <p>'.$instance['personal_message'].'</p>
       <div id="bjtj_root"></div>
     ';
     echo $after_widget;
