@@ -4,11 +4,15 @@ contract thePit {
 
     // TODO: Isolate magic numbers:
     //   pitboss cut ie 10%
-    //   overflow margin ie 0.1 ether
+    //   overflow margin ie 0.1 ether or maybe instead something like:
+    //     overflow_top = 0.35 and overflow_bottom = 0.25?
     //   maybe others?
 
     // We might want to edit some of these magic numbers after deployment too..
     // A function allowing the pitboss to raise/lower the ceiling might be useful
+
+    // It would be awesome to abstract out a single overflow function and then
+    //   use it both as a standalone method & in cashout (and maybe deposit?)
 
     // Also, we gotta write some tests before deploying!
 
