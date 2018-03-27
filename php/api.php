@@ -27,7 +27,7 @@ function bjtj_make_move( WP_REST_Request $request ) {
 }
 
 function bjtj_auth( WP_REST_Request $request ) {
-  // TODO: Access cookies
+
   return false;
 }
 
