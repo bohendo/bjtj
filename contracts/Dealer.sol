@@ -1,6 +1,6 @@
 pragma solidity ^0.4.21;
 
-contract thePit {
+contract Dealer {
 
     // TODO: Isolate magic numbers:
     //   pitboss cut ie 10%

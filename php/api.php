@@ -1,5 +1,7 @@
 <?php
 
+include ABSPATH.'wp-content/plugins/bjtj/auth.php';
+
 function bjtj_register_api() {
   register_rest_route('bjtj/v1', '/move', array(
     'methods' => 'GET',
@@ -31,21 +33,14 @@ function bjtj_register_api() {
 }
 
 function bjtj_make_move( WP_REST_Request $request ) {
-  if (bjtj_auth($request)) {
+  if (bjtj_auth($request['id'], $request['ag'])) {
     return array(
-      'message' => 'Received move '.$request['move']
+      'message' => 'hashed move: '.$request['move']
     );
   }
   return array(
     'message' => 'Please sign the cookie first'
   );
-}
-
-function bjtj_auth( WP_REST_Request $request ) {
-
-  // $id = $request['']:
-
-  return true;
 }
 
 ?>

@@ -26,10 +26,8 @@ export function submit(move) {
     const bjtj_ag = cookies.match(/bjtj_ag=(0x[0-9a-f]+)/)
 
     if (!bjtj_id || !bjtj_ag || !verify(bjtj_id[1], bjtj_ag[1])) {
-      console.log(`Access Denied ${bjtj_id[1]} ${bjtj_ag[1]}`)
       return dispatch(failure('The dealer needs an autograph first'))
     }
-    console.log('You are permitted')
 
     dispatch({ type: SUBMIT })
     const query = `move=${move.toLowerCase()}&id=${bjtj_id[1]}&ag=${bjtj_ag[1]}`
