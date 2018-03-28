@@ -1,6 +1,7 @@
 <?php
 
 include ABSPATH.'wp-content/plugins/bjtj/auth.php';
+include ABSPATH.'wp-content/plugins/bjtj/bj/index.php';
 
 function bjtj_register_api() {
   register_rest_route('bjtj/v1', '/move', array(
@@ -34,12 +35,14 @@ function bjtj_register_api() {
 
 function bjtj_make_move( WP_REST_Request $request ) {
   if (bjtj_auth($request['id'], $request['ag'])) {
-    return array(
-      'message' => 'hashed move: '.$request['move']
-    );
+
+    // get bj game state or initalize a new one
+    $state = bjtj_bj();
+
+    return $state;
   }
   return array(
-    'message' => 'Please sign the cookie first'
+    'message' => 'This isn\'t your autograph'
   );
 }
 
