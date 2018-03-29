@@ -12,7 +12,7 @@ function bjtj_install() {
       address   CHAR(42)      PRIMARY KEY,
       signature CHAR(132)     NOT NULL,
       state     VARCHAR(2048) NOT NULL,
-      time      DATETIME      NOT NULL
+      modified  DATETIME      NOT NULL
     );';
 
     $payments_table = $wpdb->prefix.'bjtj_payments';
@@ -22,7 +22,7 @@ function bjtj_install() {
       recipient CHAR(42) NOT NULL,
       value     BIGINT   NOT NULL,
       paid      TINYINT  NOT NULL,
-      timestamp DATETIME NOT NULL
+      modified  DATETIME NOT NULL
     );';
 
     require_once(trailingslashit(ABSPATH) . 'wp-admin/includes/upgrade.php');
