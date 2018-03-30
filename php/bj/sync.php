@@ -67,7 +67,7 @@ function bjtj_bj_sync($old_state) {
       $new_state->message = "Click Deal when you're ready";
     } else {
       $new_state->moves = array();
-      $new_state->message = "Tip 5 mETH to play with 5 more chips :)";
+      $new_state->message = "Tip 5 mETH to play with 5 chips :)";
     }
     return $new_state;
   }
@@ -103,7 +103,11 @@ function bjtj_bj_sync($old_state) {
   $new_state->message = 'Make your move...';
   $new_state->moves = array('hit', 'stand');
 
-  if (count($new_state->playerHands) === 1 && count($new_state->playerHands[0]->cards) === 2) {
+  if (
+    count($new_state->playerHands) === 1 &&
+    count($new_state->playerHands[0]->cards) === 2 &&
+    $new_state->chips > $new_state->bet
+  ) {
     array_push($new_state->moves, 'double');
     if (score_cards(array($new_state->playerHands[0]->cards[0]))->n === score_cards(array($new_state->playerHands[0]->cards[1]))->n) {
       array_push($new_state->moves, 'split');
