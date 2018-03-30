@@ -82,9 +82,7 @@ function bjtj_bj_sync($old_state) {
     if (score_cards($hand->cards)->n >= 21) {
       $hand->isDone = true;
     }
-    if ($hand->isDone && $hand->isActive) {
-      $hand->isActive = false;
-    }
+    $hand->isActive = false;
     return $hand;
   }, $old_state->playerHands);
 
@@ -126,7 +124,7 @@ function bjtj_bj_payout($old_state) {
     return $hand;
   }, $old_state->playerHands);
 
-  // Merge dealer's hand
+  // Flip dealer's hidden card
   $new_state->dealerCards = array_merge(
     array($old_state->hiddenCard),
     array_filter(
@@ -145,40 +143,56 @@ function bjtj_bj_payout($old_state) {
     array_push($new_state->dealerCards, array_pop($new_state->deck));
   }
 
-  $dealer = score_cards($old_state->dealerCards);
+  $dealer = score_cards($new_state->dealerCards);
 
+  $new_state->message = "";
+  $net = 0;
   foreach($old_state->playerHands as $hand) {
 
     $player = score_cards($hand->cards);
 
     if ($dealer->bj && $player->bj) {
-      $new_state->message = "Blackjack! But the dealer got one too..";
-      $new_state->chips += $new_state->bet;
+      $new_state->message .= "BJ Tie! ";
+      $new_state->chips += $hand->bet;
+      $net += $hand->bet;
 
     } else if ($dealer->bj) {
-      $new_state->message = "Oh no, the dealer got a blackjack :(";
+      $new_state->message = "Dealer got Blackjack! ";
 
     } else if ($player->bj) {
-      $new_state->message = "Winner Winner Chicken Dinner :)";
-      $new_state->chips += $new_state->bet * 2.5;
+      $new_state->message .= "Blackjack! ";
+      $new_state->chips += $hand->bet * 2.5;
+      $net += $hand->bet *2.5;
 
     } else if ($player->n > 21) {
-      $new_state->message = "Bust! better luck next time :(";
+      $new_state->message .= "Bust! ";
 
     } else if ($dealer->n > 21) {
-      $new_state->message = "Dealer busted! Good for you :)";
-      $new_state->chips += $new_state->bet * 2;
+      $new_state->message = "Dealer bust! ";
+      $new_state->chips += $hand->bet * 2;
+      $net += $hand->bet *2;
 
     } else if ($player->n > $dealer->n) {
-      $new_state->message = "Well played!";
-      $new_state->chips += $new_state->bet * 2;
+      $new_state->message .= "$player->n beats $dealer->n! ";
+      $new_state->chips += $hand->bet * 2;
+      $net += $hand->bet *2;
+
+    } else if ($player->n < $dealer->n) {
+      $new_state->message .= "$player->n loses to $dealer->n! ";
 
     } else if ($player->n === $dealer->n) {
-      $new_state->message = "Tie!";
-      $new_state->chips += $new_state->bet;
+      $new_state->message .= "Tie! ";
+      $new_state->chips += $hand->bet;
+      $net += $hand->bet;
     }
-    $new_state->message .= " score: $player->n";
+  }
 
+  if ($net <= 0) {
+    $new_state->message .= " No chips for you :(";
+  } else if ($net === 1) {
+    $new_state->message .= " You get $net chip";
+  } else {
+    $new_state->message .= " You win $net chips :)";
   }
 
   // Can the player play another hand?

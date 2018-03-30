@@ -9,6 +9,7 @@ export default class Message extends React.Component {
     const w = (n) => Number(this.props.w)*n/100;
     const h = (n) => Number(this.props.h)*n/100;
 
+    const stretch_threshold = 30
     const txt_h = 64
     const fs = 18
 
@@ -23,7 +24,7 @@ export default class Message extends React.Component {
         </text>
       </g>
 
-    } else if (this.props.message.length < 25) {
+    } else if (this.props.message.length < stretch_threshold) {
       message = <g>
         <text x={x(2.5)} y={y(txt_h)} fontSize={fs}>{this.props.message}</text>
       </g>

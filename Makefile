@@ -35,7 +35,7 @@ bjtj.zip: client.bundle.js $(php)
 	cd build && zip -r bjtj.zip bjtj/*
 	rm -rf build/bjtj
 
-deploy:dealer.js
+deploy: dealer.js bjtj.zip
 	docker push $(me)/bjtj:$v
 
 build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
