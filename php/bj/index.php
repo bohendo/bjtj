@@ -23,7 +23,7 @@ function bjtj_bj_new_deck() {
     $nsuits = count($suits);
     for ($j=0; $j<$nsuits; $j++) {
 
-      array_push($deck, array(
+      array_push($deck, (object) array(
         'rank' => $ranks[$i],
         'suit' => $suits[$j]
       ));
