@@ -1,7 +1,7 @@
 <?php
 
 function bjtj_bj_deal($old_state, $new_deck) {
-  $new_state = new Blackjack();
+  $new_state = json_decode(json_encode($old_state));
   if (!in_array('deal', $new_state->moves)) {
     return $new_state;
   }
@@ -12,7 +12,7 @@ function bjtj_bj_deal($old_state, $new_deck) {
 
   $new_state->hiddenCard = array_pop($new_state->deck);
   $new_state->dealerCards = array(
-    array(
+    (object) array(
       'rank' => '?',
       'suit' => '?'
     ),
@@ -20,7 +20,7 @@ function bjtj_bj_deal($old_state, $new_deck) {
   );
 
   $new_state->playerHands = array(
-    array(
+    (object) array(
       'isActive' => true,
       'isDone' => false,
       'bet' => $old_state->bet,

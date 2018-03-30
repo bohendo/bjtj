@@ -6,22 +6,19 @@ function bjtj_bj_hit($old_state) {
     return $new_state;
   }
 
-  $new_state->playerHands = array_map(function($h) {
-    if ($h['isActive']) {
-
-      return array(
+  $new_state->playerHands = array_map(function($hand) use ($new_state) {
+    if ($hand->isActive) {
+      return (object) array(
           'isActive' => true,
           'isDone' => false,
-          'bet' => $h['bet'],
-          'cards' => array_push(
-            $h['cards'],
-            array_pop($new_state->deck)
+          'bet' => $hand->bet,
+          'cards' => array_merge(
+            $hand->cards,
+            array(array_pop($new_state->deck))
           )
       );
-
     }
-    return h;
-
+    return $hand;
   }, $old_state->playerHands);
 
   return bjtj_bj_sync($new_state);

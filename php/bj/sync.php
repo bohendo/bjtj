@@ -10,10 +10,13 @@ function hasTen($loc) {
   return count(array_intersect(
     array('T', 'J', 'Q', 'K'),
     ranks($loc)
-  )) >= 0;
+  )) > 0;
 };
 
-function score_cards($loc) {
+function score_cards($cards) {
+
+  // loc for list of cards that are valid
+  $loc = array_filter($cards, function ($card) { return $card->rank != '?'; });
 
   // first: check for a blackjack
   if (
@@ -31,7 +34,7 @@ function score_cards($loc) {
         $output->n += 1;
       } else {
         $output->n += 11;
-        $output->isSoft += true;
+        $output->isSoft = true;
       }
     } else if (hasTen(array($card))) {
       $output->n += 10;
@@ -54,10 +57,11 @@ function score_cards($loc) {
 function bjtj_bj_sync($old_state) {
   $old_state = json_decode(json_encode($old_state));
   $new_state = json_decode(json_encode($old_state));
-  //var_dump($old_state);var_dump($new_state);
 
-  // Handle initial state
-  if (count($old_state->playerHands) === 0) {
+  if ( ### Initial State or already paid out
+    count($old_state->playerHands) === 0 ||
+    $old_state->hiddenCard === false
+  ) {
     if ($new_state->chips > 0) {
       $new_state->moves = array('deal');
       $new_state->message = "Click Deal when you're ready";
@@ -68,23 +72,14 @@ function bjtj_bj_sync($old_state) {
     return $new_state;
   }
 
-  // Dealer doesn't have a hidden card anymore? We're done then
-  if (sizeof($old_state->hiddenCard) === 0) {
-  }
-
   // Dealer peeks to check for Blackjack
   if (score_cards(array_merge(array($old_state->hiddenCard), $old_state->dealerCards))->bj) {
-    $new_state->playerHands = array_map(function($hand) {
-      $hand->isDone = true;
-      $hand->isActive = false;
-      return $hand;
-    }, $old_state->playerHands);
-    
+    return bjtj_bj_payout($new_state);
   }
 
   // Update player Hands
   $new_state->playerHands = array_map(function($hand) {
-    if (!$hand->isDone && score_cards($hand->cards)->n >= 21) {
+    if (score_cards($hand->cards)->n >= 21) {
       $hand->isDone = true;
     }
     if ($hand->isDone && $hand->isActive) {
@@ -93,12 +88,106 @@ function bjtj_bj_sync($old_state) {
     return $hand;
   }, $old_state->playerHands);
 
+  // Are all of the players hands done? No? activate one.
+  $allDone = true;
+  foreach($new_state->playerHands as $hand) {
+    if (!$hand->isDone) {
+      $hand->isActive = true; // TODO: verify that this in-place edit works
+      $allDone = false;
+      break;
+    }
+  }
+
+  if ($allDone) {
+    return bjtj_bj_payout($new_state);
+  }
+
+  $new_state->message = 'Make your move...';
+  $new_state->moves = array('hit', 'stand');
+
+  if (count($new_state->playerHands) === 1 && count($new_state->playerHands[0]->cards) === 2) {
+    array_push($new_state->moves, 'double');
+    if (score_cards(array($new_state->playerHands[0]->cards[0]))->n === score_cards(array($new_state->playerHands[0]->cards[1]))->n) {
+      array_push($new_state->moves, 'split');
+    }
+  }
+
   return $new_state;
 }
 
 
-function bjtj_bj_payout($old_state, $player_score, $dealer_score) {
-  $new_state = $old_state;
+function bjtj_bj_payout($old_state) {
+  $new_state = json_decode(json_encode($old_state));
+
+  // Make sure player's hand is finished
+  $new_state->playerHands = array_map(function($hand) {
+    $hand->isDone = true;
+    $hand->isActive = false;
+    return $hand;
+  }, $old_state->playerHands);
+
+  // Merge dealer's hand
+  $new_state->dealerCards = array_merge(
+    array($old_state->hiddenCard),
+    array_filter(
+      $old_state->dealerCards,
+      function ($card) { return $card->rank != '?'; }
+    )
+  );
+  $new_state->hiddenCard = false;
+
+  // Deal cards until the dealer is done
+  while (true) {
+    $score = score_cards($new_state->dealerCards);
+    if ($score->n > 17 || ($score->n === 17 && !$score->isSoft)) {
+      break;
+    }
+    array_push($new_state->dealerCards, array_pop($new_state->deck));
+  }
+
+  $dealer = score_cards($old_state->dealerCards);
+
+  foreach($old_state->playerHands as $hand) {
+
+    $player = score_cards($hand->cards);
+
+    if ($dealer->bj && $player->bj) {
+      $new_state->message = "Blackjack! But the dealer got one too..";
+      $new_state->chips += $new_state->bet;
+
+    } else if ($dealer->bj) {
+      $new_state->message = "Oh no, the dealer got a blackjack :(";
+
+    } else if ($player->bj) {
+      $new_state->message = "Winner Winner Chicken Dinner :)";
+      $new_state->chips += $new_state->bet * 2.5;
+
+    } else if ($player->n > 21) {
+      $new_state->message = "Bust! better luck next time :(";
+
+    } else if ($dealer->n > 21) {
+      $new_state->message = "Dealer busted! Good for you :)";
+      $new_state->chips += $new_state->bet * 2;
+
+    } else if ($player->n > $dealer->n) {
+      $new_state->message = "Well played!";
+      $new_state->chips += $new_state->bet * 2;
+
+    } else if ($player->n === $dealer->n) {
+      $new_state->message = "Tie!";
+      $new_state->chips += $new_state->bet;
+    }
+    $new_state->message .= " score: $player->n";
+
+  }
+
+  // Can the player play another hand?
+  if ($new_state->chips > 0) {
+    $new_state->moves = array('deal');
+  } else {
+    $new_state->moves = array();
+  }
+
   return $new_state;
 }
 

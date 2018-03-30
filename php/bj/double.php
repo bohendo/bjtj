@@ -8,21 +8,19 @@ function bjtj_bj_double($old_state) {
 
   $new_state->chips = $old_state->chips - $old_state->bet;
 
-  $new_state->playerHands = array_map(function($h) {
-    if ($h['isActive']) {
-
-      return array(
+  $new_state->playerHands = array_map(function($hand) use ($new_state) {
+    if ($hand->isActive) {
+      return (object) array(
           'isActive' => false,
           'isDone' => true,
-          'bet' => $h['bet'] * 2,
-          'cards' => array_push(
-            $h['cards'],
-            array_pop($new_state->deck)
+          'bet' => $hand->bet * 2,
+          'cards' => array_merge(
+            $hand->cards,
+            array(array_pop($new_state->deck))
           )
       );
-
     }
-    return h;
+    return $hand;
 
   }, $old_state->playerHands);
 

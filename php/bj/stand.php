@@ -6,23 +6,15 @@ function bjtj_bj_stand($old_state) {
     return $new_state;
   }
 
-  $new_state->playerHands = array_map(function($h) {
-    if ($h['isActive']) {
-
-      return array(
-          'isActive' => false,
-          'isDone' => true,
-          'bet' => $h['bet'],
-          'cards' => $h['cards']
-      );
-
+  $new_state->playerHands = array_map(function($hand) {
+    if ($hand->isActive) {
+      $hand->isActive = false;
+      $hand->isDone = true;
     }
-    return h;
-
+    return $hand;
   }, $old_state->playerHands);
 
   return bjtj_bj_sync($new_state);
-
 }
 
 ?>
