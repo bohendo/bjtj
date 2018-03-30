@@ -1,5 +1,10 @@
 <?php
 
+function eth_listen($eth_provider, $address) {
+  // $address is the location of the dealer contract
+  return false;
+}
+
 function eth_jsonrpc($eth_provider, $method, $params) {
 
   if (!$eth_provider) return false;
@@ -21,12 +26,13 @@ function eth_jsonrpc($eth_provider, $method, $params) {
     'Content-Length: ' . strlen($data)
   ));
 
-  $res = curl_exec($ch);
+  $res = json_decode(curl_exec($ch));
   $err = curl_error($ch);
   curl_close($ch);
 
   if ($err) return false;
-  else return json_decode($res)->result;
+  else if (property_exists($res, 'result')) return $res->result;
+  else return false;
 
 }
 
@@ -34,13 +40,31 @@ function eth_jsonrpc($eth_provider, $method, $params) {
 function eth_net_id($eth_provider) {
   $method = 'net_version';
   $params = '';
-  return eth_jsonrpc($eth_provider, $method, $params);
+  $result = eth_jsonrpc($eth_provider, $method, $params);
+  if (!$result) return false;
+  return intval($result, 10);
 }
 
 function eth_balance($eth_provider, $address) {
   $method = 'eth_getBalance';
   $params = $address;
-  return eth_jsonrpc($eth_provider, $method, $params);
+  $result = eth_jsonrpc($eth_provider, $method, $params);
+  if (!$result) return false;
+  return gmp_init(substr($result, 2), 16);
+}
+
+
+function wei_to_meth($wei) {
+  $meth = (string) gmp_div_q($wei, gmp_pow(10,12));
+
+  if (strlen($meth) > 3) {
+    $meth = substr_replace($meth,'.',-3,0);
+  }
+
+  if (strlen($meth) > 6) {
+    $meth = substr_replace($meth,',',-7,0);
+  }
+  return $meth;
 }
 
 ?>
