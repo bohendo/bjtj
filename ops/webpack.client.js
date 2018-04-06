@@ -1,14 +1,15 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const HtmlPlugin = require('html-webpack-plugin');
 
 module.exports = {
+
+  mode: 'production',
 
   entry: './client/entry.js',
 
   output: {
-    path: path.join(__dirname, '../build/static'),
+    path: path.join(__dirname, '../build'),
     filename: 'client.bundle.js',
   },
 
@@ -45,11 +46,6 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') },
-    }),
-    new HtmlPlugin({
-      template: './client/index.html',
-      filename: 'index.html',
-      inject: 'body',
     }),
   ],
 };
