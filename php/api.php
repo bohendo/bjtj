@@ -77,7 +77,12 @@ function bjtj_make_move( WP_REST_Request $request ) {
 
     $new_state->contract_address = get_option('bjtj_eth_contract');
     $new_state->dealer_address = get_option('bjtj_eth_address');
-    $new_state->dealer_balance = 0; // TODO call bjtj.bankroll(dealer)
+
+    $new_state->dealer_balance = wei_to_meth(eth_bankroll(
+      get_option('bjtj_eth_provider'),
+      $new_state->contract_address,
+      $new_state->dealer_address
+    ));
 
     return $new_state;
   }

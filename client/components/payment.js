@@ -19,11 +19,9 @@ export default class Chips extends React.Component {
         this.props.msg(`Couldn't find a valid dealer..`)
       }
 
-      //for (var prop in bjtj.methods) { console.log(`bjtj.methods.${prop} = ${typeof bjtj.methods[prop]}`) }
-
       return bjtj.methods.deposit(this.props.dealer_address).send({
         from: accounts[0],
-        gas: 250000,
+        gas: 100000,
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)

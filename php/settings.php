@@ -31,6 +31,7 @@ function bjtj_render_settings() {
   $bjtj_eth_contract = get_option('bjtj_eth_contract');
   $bjtj_dealer_balance = eth_balance($bjtj_eth_provider, $bjtj_eth_contract);
 
+  $bjtj_dealer_bankroll = eth_bankroll($bjtj_eth_provider, $bjtj_eth_contract, $bjtj_eth_address);
 
   // Get Network Status
   if (!$bjtj_eth_provider) {
@@ -61,6 +62,17 @@ function bjtj_render_settings() {
     $contract_status = "Balance: <strong>$bjtj_dealer_balance</strong> mETH";
   } else {
     $contract_status = "Unable to connect to provider: $bjtj_eth_provider";
+  }
+
+  // Dealer bankroll
+  if (!$bjtj_eth_address) {
+    $dealer_status = "Please enter an Ethereum address to use as the dealer";
+  } else if ($bjtj_dealer_bankroll !== false) {
+    // convert wei to milliether
+    $bjtj_dealer_bankroll = wei_to_meth($bjtj_dealer_bankroll);
+    $dealer_status = "Bankroll: <strong>$bjtj_dealer_bankroll</strong> mETH";
+  } else {
+    $dealer_status = "Unable to connect to provider: $bjtj_eth_provider";
   }
 
   // Get WebSockets Status
@@ -98,12 +110,16 @@ function bjtj_render_settings() {
             <td>'.$address_status.'</td>
           </tr>
           <tr valign="top">
-            <th scope="row">Dealer Contract Address</th>
+            <th scope="row">BJTJ Contract Address</th>
             <td><input type="text" size="42" name="bjtj_eth_contract" value="'.$bjtj_eth_contract.'" /></td>
           </tr>
           <tr>
-            <th scope="row">Dealer Contract Status</th>
+            <th scope="row">BJTJ Contract Balance</th>
             <td>'.$contract_status.'</td>
+          </tr>
+          <tr>
+            <th scope="row">BJTJ Dealer Bankroll</th>
+            <td>'.$dealer_status.'</td>
           </tr>
           <tr>
             <th scope="row">Websockets Connection</th>

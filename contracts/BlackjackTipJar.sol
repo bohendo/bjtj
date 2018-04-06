@@ -26,6 +26,7 @@ contract BlackjackTipJar {
 
     function () public payable {
       bankrolls[pitboss] += msg.value;
+      // TODO: Overflow here too?
     }
 
     function deposit(address dealer) public payable {
@@ -40,6 +41,7 @@ contract BlackjackTipJar {
         uint256 dealer_payout = overflow_amt * dealer_cut / 100;
 
         bankrolls[dealer] -= overflow_amt;
+        // TODO: Don't split these transfers up if dealer == pitboss
         dealer.transfer(dealer_payout);
         pitboss.transfer(overflow_amt - dealer_payout);
         emit Overflow(dealer, dealer_payout);

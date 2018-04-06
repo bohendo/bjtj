@@ -2,7 +2,14 @@ import { connect } from 'react-redux'
 import BJTJ from './components/bjtj.js'
 import { message, auth, submit } from './actions'
 
-const mapStateToProps = state => state
+const mapStateToProps = state => {
+
+  if (typeof state.dealer_balance !== 'string') {
+    state.dealer_balance = "0";
+  }
+
+  return state
+}
 
 const mapDispatchToProps = dispatch => {
   return ({

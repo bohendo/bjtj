@@ -34,39 +34,47 @@ function eth_jsonrpc($eth_provider, $method, $params) {
 
 function eth_net_id($eth_provider) {
   $method = 'net_version';
-  $params = '';
+  $params = array();
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (!$result) return false;
   return intval($result, 10);
 }
 
+
 function eth_balance($eth_provider, $address) {
   $method = 'eth_getBalance';
-  $params = $address;
+  $params = array($address);
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (!$result) return false;
   return gmp_init(substr($result, 2), 16);
 }
 
 
-function wei_to_meth($wei) {
-  $meth = (string) gmp_div_q($wei, gmp_pow(10,12));
-  if (strlen($meth) > 3) {
-    $meth = substr_replace($meth,'.',-3,0);
-  }
-  if (strlen($meth) > 6) {
-    $meth = substr_replace($meth,',',-7,0);
-  }
-  return $meth;
-}
-
-
-function eth_listen($eth_provider, $address) {
-  $method = 'eth_newFilter';
-  $params = "{address:$address}";
+function eth_bankroll($eth_provider, $contract, $dealer) {
+  $method = 'eth_call';
+  $params = array(array(
+    'to'=>$contract,
+    'data'=>'0x'.substr(keccak('bankrolls(address)'), 0, 8).
+            str_pad(substr($dealer,2), 64, '0', STR_PAD_LEFT)
+  ));
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (!$result) return false;
-  return intval($result, 10);
+  return gmp_init(substr($result, 2), 16);
+}
+
+function eth_listen($eth_provider, $contract) {
+  return false;
+}
+
+function wei_to_meth($wei) {
+  $meth = (string) gmp_div_q($wei, gmp_pow(10,14));
+  if (strlen($meth) > 1) {
+    $meth = substr_replace($meth,'.',-1,0);
+  }
+  if (strlen($meth) > 5) {
+    $meth = substr_replace($meth,',',-5,0);
+  }
+  return $meth;
 }
 
 
