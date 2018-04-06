@@ -75,6 +75,10 @@ function bjtj_make_move( WP_REST_Request $request ) {
     unset($new_state->deck);
     unset($new_state->hiddenCard);
 
+    $new_state->contract_address = get_option('bjtj_eth_contract');
+    $new_state->dealer_address = get_option('bjtj_eth_address');
+    $new_state->dealer_balance = 0; // TODO call bjtj.bankroll(dealer)
+
     return $new_state;
   }
   return array(

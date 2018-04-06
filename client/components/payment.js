@@ -9,19 +9,19 @@ export default class Chips extends React.Component {
   }
 
   tip() {
-    var addr = this.props.dealer_address
-    console.log(`tip() activated!`)
     if (!web3) return this.props.msg(`Please install MetaMask`)
-
     return web3.eth.getAccounts().then(accounts=>{
       if (accounts.length === 0) return this.props.msg(`Please unlock MetaMask`)
 
       const bjtj = new web3.eth.Contract(BJTJ.abi, this.props.contract_address)
 
-      // TODO: verify dealer_address is valid
+      if (!this.props.dealer_address.match(/0x[a-fA-F0-9]{40}/)) {
+        this.props.msg(`Couldn't find a valid dealer..`)
+      }
 
-      console.log('cool')
-      return bjtj.deposit(addr).sendTransaction({
+      //for (var prop in bjtj.methods) { console.log(`bjtj.methods.${prop} = ${typeof bjtj.methods[prop]}`) }
+
+      return bjtj.methods.deposit(this.props.dealer_address).send({
         from: accounts[0],
         gas: 250000,
         value: web3.utils.toWei('0.005', 'ether')
