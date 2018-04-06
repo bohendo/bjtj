@@ -1,64 +1,34 @@
 import React from 'react';
-import dealerData from '../../build/contracts/Dealer.json'
+import BJTJ from '../../build/contracts/BlackjackTipJar.json'
 
 export default class Chips extends React.Component { 
 
   constructor(props) {
     super(props)
-    this.state = { network: false, address: false, balance: false }
-
-    this.cashout = this.cashout.bind(this)
     this.tip = this.tip.bind(this)
   }
 
-  ethSync() {
-    web3.eth.net.getId().then((network)=>{
-      if (!dealerData.networks[network]) {
-        return console.error(`Dealer contract hasn't been deployed to network ${network}`)
-      }
-      const address = dealerData.networks[network].address
-      return web3.eth.getBalance(address).then((bal) => {
-        const balance = Math.floor(web3.utils.fromWei(bal,'milli'))
-        return this.setState({ network, address, balance })
-      })
-    }).catch((err) => {
-      console.error('Error connecting to web3, please refresh the page')
-      clearInterval(this.ethWatcher)
-    })
-  }
-
-  componentDidMount() {
-    this.ethSync()
-    this.ethWatcher = setInterval(() => {
-      this.ethSync()
-    }, 1000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.ethWatcher)
-  }
-
-  cashout() {
-    console.log(`cashout() activated!`)
-    if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!this.state.address) return this.props.msg(`Oops, I can't connect to MetaMask`)
-    this.props.submit('cashout')
-  }
-
   tip() {
+    var addr = this.props.dealer_address
     console.log(`tip() activated!`)
     if (!web3) return this.props.msg(`Please install MetaMask`)
-    if (!this.state.address) return this.props.msg(`Oops, I can't connect to MetaMask`)
 
     return web3.eth.getAccounts().then(accounts=>{
-      return web3.eth.sendTransaction({
+      if (accounts.length === 0) return this.props.msg(`Please unlock MetaMask`)
+
+      const bjtj = new web3.eth.Contract(BJTJ.abi, this.props.contract_address)
+
+      // TODO: verify dealer_address is valid
+
+      console.log('cool')
+      return bjtj.deposit(addr).sendTransaction({
         from: accounts[0],
-        to: this.state.address,
+        gas: 250000,
         value: web3.utils.toWei('0.005', 'ether')
       }).then((receipt) => {
         console.log(`Transaction confirmed! ${JSON.stringify(receipt)}`)
       }).catch((err)=>{console.log(`tx rejected`)})
-    }).catch((err)=>{console.log(`Error connecting to MetaMask`)})
+    }).catch((err)=>{console.log(`Error connecting to MetaMask: ${err}`)})
   }
 
   button(label, fn, enabled, x, y, w, h) {
@@ -116,7 +86,7 @@ export default class Chips extends React.Component {
     const blk = '#000'; 
     const fs = 14; // fs for Font Size
 
-    const etherscan = `https://etherscan.io/address/${this.state.address}`
+    const etherscan = `https://etherscan.io/address/${this.props.contract_address}`
 
 
     return (<g>
@@ -132,12 +102,12 @@ export default class Chips extends React.Component {
       </a>
 
       <text x={x(55)} y={y(25)} fontSize={fs}>Dealer balance:</text>
-      <text x={x(60)} y={y(45)} fontSize={fs}>{this.state.balance} mETH</text>
+      <text x={x(60)} y={y(45)} fontSize={fs}>{this.props.dealer_balance} mETH</text>
 
       {this.button('Tip 5 mETH', this.tip, can.tip,
         pos.tip.x, pos.tip.y, pos.tip.w, pos.tip.h)}
 
-      {this.button('Cashout', this.cashout, can.cashout,
+      {this.button('Cashout', ()=>{this.props.submit('cashout')}, can.cashout,
         pos.cashout.x, pos.cashout.y, pos.cashout.w, pos.cashout.h)}
 
 

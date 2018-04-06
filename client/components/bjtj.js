@@ -109,8 +109,13 @@ export default class BJTJ extends React.Component {
     <Hand x="110" y="85" w="180" hand={[{ cards: this.props.dealerCards, isActive: true}]} />
 
     <Payment x="15" y="240" w="270" h="75" chips={this.props.chips} bet={this.props.bet}
-             msg={this.props.msg} submit={this.props.submit}
-             authed={this.props.authed} waiting={this.props.waiting}/>
+      msg={this.props.msg} submit={this.props.submit}
+      authed={this.props.authed} waiting={this.props.waiting}
+      contract_address={this.props.contract_address}
+      dealer_address={this.props.dealer_address}
+      dealer_balance={this.props.dealer_balance}
+        
+    />
 
     <Hand x="15" y="322" w="200" hand={this.props.playerHands} />
 

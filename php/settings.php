@@ -49,7 +49,7 @@ function bjtj_render_settings() {
     $bjtj_addr_balance = wei_to_meth($bjtj_addr_balance);
     $address_status = "Balance: <strong>$bjtj_addr_balance</strong> mETH";
   } else {
-    $address_status = "Unable to connect to $bjtj_eth_provider";
+    $address_status = "Unable to connect to provider: $bjtj_eth_provider";
   }
 
   // Get Contract Status
@@ -60,7 +60,7 @@ function bjtj_render_settings() {
     $bjtj_dealer_balance = wei_to_meth($bjtj_dealer_balance);
     $contract_status = "Balance: <strong>$bjtj_dealer_balance</strong> mETH";
   } else {
-    $contract_status = "Unable to connect to $bjtj_eth_provider";
+    $contract_status = "Unable to connect to provider: $bjtj_eth_provider";
   }
 
   // Get WebSockets Status

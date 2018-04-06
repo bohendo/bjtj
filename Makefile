@@ -25,7 +25,7 @@ artifacts=$(subst contracts/,build/contracts/,$(subst .sol,.json,$(sol)))
 ##### RULES #####
 # first rule is the default
 
-all: dealer.js bjtj.zip
+all: deploy.js bjtj.zip
 	@true
 
 bjtj.zip: client.bundle.js $(php)
@@ -35,14 +35,14 @@ bjtj.zip: client.bundle.js $(php)
 	cd build && zip -r bjtj.zip bjtj/*
 	rm -rf build/bjtj
 
-deploy: dealer.js bjtj.zip
+deploy: deploy.js bjtj.zip
 	docker push $(me)/bjtj:$v
 
-build/dealer.js: $(artifacts) ops/preload-dealer.js ops/console.sh
-	echo 'var dealerData = ' | tr -d '\n\r' > build/dealer.js
-	cat build/contracts/Dealer.json >> build/dealer.js
-	echo >> build/dealer.js
-	cat ops/preload-dealer.js >> build/dealer.js
+build/deploy.js: $(artifacts) ops/preload-dealer.js
+	echo 'var BJTJ = ' | tr -d '\n\r' > build/deploy.js
+	cat build/contracts/BlackjackTipJar.json >> build/deploy.js
+	echo >> build/deploy.js
+	cat ops/preload-dealer.js >> build/deploy.js
 
 client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js

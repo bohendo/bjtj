@@ -19,6 +19,11 @@ const initialState = {
   dealerCards: [],
   bet: 0,
   chips: 0,
+
+  contract_address: '0x???',
+  dealer_address: '0x???',
+  dealer_balance: 0,
+
   waiting: false,
   authed: false
 }
