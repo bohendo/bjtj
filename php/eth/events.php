@@ -6,6 +6,10 @@
 // returns true if event watcher is watching
 // returns false otherwise
 
+add_filter('update_option_bjtj_ethprovider', 'eth_watch_events', 10, 0);
+add_filter('update_option_bjtj_contract_address', 'eth_watch_events', 10, 0);
+add_filter('update_option_bjtj_dealer_address', 'eth_watch_events', 10, 0);
+
 function eth_watch_events() {
   $ethprovider = get_option('bjtj_ethprovider');
 
@@ -13,19 +17,22 @@ function eth_watch_events() {
     return false;
   }
 
-  $bn = eth_deployedOn($ethprovider, get_option('bjtj_contract_address'));
+  $contract_address = get_option('bjtj_contract_address');
+  $dealer_address = get_option('bjtj_dealer_address');
 
-  if ($bn !== false) {
-    //echo $bn;
-  }
+  $deployedOn = eth_deployedOn($ethprovider, $contract_address);
+
+  $event_filter = eth_event_filter($ethprovider, $contract_address, $dealer_address, $deployedOn);
+
+  update_option('bjtj_event_filter', $event_filter);
 
 }
 
 
-function eth_event_filter($eth_provider, $contract, $dealer) {
+function eth_event_filter($eth_provider, $contract, $dealer, $deployedOn) {
   $method = 'eth_newFilter';
   $params = array(array(
-    'fromBlock'=>'0x1',
+    'fromBlock'=>$deployedOn,
     'toBlock'=>'latest',
     'address'=>$contract//,
     //array(str_pad(substr($dealer,2), 64, '0', STR_PAD_LEFT))
