@@ -2,9 +2,31 @@
 
 
 function bjtj_register_settings() {
-  register_setting('bjtj_settings_group', 'bjtj_ethprovider', 'esc_url');
-  register_setting('bjtj_settings_group', 'bjtj_dealer_address',  'sanitize_text_field');
-  register_setting('bjtj_settings_group', 'bjtj_contract_address',  'sanitize_text_field');
+  $provider_defaults = array(
+    'type'=>'string',
+    'group'=>'bjtj_settings_group',
+    'description'=>'Ethereum Provider',
+    'sanitize_callback'=>'esc_url',
+    'show_in_rest'=>false
+  );
+  $address_defaults = array(
+    'type'=>'string',
+    'group'=>'bjtj_settings_group',
+    'description'=>'Ethereum Address',
+    'sanitize_callback'=>'sanitize_eth_address',
+    'show_in_rest'=>false
+  );
+  register_setting('bjtj_settings_group', 'bjtj_ethprovider', $provider_defaults);
+  register_setting('bjtj_settings_group', 'bjtj_dealer_address', $address_defaults);
+  register_setting('bjtj_settings_group', 'bjtj_contract_address', $address_defaults);
+}
+
+
+function sanitize_eth_address($address) {
+  if (is_string($address) && strlen($address) == 42 && preg_match('/0x[0-9a-fA-F]{40}/', $address)) {
+    return $address;
+  }
+  return '';
 }
 
 
@@ -82,5 +104,6 @@ function bjtj_render_settings() {
   ';
 
 }
+
 
 ?>

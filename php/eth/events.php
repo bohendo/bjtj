@@ -6,18 +6,18 @@
 // returns true if event watcher is watching
 // returns false otherwise
 
-function eth_watch_events($ethprovider) {
+function eth_watch_events() {
+  $ethprovider = get_option('bjtj_ethprovider');
 
-  if(!eth_net_id($ethprovider)) {
+  if(eth_net_id($ethprovider) === false) {
     return false;
   }
 
   $bn = eth_deployedOn($ethprovider, get_option('bjtj_contract_address'));
 
-  if ($bn) {
-    echo $bn;
+  if ($bn !== false) {
+    //echo $bn;
   }
-
 
 }
 
