@@ -33,6 +33,8 @@ function bjtj_install() {
     update_option('bjtj_db_version', $bjtj_db_version);
   }
 
+  eth_watch_events();
+
 }
 
 ?>

@@ -6,7 +6,7 @@
 // returns true if event watcher is watching
 // returns false otherwise
 
-function bjtj_watch_events($ethprovider) {
+function eth_watch_events($ethprovider) {
 
   if(!eth_net_id($ethprovider)) {
     return false;
