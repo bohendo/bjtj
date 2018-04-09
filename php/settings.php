@@ -33,6 +33,8 @@ function bjtj_render_settings() {
 
   $bjtj_dealer_bankroll = eth_bankroll($bjtj_eth_provider, $bjtj_eth_contract, $bjtj_eth_address);
 
+  $deployedOn = eth_deployedOn($bjtj_eth_provider, $bjtj_eth_contract);
+
   // Get Network Status
   if (!$bjtj_eth_provider) {
     $net_status = "Please enter an ethereum provider that looks something like: http://localhost:8545";
@@ -59,7 +61,7 @@ function bjtj_render_settings() {
   } else if ($bjtj_dealer_balance !== false) {
     // convert wei to milliether
     $bjtj_dealer_balance = wei_to_meth($bjtj_dealer_balance);
-    $contract_status = "Balance: <strong>$bjtj_dealer_balance</strong> mETH";
+    $contract_status = "Balance: <strong>$bjtj_dealer_balance</strong> mETH".', deployed on block: '.$deployedOn;
   } else {
     $contract_status = "Unable to connect to provider: $bjtj_eth_provider";
   }
@@ -75,13 +77,15 @@ function bjtj_render_settings() {
     $dealer_status = "Unable to connect to provider: $bjtj_eth_provider";
   }
 
-  // Get WebSockets Status
-  $ws_result = eth_listen($bjtj_eth_provider, $bjtj_eth_address);
-  if ($ws_result === false) {
-    $ws_status = 'Pending...';
-  } else {
-    $ws_status = 'Listening! Received 0 events..';
+
+  $bjtj_filter_id = get_option('bjtj_event_filter');
+  if (!$bjtj_filter_id) {
+    $bjtj_filter_id = eth_event_filter($bjtj_eth_provider, $bjtj_eth_contract, $bjtj_eth_address);
+    update_option('bjtj_event_filter', $bjtj_filter_id);
   }
+  update_option('bjtj_event_filter', '0x19');
+
+  $bjtj_events = json_encode(eth_get_events($bjtj_eth_provider, $bjtj_filter_id));
 
   echo '
     <div class="wrap">
@@ -122,8 +126,12 @@ function bjtj_render_settings() {
             <td>'.$dealer_status.'</td>
           </tr>
           <tr>
-            <th scope="row">Websockets Connection</th>
-            <td>'.$ws_status.'</td>
+            <th scope="row">Event filter</th>
+            <td>'.$bjtj_filter_id.'</td>
+          </tr>
+          <tr>
+            <th scope="row">Events</th>
+            <td>'.$bjtj_events.'</td>
           </tr>
         </table>
 

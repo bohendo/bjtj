@@ -16,6 +16,7 @@ include $bjtj_dir.'install.php';
 register_activation_hook(__FILE__, 'bjtj_install');
 
 include $bjtj_dir.'widget.php';
+include $bjtj_dir.'event-watcher.php';
 add_action('widgets_init', 'bjtj_register_widget');
 
 include $bjtj_dir.'settings.php';

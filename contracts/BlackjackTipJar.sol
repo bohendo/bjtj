@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 contract BlackjackTipJar {
 
     address public pitboss;
+    uint256 public deployedOn;
 
     uint8 public dealer_cut = 95; // percent
     uint256 public overflow_upper = 0.35 ether;
@@ -21,6 +22,7 @@ contract BlackjackTipJar {
 
     function BlackjackTipJar() public payable {
       pitboss = msg.sender;
+      deployedOn = block.number;
       bankrolls[pitboss] = msg.value;
     }
 

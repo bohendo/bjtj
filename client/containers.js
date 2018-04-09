@@ -5,6 +5,7 @@ import { message, auth, submit } from './actions'
 const mapStateToProps = state => {
 
   if (typeof state.dealer_balance !== 'string') {
+    console.log(`Invalid bankroll: ${state.dealer_balance}`)
     state.dealer_balance = "0";
   }
 
