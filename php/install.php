@@ -33,8 +33,6 @@ function bjtj_install() {
     update_option('bjtj_db_version', $bjtj_db_version);
   }
 
-  bjtj_watch_events(get_option('bjtj_eth_provider'));
-
 }
 
 ?>

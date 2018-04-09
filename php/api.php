@@ -1,8 +1,5 @@
 <?php
 
-include ABSPATH.'wp-content/plugins/bjtj/auth.php';
-include ABSPATH.'wp-content/plugins/bjtj/bj/index.php';
-
 function bjtj_register_api() {
   register_rest_route('bjtj/v1', '/move', array(
     'methods' => 'GET',

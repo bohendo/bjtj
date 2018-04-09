@@ -1,8 +1,5 @@
 <?php
 
-include ABSPATH.'wp-content/plugins/bjtj/include/keccak.php';
-include ABSPATH.'wp-content/plugins/bjtj/include/recoverPublicKey.php';
-
 $agreement = 'I understand and agree that
 this game is an elaborate tip jar.
 Although I expect to be able to
