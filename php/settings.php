@@ -16,9 +16,25 @@ function bjtj_register_settings() {
     'sanitize_callback'=>'sanitize_eth_address',
     'show_in_rest'=>false
   );
+  $key_defaults = array(
+    'type'=>'string',
+    'group'=>'bjtj_settings_group',
+    'description'=>'Ethereum Secret Key',
+    'sanitize_callback'=>'sanitize_eth_key',
+    'show_in_rest'=>false
+  );
   register_setting('bjtj_settings_group', 'bjtj_ethprovider', $provider_defaults);
   register_setting('bjtj_settings_group', 'bjtj_dealer_address', $address_defaults);
+  register_setting('bjtj_settings_group', 'bjtj_dealer_key', $key_defaults);
   register_setting('bjtj_settings_group', 'bjtj_contract_address', $address_defaults);
+}
+
+
+function sanitize_eth_key($key) {
+  if (is_string($key) && strlen($key) == 64 && preg_match('/[0-9a-f]{64}/', $key)) {
+    return $key;
+  }
+  return '';
 }
 
 
@@ -47,6 +63,7 @@ function bjtj_render_settings() {
   $ethprovider = get_option('bjtj_ethprovider');
   $contract_address = get_option('bjtj_contract_address');
   $dealer_address = get_option('bjtj_dealer_address');
+  $dealer_key = get_option('bjtj_dealer_key');
   $event_filter = get_option('bjtj_event_filter');
 
   echo '
@@ -83,6 +100,10 @@ function bjtj_render_settings() {
           <tr valign="top">
             <th scope="row">Dealer Address</th>
             <td><input type="text" size="42" name="bjtj_dealer_address" value="'.$dealer_address.'" /></td>
+          </tr>
+          <tr valign="top">
+            <th scope="row">Dealer Private Key</th>
+            <td><input type="text" size="42" name="bjtj_dealer_key" value="'.$dealer_key.'" /></td>
           </tr>
           <tr>
             <th scope="row">Dealer Status</th>
