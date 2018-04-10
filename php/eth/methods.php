@@ -10,7 +10,7 @@ function eth_net_id($eth_provider) {
 }
 
 
-// returns gmp object containing wei
+// returns wei
 function eth_balance($eth_provider, $address) {
   $method = 'eth_getBalance';
   $params = array($address);
@@ -20,7 +20,7 @@ function eth_balance($eth_provider, $address) {
 }
 
 
-// returns gmp object containing wei
+// returns wei
 function eth_bankroll($eth_provider, $contract, $dealer) {
   $method = 'eth_call';
   $params = array(array(
@@ -34,13 +34,21 @@ function eth_bankroll($eth_provider, $contract, $dealer) {
 }
 
 
-// returns int
 function eth_deployedOn($eth_provider, $contract) {
   $method = 'eth_call';
   $params = array(array(
     'to'=>$contract,
     'data'=>'0x'.substr(keccak('deployedOn()'), 0, 8)
   ));
+  $result = eth_jsonrpc($eth_provider, $method, $params);
+  if (!$result) return false;
+  return gmp_init(substr($result, 2), 16);
+}
+
+
+function eth_nonce($eth_provider, $address) {
+  $method = 'eth_getTransactionCount';
+  $params = array( $address, 'latest');
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (!$result) return false;
   return gmp_init(substr($result, 2), 16);
