@@ -62,7 +62,11 @@ function bjtj_make_move( WP_REST_Request $request ) {
     eth_save_new_payments();
     $mid_state = process_payments($old_state, $request['id']);
 
-    $new_state = bjtj_bj($mid_state, $request['move']);
+    if ($request['move'] === 'cashout') {
+      $new_state = eth_cashout($mid_state, $request['id']);
+    } else {
+      $new_state = bjtj_bj($mid_state, $request['move']);
+    }
 
     $wpdb->update($table,
       array(
@@ -92,11 +96,11 @@ function bjtj_make_move( WP_REST_Request $request ) {
   );
 }
 
-function process_payments($old_state, $id) {
+function process_payments($state, $id) {
   global $wpdb;
 
   $dealer_address = get_option('bjtj_dealer_address');
-  if ($dealer_address == false) return $old_state;
+  if ($dealer_address == false) return $state;
 
   $payments = $wpdb->get_col(
     $wpdb->prepare(
@@ -115,11 +119,11 @@ function process_payments($old_state, $id) {
       array('%d', '%s', '%s')
     );
     foreach($payments as $payment) {
-      $old_state->chips += wei_to_meth(gmp_init($payment));
+      $state->chips += wei_to_meth(gmp_init($payment));
     }
   }
 
-  return $old_state;
+  return $state;
 
 }
 

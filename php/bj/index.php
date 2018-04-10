@@ -9,9 +9,6 @@ include dirname(__FILE__).'/stand.php';
 include dirname(__FILE__).'/double.php';
 include dirname(__FILE__).'/split.php';
 
-include dirname(__FILE__).'/cashout.php';
-include dirname(__FILE__).'/deposit.php';
-
 function bjtj_bj_new_deck() {
 
   $ranks = array('A', '2', '3', '4', '5', '6',
@@ -68,12 +65,6 @@ function bjtj_bj($state=false, $action=false, $chips=false) {
 
     case 'split':
       return bjtj_bj_split($state);
-
-    case 'cashout':
-      return bjtj_bj_cashout($state, 'all');
-
-    case 'deposit':
-      return bjtj_bj_deposit($state, $chips);
 
     default:
       return bjtj_bj_sync($state);
