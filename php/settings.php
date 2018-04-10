@@ -24,7 +24,7 @@ function bjtj_register_settings() {
 
 function sanitize_eth_address($address) {
   if (is_string($address) && strlen($address) == 42 && preg_match('/0x[0-9a-fA-F]{40}/', $address)) {
-    return $address;
+    return strtolower($address);
   }
   return '';
 }
@@ -92,6 +92,10 @@ function bjtj_render_settings() {
           <tr>
             <th scope="row">Events</th>
             <td>'.bjtj_get_event_status($ethprovider, $event_filter).'</td>
+          </tr>
+          <tr>
+            <th scope="row">Debug</th>
+            <td>'.get_option('bjtj_debug').'</td>
           </tr>
         </table>
 

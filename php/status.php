@@ -67,6 +67,8 @@ function bjtj_get_dealer_status($ethprovider, $contract_address, $dealer_address
 
 
 function bjtj_get_event_status($ethprovider, $event_filter) {
+  global $wpdb;
+
   if (!$ethprovider) {
     return "Unable to connect to Ethereum provider";
   }
@@ -74,7 +76,9 @@ function bjtj_get_event_status($ethprovider, $event_filter) {
     return "Event filter not initialized";
   }
 
-  return "Searching for events using filter <strong>$event_filter</strong>";
+  $npayments = $wpdb->get_var("SELECT COUNT(*) FROM ".$wpdb->prefix."bjtj_payments;");
+
+  return "Searching for events using filter <strong>$event_filter</strong>, DB contains <strong>$npayments</strong> payments";
 }
 
 ?>

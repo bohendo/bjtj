@@ -10,6 +10,7 @@ function eth_net_id($eth_provider) {
 }
 
 
+// returns gmp object containing wei
 function eth_balance($eth_provider, $address) {
   $method = 'eth_getBalance';
   $params = array($address);
@@ -19,6 +20,7 @@ function eth_balance($eth_provider, $address) {
 }
 
 
+// returns gmp object containing wei
 function eth_bankroll($eth_provider, $contract, $dealer) {
   $method = 'eth_call';
   $params = array(array(
@@ -32,6 +34,7 @@ function eth_bankroll($eth_provider, $contract, $dealer) {
 }
 
 
+// returns int
 function eth_deployedOn($eth_provider, $contract) {
   $method = 'eth_call';
   $params = array(array(
