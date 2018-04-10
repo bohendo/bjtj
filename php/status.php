@@ -32,7 +32,7 @@ function bjtj_get_contract_status($ethprovider, $contract_address) {
     return "Unable to query this contract address";
   }
 
-  $contract_balance = wei_to_meth($contract_balance);
+  $contract_balance = display_wei($contract_balance);
   return "Balance: <strong>$contract_balance</strong> mETH".', deployed on block: <strong>'.$deployedOn.'</strong>';
 }
 
@@ -59,8 +59,8 @@ function bjtj_get_dealer_status($ethprovider, $contract_address, $dealer_address
     return "Unable to query contract address";
   }
 
-  $dealer_balance = wei_to_meth($dealer_balance);
-  $dealer_bankroll = wei_to_meth($dealer_bankroll);
+  $dealer_balance = display_wei($dealer_balance);
+  $dealer_bankroll = display_wei($dealer_bankroll);
 
   return "Balance: <strong>$dealer_balance</strong> mETH, Dealer bankroll: <strong>$dealer_bankroll</strong> mETH";
 }

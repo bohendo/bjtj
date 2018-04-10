@@ -60,8 +60,8 @@ function eth_save_payments($get_old) {
   foreach($events as $event) {
     $wpdb->query($wpdb->prepare($sql,
       $event->transactionHash,
-      substr($event->topics[2], 26),
-      substr($event->topics[1], 26),
+      '0x'.substr($event->topics[2], 26),
+      '0x'.substr($event->topics[1], 26),
       gmp_strval(gmp_init($event->data, 16)),
       0,
       current_time('mysql', 1),

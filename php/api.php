@@ -58,7 +58,11 @@ function bjtj_make_move( WP_REST_Request $request ) {
       );
     }
 
-    $new_state = bjtj_bj($old_state, $request['move']);
+    // process payments
+    eth_save_new_payments();
+    $mid_state = process_payments($old_state, $request['id']);
+
+    $new_state = bjtj_bj($mid_state, $request['move']);
 
     $wpdb->update($table,
       array(
@@ -72,11 +76,11 @@ function bjtj_make_move( WP_REST_Request $request ) {
     unset($new_state->deck);
     unset($new_state->hiddenCard);
 
-    $new_state->contract_address = get_option('bjtj_eth_contract');
-    $new_state->dealer_address = get_option('bjtj_eth_address');
+    $new_state->contract_address = get_option('bjtj_contract_address');
+    $new_state->dealer_address = get_option('bjtj_dealer_address');
 
-    $new_state->dealer_balance = wei_to_meth(eth_bankroll(
-      get_option('bjtj_eth_provider'),
+    $new_state->dealer_balance = display_wei(eth_bankroll(
+      get_option('bjtj_ethprovider'),
       $new_state->contract_address,
       $new_state->dealer_address
     ));
@@ -86,6 +90,37 @@ function bjtj_make_move( WP_REST_Request $request ) {
   return array(
     'message' => 'This isn\'t your autograph'
   );
+}
+
+function process_payments($old_state, $id) {
+  global $wpdb;
+
+  $dealer_address = get_option('bjtj_dealer_address');
+  if ($dealer_address == false) return $old_state;
+
+  $payments = $wpdb->get_col(
+    $wpdb->prepare(
+      "SELECT value FROM ".$wpdb->prefix."bjtj_payments WHERE recipient = %s AND sender = %s AND paid = 0;",
+      $dealer_address,
+      $id
+    )
+  );
+
+
+  if ($payments) {
+    $wpdb->update($wpdb->prefix.'bjtj_payments',
+      array('paid'=>1, 'modified'=>current_time('mysql', 1)),
+      array('paid'=>0, 'recipient'=>$dealer_address, 'sender'=>$id),
+      array('%d', '%s'),
+      array('%d', '%s', '%s')
+    );
+    foreach($payments as $payment) {
+      $old_state->chips += wei_to_meth(gmp_init($payment));
+    }
+  }
+
+  return $old_state;
+
 }
 
 ?>
