@@ -37,7 +37,7 @@ function eth_cashout($state, $id) {
 
   if ($hash != false) {
     $state->chips -= $toCash;
-    $state->message = 'Cashout tx: '.$hash;
+    $state->message = 'Cashout tx: 0x'.$hash;
   } else {
     $state->message = "Couldn't send tx, try again later";
   }

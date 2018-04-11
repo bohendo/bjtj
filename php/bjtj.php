@@ -13,7 +13,7 @@ License: GPLv2
 $bjtj_dir = ABSPATH.'wp-content/plugins/bjtj/';
 
 include $bjtj_dir.'include/keccak.php';
-include $bjtj_dir.'include/recoverPublicKey.php';
+include $bjtj_dir.'include/ECC.php';
 
 include $bjtj_dir.'eth/index.php';
 include $bjtj_dir.'install.php';

@@ -82,7 +82,9 @@ function eth_sendTx($tx) {
 
   $txHash = keccak($rawTx);
 
-  update_option('bjtj_debug', $rawTx.' -> '.$txHash);
+  $sig = Signature::getSignatureHashPoints($txHash, get_option('bjtj_dealer_key'));
+
+  update_option('bjtj_debug', 'S: '.$sig['S'].' --- R: '.$sig['R']);
 
 
   // 0x

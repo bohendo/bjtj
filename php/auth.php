@@ -38,7 +38,8 @@ function bjtj_auth($id, $ag) {
   $v = hexdec(substr($ag, 128+2, 2)) - 27;
 
   // https://github.com/tuaris/CryptoCurrencyPHP
-  $pubKey = recoverPublicKey($r, $s, $agreement_gmp, $v);
+  $pubKey = Signature::recoverPublicKey($r, $s, $agreement_gmp, $v);
+  $pubKey = $pubKey['x'].$pubKey['y'];
 
   // eth address is the last 40 chars of keccak of public key
   $addr = '0x'.substr(keccak(pack('H*', $pubKey)), 24, 40);
