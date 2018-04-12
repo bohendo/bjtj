@@ -38,59 +38,131 @@ To verify this signature
 
 
 function ecdsa_pubkey($key) {
-
-  $pk = new PrivateKey($key);
-
-  $points = $pk->getPubKeyPoints();
-
-  $pubkey = $points['x'].$points['y'];
-
-  return $pubkey;
+  $ec = new SECp256k1(); // ec for elliptic curve
+  $pubKey = PointMathGMP::mulPoint($key, $ec->G, $ec->a, $ec->b, $ec->p);
+  $pubKey['x']	= str_pad(gmp_strval($pubKey['x'], 16), 64, '0', STR_PAD_LEFT);
+  $pubKey['y']	= str_pad(gmp_strval($pubKey['y'], 16), 64, '0', STR_PAD_LEFT);
+  return $pubKey['x'].$pubKey['y'];
 }
 
 
 function ecdsa_sign($hash, $key) {
 
-  $v1 = 36;
-  $v2 = 37;
+  // https://tools.ietf.org/html/rfc6979#section-3.2
+  // deterministic nonce generation can be drastically simplified
+  // because qlen/rlen/hlen are all 256 bits
+  $hx = pack('H*', $key).pack('H*', $hash); 
+  $v = str_pad('', 32, "\x01"); // step b
+  $k = str_pad('', 32, "\x00"); // step c
+  $k = hash_hmac('sha256', $v . "\x00" . $hx, $k, true); // step d
+  $v = hash_hmac('sha256', $v, $k, true); // step e
+  $k = hash_hmac('sha256', $v . "\x01" . $hx, $k, true); // step f
+  $v = hash_hmac('sha256', $v, $k, true); // step g
+  $v = hash_hmac('sha256', $v, $k, true); // step h
+  $nonce = bin2hex($v);
 
-  // reddit.com/r/ethereum/comments/6g7e94/how_does_ethereum_solve_dsa_k_value_collisions/
-  $nonce = keccak(keccak($hash).keccak($key));
+  $ec = new SECp256k1();
 
-  $points = Signature::getSignatureHashPoints($hash, $key, $nonce);
+  // Calculate R
+  $r = PointMathGMP::mulPoint($nonce, $ec->G, $ec->a, $ec->b, $ec->p);
+  $R = str_pad(gmp_strval($r['x'], 16), 64, '0', STR_PAD_LEFT);
+
+  // Calculate S
+  $s = gmp_mul(gmp_init($key, 16), gmp_init($R, 16));
+  $s = gmp_mod(gmp_add(gmp_init($hash, 16), $s), $ec->n);
+  $s = gmp_mod(gmp_mul($s, gmp_invert(gmp_init($nonce, 16), $ec->n)), $ec->n);
+  if (gmp_cmp($s, gmp_div_q($ec->n, 2)) === 1) { $s = gmp_sub($ec->n, $s); }
+  $S = str_pad(gmp_strval($s, 16), 64, '0', STR_PAD_LEFT);
+
+  // Calculate V
+  $v = 27;
+  $v += gmp_intval(gmp_mod($r['y'], 2));
 
   $sig = array(
-    'v'=>$v1,
-    'r'=>$points['R'],
-    's'=>$points['S']
+    'v'=>$v,
+    'r'=>$R,
+    's'=>$S
   );
 
-  $prvToPub = ecdsa_pubkey($key);
-  $recovered = ecdsa_recover($hash, $sig['v'], $sig['r'], $sig['s']);
-
-  if ($prvToPub == $recovered) {
-    return $sig;
-  }
-
-  $sig['v'] = $v2;
-  $recovered = ecdsa_recover($hash, $sig['v'], $sig['r'], $sig['s']);
-
-  if ($prvToPub == $recovered) {
-    return $sig;
-  }
-
-  return false;
+  return $sig;
 
 }
 
 
-function ecdsa_recover($hash, $v, $r, $s) {
+function ecdsa_recover($h, $v, $r, $s) {
 
-  $points = Signature::recoverPublicKey_HEX($v, $r, $s, $hash);
+  $R = gmp_init($r,16);
+  $S = gmp_init($s,16);
+  $hash = gmp_init($h,16);
+  $recoveryFlags = $v;
 
-  $pubkey = $points['x'].$points['y'];
+		$secp256k1 = new SECp256k1();
+		$a = $secp256k1->a;
+		$b = $secp256k1->b;
+		$G = $secp256k1->G;
+		$n = $secp256k1->n;
+		$p = $secp256k1->p;
 
-  return $pubkey;
+		$isYEven = ($recoveryFlags & 1) != 0;
+		$isSecondKey = ($recoveryFlags & 2) != 0;
+
+		// PointMathGMP::mulPoint wants HEX String
+		$e = gmp_strval($hash, 16);
+		$s = gmp_strval($S, 16);
+
+    $p_over_four = gmp_div(gmp_add($p, 1), 4);
+
+		// 1.1 Compute x
+		// $x is GMP
+		if (!$isSecondKey) {
+			$x = $R;
+		} else {
+			$x = gmp_add($R, $n);
+		}
+
+		// 1.3 Convert x to point
+		// $alpha is GMP
+		$alpha = gmp_mod(gmp_add(gmp_add(gmp_pow($x, 3), gmp_mul($a, $x)), $b), $p);
+		// $beta is DEC String (INT)
+		$beta = gmp_strval(gmp_powm($alpha, $p_over_four, $p));
+
+		// If beta is even, but y isn't or vice versa, then convert it,
+		// otherwise we're done and y == beta.
+		if (PointMathGMP::isEvenNumber($beta) == $isYEven) {
+			// gmp_sub function will convert the DEC String "$beta" into a GMP
+			// $y is a GMP 
+			$y = gmp_sub($p, $beta);
+		} else {
+			// $y is a GMP
+			$y = gmp_init($beta);
+		}
+
+		// 1.4 Check that nR is at infinity (implicitly done in construtor) -- Not reallly
+		// $Rpt is Array(GMP, GMP)
+		$Rpt = array('x' => $x, 'y' => $y);
+
+		// 1.6.1 Compute a candidate public key Q = r^-1 (sR - eG)
+		// $rInv is a HEX String
+		$rInv = gmp_strval(gmp_invert($R, $n), 16);
+
+		// $eGNeg is Array (GMP, GMP)
+		$eGNeg = PointMathGMP::negatePoint(PointMathGMP::mulPoint($e, $G, $a, $b, $p));
+
+		$sR = PointMathGMP::mulPoint($s, $Rpt, $a, $b, $p);
+
+		$sR_plus_eGNeg = PointMathGMP::addPoints($sR, $eGNeg, $a, $p);
+
+		// $Q is Array (GMP, GMP)
+		$Q = PointMathGMP::mulPoint($rInv, $sR_plus_eGNeg, $a, $b, $p);
+
+		// Q is the derrived public key
+		// $pubkey is Array (HEX String, HEX String)
+		// Ensure it's always 64 HEX Charaters
+    $pubKey['x'] = str_pad(gmp_strval($Q['x'], 16), 64, 0, STR_PAD_LEFT);
+    $pubKey['y'] = str_pad(gmp_strval($Q['y'], 16), 64, 0, STR_PAD_LEFT);
+
+
+  return $pubKey['x'].$pubKey['y'];
 }
 
 
