@@ -12,8 +12,8 @@ function toHex($byte) {
 }
 
 
-// technically LP, not RLP..
-// Adds length prefix to hex string
+// technically not RLP, more like LP
+// Adds length prefix to a hex string
 function RLP($hexstr = '') {
   if (gettype($hexstr) == 'string') {
     $tmp = strval($hexstr);
@@ -59,6 +59,7 @@ function eth_sendTx($tx) {
 
   $ethprovider = get_option('bjtj_ethprovider');
 
+  $tx->nonce = '0x'.gmp_strval(eth_nonce($ethprovider, $tx->from), 16);
   $tx->gasPrice = '0x'.gmp_strval(gmp_init(getGasPrice()), 16);
   $tx->gasLimit = '0x'.gmp_strval(gmp_init(100000), 16);
 
@@ -73,29 +74,34 @@ function eth_sendTx($tx) {
     return false;
   }
 
-  $tx->nonce = '';//'0x'.gmp_strval(eth_nonce($ethprovider, $tx->from), 16);
-
   $rawTx = RLP($tx->nonce).RLP($tx->gasPrice).RLP($tx->gasLimit).RLP($tx->to).RLP().RLP($tx->data);
 
   $txHash = keccak(pack('H*',$rawTx));
 
   $sig = ecdsa_sign($txHash, get_option('bjtj_dealer_key'));
 
-  if (!$sig) {
-    update_option('bjtj_debug', "Error, couldn't sign tx");
+
+  // Sanity checks to make sure the signature is valid
+  if (!$sig) { return false; }
+  $addr = '0x'.substr(keccak(pack('H*',ecdsa_recover($txHash, $sig))),-40);
+  if ($addr !== $tx->from) {
+    update_option('bjtj_debug', "$txHash <br/> $addr !== ".$tx->from." <br/> r=".$sig['r']." <br/> s=".$sig['s']." <br/> v=".$sig['v']);
     return false;
   }
 
-  $rawTx .= strval(dechex($sig['v'])).RLP($sig['r']).RLP($sig['s']);
+  // Finish building the raw transaction
+  $rawTx .= RLP(strval(dechex($sig['v']))).RLP($sig['r']).RLP($sig['s']);
   $txLen = dechex(strlen($rawTx)/2);
   $rawTx = '0xf8'.$txLen.$rawTx;
 
+
+  // Give the rawTx to our ethprovider to broadcast
   $method = 'eth_sendRawTransaction';
   $params = array($rawTx);
   $result = eth_jsonrpc($ethprovider, $method, $params);
 
   $result = json_encode($result);
-  update_option('bjtj_debug', "$rawTx  --->  $result");
+  update_option('bjtj_debug', $result);
 
   if (!$result) return false;
 

@@ -48,9 +48,10 @@ function ecdsa_pubkey($key) {
 
 function ecdsa_sign($hash, $key) {
 
+  $ec = new SECp256k1();
+
+  // Calculate nonce for deterministic signature
   // https://tools.ietf.org/html/rfc6979#section-3.2
-  // deterministic nonce generation can be drastically simplified
-  // because qlen/rlen/hlen are all 256 bits
   $hx = pack('H*', $key).pack('H*', $hash); 
   $v = str_pad('', 32, "\x01"); // step b
   $k = str_pad('', 32, "\x00"); // step c
@@ -61,11 +62,10 @@ function ecdsa_sign($hash, $key) {
   $v = hash_hmac('sha256', $v, $k, true); // step h
   $nonce = bin2hex($v);
 
-  $ec = new SECp256k1();
-
   // Calculate R
   $r = PointMathGMP::mulPoint($nonce, $ec->G, $ec->a, $ec->b, $ec->p);
   $R = str_pad(gmp_strval($r['x'], 16), 64, '0', STR_PAD_LEFT);
+  assert(gmp_cmp($r['x'], gmp_init(0)) === 1, 'wow you got really unlucky');
 
   // Calculate S
   $s = gmp_mul(gmp_init($key, 16), gmp_init($R, 16));
@@ -73,94 +73,45 @@ function ecdsa_sign($hash, $key) {
   $s = gmp_mod(gmp_mul($s, gmp_invert(gmp_init($nonce, 16), $ec->n)), $ec->n);
   if (gmp_cmp($s, gmp_div_q($ec->n, 2)) === 1) { $s = gmp_sub($ec->n, $s); }
   $S = str_pad(gmp_strval($s, 16), 64, '0', STR_PAD_LEFT);
+  assert(gmp_cmp($s, gmp_init(0)) === 1, 'wow you got really unlucky');
 
   // Calculate V
   $v = 27;
   $v += gmp_intval(gmp_mod($r['y'], 2));
 
-  $sig = array(
-    'v'=>$v,
-    'r'=>$R,
-    's'=>$S
-  );
-
-  return $sig;
-
+  // TODO: Why v-1 ?
+  return array('v'=>$v, 'r'=>$R, 's'=>$S);
 }
 
 
-function ecdsa_recover($h, $v, $r, $s) {
 
-  $R = gmp_init($r,16);
-  $S = gmp_init($s,16);
-  $hash = gmp_init($h,16);
-  $recoveryFlags = $v;
+// http://www.secg.org/sec1-v2.pdf
+// See SEC 1 v 2.0 Section 4.1.6
+function ecdsa_recover($h, $sig) {
+  $ec = new SECp256k1();
 
-		$secp256k1 = new SECp256k1();
-		$a = $secp256k1->a;
-		$b = $secp256k1->b;
-		$G = $secp256k1->G;
-		$n = $secp256k1->n;
-		$p = $secp256k1->p;
+  $R = gmp_init($sig['r'], 16);
 
-		$isYEven = ($recoveryFlags & 1) != 0;
-		$isSecondKey = ($recoveryFlags & 2) != 0;
+  // 1.3 Convert x to point
+  $alpha = gmp_mod(gmp_add(gmp_add(gmp_pow($R, 3), gmp_mul($ec->a, $R)), $ec->b), $ec->p);
+  $beta = gmp_strval(gmp_powm($alpha, gmp_div(gmp_add($ec->p, 1), 4), $ec->p));
 
-		// PointMathGMP::mulPoint wants HEX String
-		$e = gmp_strval($hash, 16);
-		$s = gmp_strval($S, 16);
+  // If beta is even, but y isn't or vice versa, then convert it, otherwise we're done and y == beta.
+  if (gmp_cmp(gmp_mod($beta,2), gmp_mod(gmp_init($sig['v']-27), 2)) === 1) { $y = gmp_sub($ec->p, $beta); } else { $y = gmp_init($beta); }
 
-    $p_over_four = gmp_div(gmp_add($p, 1), 4);
+  // 1.6.1 Compute a candidate public key Q = r^-1 (sR - eG)
+  $rInv = gmp_strval(gmp_invert($R, $ec->n), 16);
 
-		// 1.1 Compute x
-		// $x is GMP
-		if (!$isSecondKey) {
-			$x = $R;
-		} else {
-			$x = gmp_add($R, $n);
-		}
+  $eGNeg = PointMathGMP::negatePoint(PointMathGMP::mulPoint($h, $ec->G, $ec->a, $ec->b, $ec->p));
 
-		// 1.3 Convert x to point
-		// $alpha is GMP
-		$alpha = gmp_mod(gmp_add(gmp_add(gmp_pow($x, 3), gmp_mul($a, $x)), $b), $p);
-		// $beta is DEC String (INT)
-		$beta = gmp_strval(gmp_powm($alpha, $p_over_four, $p));
+  $sR = PointMathGMP::mulPoint($sig['s'], array('x' => $R, 'y' => $y), $ec->a, $ec->b, $ec->p);
+  $sR_plus_eGNeg = PointMathGMP::addPoints($sR, $eGNeg, $ec->a, $ec->p);
 
-		// If beta is even, but y isn't or vice versa, then convert it,
-		// otherwise we're done and y == beta.
-		if (PointMathGMP::isEvenNumber($beta) == $isYEven) {
-			// gmp_sub function will convert the DEC String "$beta" into a GMP
-			// $y is a GMP 
-			$y = gmp_sub($p, $beta);
-		} else {
-			// $y is a GMP
-			$y = gmp_init($beta);
-		}
+  $Q = PointMathGMP::mulPoint($rInv, $sR_plus_eGNeg, $ec->a, $ec->b, $ec->p);
 
-		// 1.4 Check that nR is at infinity (implicitly done in construtor) -- Not reallly
-		// $Rpt is Array(GMP, GMP)
-		$Rpt = array('x' => $x, 'y' => $y);
-
-		// 1.6.1 Compute a candidate public key Q = r^-1 (sR - eG)
-		// $rInv is a HEX String
-		$rInv = gmp_strval(gmp_invert($R, $n), 16);
-
-		// $eGNeg is Array (GMP, GMP)
-		$eGNeg = PointMathGMP::negatePoint(PointMathGMP::mulPoint($e, $G, $a, $b, $p));
-
-		$sR = PointMathGMP::mulPoint($s, $Rpt, $a, $b, $p);
-
-		$sR_plus_eGNeg = PointMathGMP::addPoints($sR, $eGNeg, $a, $p);
-
-		// $Q is Array (GMP, GMP)
-		$Q = PointMathGMP::mulPoint($rInv, $sR_plus_eGNeg, $a, $b, $p);
-
-		// Q is the derrived public key
-		// $pubkey is Array (HEX String, HEX String)
-		// Ensure it's always 64 HEX Charaters
-    $pubKey['x'] = str_pad(gmp_strval($Q['x'], 16), 64, 0, STR_PAD_LEFT);
-    $pubKey['y'] = str_pad(gmp_strval($Q['y'], 16), 64, 0, STR_PAD_LEFT);
-
+  // Q is the derrived public key
+  $pubKey['x'] = str_pad(gmp_strval($Q['x'], 16), 64, 0, STR_PAD_LEFT);
+  $pubKey['y'] = str_pad(gmp_strval($Q['y'], 16), 64, 0, STR_PAD_LEFT);
 
   return $pubKey['x'].$pubKey['y'];
 }
