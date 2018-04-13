@@ -2,6 +2,6 @@
 
 docker service rm blog_proxy blog_wordpress
 
-make deploy
+make
 
-bash ops/dev-blog.sh
+bash ops/deploy.sh

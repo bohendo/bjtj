@@ -25,7 +25,7 @@ do
 done
 
 # Make sure local dev files are available to be bind-mounted
-if [[ ! -f "./php/bjtj.php" || ! -f "./build/static/client.bundle.js" ]]
+if [[ ! -f "./php/bjtj.php" || ! -f "./build/client.bundle.js" ]]
 then
   echo 'bjtj source files are missing..'
   exit 1
@@ -107,7 +107,7 @@ services:
     volumes:
       - wp_data:/var/www/wordpress
       - `pwd`/php:/tmp/bjtj
-      - `pwd`/build/static/client.bundle.js:/tmp/bjtj/js/client.bundle.js
+      - `pwd`/build/client.bundle.js:/tmp/bjtj/js/client.bundle.js
     secrets:
       - wp_mysql
       - wp_auth_key
