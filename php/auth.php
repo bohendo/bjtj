@@ -27,21 +27,15 @@ function bjtj_hash_string($str) {
 function bjtj_auth($id, $ag) {
   global $agreement;
 
-  // hash agreement & convert that hex string to Gnu Multi Precision
-  $agreement_gmp = gmp_init('0x'.bjtj_hash_string($agreement));
+  $hash = bjtj_hash_string($agreement);
 
-  // extract r & s from the given signature & convert to GMP
-  $r = gmp_init('0x'.substr($ag, 0+2, 64));
-  $s = gmp_init('0x'.substr($ag, 64+2, 64));
+  $sig = array(
+    'r'=>substr($ag, 0+2, 64),
+    's'=>substr($ag, 64+2, 64),
+    'v'=>hexdec(substr($ag, 128+2, 2))
+  );
 
-  // extract v from given signature & convert to int in range 0-4
-  $v = hexdec(substr($ag, 128+2, 2)) - 27;
-
-  // https://github.com/tuaris/CryptoCurrencyPHP
-  $pubKey = Signature::recoverPublicKey($r, $s, $agreement_gmp, $v);
-  $pubKey = $pubKey['x'].$pubKey['y'];
-
-  // eth address is the last 40 chars of keccak of public key
+  $pubKey = ecdsa_recover($hash, $sig);
   $addr = '0x'.substr(keccak(pack('H*', $pubKey)), 24, 40);
 
   return $addr == $id;

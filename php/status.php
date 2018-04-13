@@ -51,8 +51,9 @@ function bjtj_get_dealer_status($ethprovider, $contract_address, $dealer_address
 
   $dealer_balance = eth_balance($ethprovider, $dealer_address);
   $dealer_bankroll = eth_bankroll($ethprovider, $contract_address, $dealer_address);
+  $dealer_nonce = eth_nonce($ethprovider, $dealer_address);
 
-  if ($dealer_balance === false) {
+  if ($dealer_balance === false || $dealer_nonce === false) {
     return "Unable to connect to Ethereum provider";
   }
   if ($dealer_bankroll === false) {
@@ -62,7 +63,7 @@ function bjtj_get_dealer_status($ethprovider, $contract_address, $dealer_address
   $dealer_balance = display_wei($dealer_balance);
   $dealer_bankroll = display_wei($dealer_bankroll);
 
-  return "Balance: <strong>$dealer_balance</strong> mETH, Dealer bankroll: <strong>$dealer_bankroll</strong> mETH";
+  return "Balance: <strong>$dealer_balance</strong> mETH <br/> Bankroll: <strong>$dealer_bankroll</strong> mETH <br/> Nonce: <strong>$dealer_nonce</strong>";
 }
 
 
