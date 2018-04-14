@@ -47,7 +47,6 @@ function ecdsa_pubkey($key) {
 
 
 function ecdsa_sign($hash, $key) {
-
   $ec = new SECp256k1();
 
   // Calculate nonce for deterministic signature
@@ -76,10 +75,9 @@ function ecdsa_sign($hash, $key) {
   assert(gmp_cmp($s, gmp_init(0)) === 1, 'wow you got really unlucky');
 
   // Calculate V
-  $v = 27;
+  $v = 35;
   $v += gmp_intval(gmp_mod($r['y'], 2));
 
-  // TODO: Why v-1 ?
   return array('v'=>$v, 'r'=>$R, 's'=>$S);
 }
 
@@ -96,8 +94,11 @@ function ecdsa_recover($h, $sig) {
   $alpha = gmp_mod(gmp_add(gmp_add(gmp_pow($R, 3), gmp_mul($ec->a, $R)), $ec->b), $ec->p);
   $beta = gmp_strval(gmp_powm($alpha, gmp_div(gmp_add($ec->p, 1), 4), $ec->p));
 
+  $evenY = 1 - $sig['v'] % 2;
+  $evenB = 1 - gmp_intval(gmp_mod($beta, 2));
+
   // If beta is even, but y isn't or vice versa, then convert it, otherwise we're done and y == beta.
-  if (gmp_cmp(gmp_mod($beta,2), gmp_mod(gmp_init($sig['v']-27), 2)) === 1) { $y = gmp_sub($ec->p, $beta); } else { $y = gmp_init($beta); }
+  if ($evenY === $evenB) { $y = gmp_sub($ec->p, $beta); } else { $y = gmp_init($beta); }
 
   // 1.6.1 Compute a candidate public key Q = r^-1 (sR - eG)
   $rInv = gmp_strval(gmp_invert($R, $ec->n), 16);

@@ -27,6 +27,6 @@
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.34"
   }
 }

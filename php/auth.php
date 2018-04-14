@@ -36,6 +36,7 @@ function bjtj_auth($id, $ag) {
   );
 
   $pubKey = ecdsa_recover($hash, $sig);
+  if ($pubKey === false || gettype($pubKey) !== 'string') { return false; }
   $addr = '0x'.substr(keccak(pack('H*', $pubKey)), 24, 40);
 
   return $addr == $id;

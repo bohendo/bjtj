@@ -12,8 +12,8 @@ webpack=node_modules/.bin/webpack
 ##### CALCULATED VARIABLES #####
 
 # Input files
-client=$(shell find client -type f)
-php=$(shell find php -type f)
+client=$(shell find client -type f -name "*.js")
+php=$(shell find php -type f -name "*.php")
 sol=$(shell find contracts -type f -name "*.sol")
 
 # Output files
