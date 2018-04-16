@@ -30,9 +30,9 @@ function bjtj_auth($id, $ag) {
   $hash = bjtj_hash_string($agreement);
 
   $sig = array(
-    'r'=>substr($ag, 0+2, 64),
-    's'=>substr($ag, 64+2, 64),
-    'v'=>hexdec(substr($ag, 128+2, 2))
+    'r' => substr($ag, 0+2, 64),
+    's' => substr($ag, 64+2, 64),
+    'v' => hexdec(substr($ag, 128+2, 2))
   );
 
   $pubKey = ecdsa_recover($hash, $sig);
