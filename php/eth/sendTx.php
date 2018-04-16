@@ -71,6 +71,10 @@ function LP($rlp = '') {
 
 function eth_sendTx($tx) {
 
+  if (test_ecdsa() === false) return false;
+
+  $input = json_encode($tx);
+
   $ethprovider = get_option('bjtj_ethprovider');
   $net_version = eth_net_id($ethprovider);
 
@@ -92,6 +96,7 @@ function eth_sendTx($tx) {
 
   $rawTx = RLP($tx->nonce).RLP($tx->gasPrice).RLP($tx->gasLimit).RLP($tx->to).RLP($tx->value).RLP($tx->data);
 
+  // Append a replay-resistant signature placeholder according to EIP155
   // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
   $fakeTx = LP($rawTx.RLP(dechex($net_version)).'8080');
 
@@ -103,7 +108,7 @@ function eth_sendTx($tx) {
   // Sanity checks to make sure the signature is valid
   $addr = '0x'.substr(keccak(pack('H*',ecdsa_recover($txHash, $sig))),-40);
   if ($addr !== $tx->from) {
-    update_option('bjtj_debug', "$fakeTx <br/> $txHash <br/> r=".$sig['r']." <br/> s=".$sig['s']." <br/> v=".$sig['v']."<br/> $addr !== ".$tx->from);
+    update_option('bjtj_debug', "Sanity check failed sending: $input <br/> $fakeTx <br/> $txHash <br/> r=".$sig['r']." <br/> s=".$sig['s']." <br/> v=".$sig['v']."<br/> $addr !== ".$tx->from);
     return false;
   }
 
