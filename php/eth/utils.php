@@ -15,6 +15,9 @@ function display_wei($wei) {
   if (strlen($meth) > 5) {
     $meth = substr_replace($meth,',',-5,0);
   }
+  if (strlen($meth) == 1) {
+    $meth = '0.'.$meth;
+  }
   return $meth;
 }
 
