@@ -26,7 +26,9 @@ function RLP($hexstr = '') {
     array_push($bytes, hexdec(substr($tmp, $i, 2)));
   }
 
-  if (count($bytes) == 1 && $bytes[0] < 128) {
+  if (count($bytes) == 1 && $bytes[0] == 0) {
+    return '80';
+  } else if (count($bytes) == 1 && $bytes[0] < 128) {
     return evenify(dechex($bytes[0]));
 
   } else if (count($bytes) < 56) {
@@ -142,7 +144,7 @@ function eth_sendTx($tx) {
   $output = json_encode($result, JSON_PRETTY_PRINT);
 
   if (!$result || property_exists($result, 'error')) {
-    update_option('bjtj_debug', "Error from provider while sending: $input <br> <br> h='$txHash' <br> r='".$sig['r']."' <br> s='".$sig['s']."' <br> v='".$sig['v']."'<br> $output");
+    update_option('bjtj_debug', "Error from provider while sending: $input <br> <br> $fakeTx <br> h='$txHash' <br> r='".$sig['r']."' <br> s='".$sig['s']."' <br> v='".$sig['v']."'<br> $output");
     return false;
   }
 
