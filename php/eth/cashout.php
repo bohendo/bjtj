@@ -42,9 +42,6 @@ function eth_cashout($state, $id) {
     $state->message = "Couldn't send tx, try again later";
   }
 
-  // TODO: remove this line
-  $state->chips = 5;
-
   return $state;
 
 }

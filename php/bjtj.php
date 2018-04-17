@@ -10,6 +10,7 @@ Text Domain: bjtj
 License: GPLv2
 */
 
+
 $bjtj_dir = ABSPATH.'wp-content/plugins/bjtj/';
 
 include $bjtj_dir.'include/keccak.php';

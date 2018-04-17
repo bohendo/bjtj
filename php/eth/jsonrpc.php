@@ -30,7 +30,7 @@ function eth_jsonrpc($eth_provider, $method, $params) {
 
   if ($err) return false;
   else if (property_exists($res, 'result')) return $res->result;
-  else return false;
+  else return $res;
 
 }
 
