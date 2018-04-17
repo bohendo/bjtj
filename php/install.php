@@ -4,6 +4,9 @@ function bjtj_install() {
 
   global $wpdb;
 
+  update_option('bjtj_event_filter', false);
+  update_option('bjtj_debug', 'Nothing has gone wrong.. yet');
+
   $bjtj_db_version = '1.0';
   if (get_option('bjtj_db_version') != $bjtj_db_version) {
 

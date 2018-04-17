@@ -11,8 +11,8 @@ contract BlackjackTipJar {
 
     mapping(address => uint256) public bankrolls;
     
-    event Deposit(address indexed _dealer, address indexed _from, uint _value);
-    event Cashout(address indexed _dealer, address indexed _to, uint _value);
+    event Deposit(address indexed _dealer, address indexed _from, uint256 _value);
+    event Cashout(address indexed _dealer, address indexed _to, uint256 _value);
     event Overflow(address indexed _dealer, uint256 _value);
 
     modifier auth() {
@@ -51,7 +51,7 @@ contract BlackjackTipJar {
 
     }
 
-    function cashout(address winner, uint amount) public {
+    function cashout(address winner, uint256 amount) public {
       uint256 dealerBankroll = bankrolls[msg.sender];
       uint256 value;
       if (amount > dealerBankroll) {

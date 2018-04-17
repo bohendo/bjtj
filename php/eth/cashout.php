@@ -28,7 +28,7 @@ function eth_cashout($state, $id) {
     'to'=>$contract_address,
     'value'=>"0x0",
     'data'=>'0x'
-      .substr(keccak('Cashout(address,uint256)'), 0, 8)
+      .substr(keccak('cashout(address,uint256)'), 0, 8)
       .str_pad(substr($id,2), 64, '0', STR_PAD_LEFT)
       .str_pad(meth_to_hex_wei($toCash), 64, '0', STR_PAD_LEFT)
   );
