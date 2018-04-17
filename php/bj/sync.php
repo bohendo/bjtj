@@ -106,7 +106,7 @@ function bjtj_bj_sync($old_state) {
   if (
     count($new_state->playerHands) === 1 &&
     count($new_state->playerHands[0]->cards) === 2 &&
-    $new_state->chips > $new_state->bet
+    $new_state->chips >= $new_state->bet
   ) {
     array_push($new_state->moves, 'double');
     if (score_cards(array($new_state->playerHands[0]->cards[0]))->n === score_cards(array($new_state->playerHands[0]->cards[1]))->n) {
