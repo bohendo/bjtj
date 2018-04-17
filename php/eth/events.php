@@ -6,11 +6,11 @@ add_filter('update_option_bjtj_contract_address', 'eth_save_all_payments');
 add_filter('update_option_bjtj_dealer_address', 'eth_save_all_payments');
 
 function eth_save_all_payments() {
-  return eth_save_payments(true);
+  eth_save_payments(true);
 }
 
 function eth_save_new_payments() {
-  return eth_save_payments(false);
+  eth_save_payments(false);
 }
 
 function eth_save_payments($get_old) {
@@ -30,17 +30,17 @@ function eth_save_payments($get_old) {
   }
 
   $event_filter = get_option('bjtj_event_filter');
-  if($event_filter == false) {
+  if($get_old || $event_filter == false) {
     $deployedOn = eth_deployedOn($ethprovider, $contract_address);
 
     $method = 'eth_newFilter';
     $params = array(array(
       'fromBlock'=>'0x'.dechex($deployedOn),
       'toBlock'=>'latest',
-      'address'=>$contract,
+      'address'=>$contract_address,
       'topics'=>array(
         '0x'.keccak('Deposit(address,address,uint256)'),
-        '0x'.str_pad(substr($dealer,2), 64, '0', STR_PAD_LEFT)
+        '0x'.str_pad(substr($dealer_address,2), 64, '0', STR_PAD_LEFT)
       )
     ));
     $event_filter = eth_jsonrpc($ethprovider, $method, $params);
