@@ -1,7 +1,7 @@
 var BlackjackTipJar = artifacts.require('./BlackjackTipJar.sol')
 
-const msg = (actual, expected) => {
-  return `got [${typeof actual}] ${actual} but expected [${typeof expected}] ${expected}`
+const msg = (tag, actual, expected) => {
+  return `[${tag}] got [${typeof actual}] ${actual} but expected [${typeof expected}] ${expected}`
 }
 
 contract('BlackjackTipJar', function (accounts) {
@@ -25,7 +25,7 @@ contract('BlackjackTipJar', function (accounts) {
     }).then(receipt=>{
       return bjtj.bankrolls(dealer1)
     }).then(dealer_balance=>{
-      assert(dealer_balance.eq(five), msg(dealer_balance, five))
+      assert(dealer_balance.eq(five), msg('dealer bankroll', dealer_balance, five))
     })
   })
 
@@ -42,7 +42,7 @@ contract('BlackjackTipJar', function (accounts) {
     }).then(receipt=>{
       return bjtj.bankrolls(pitboss)
     }).then(pitboss_balance=>{
-      assert(pitboss_balance.eq(five), msg(pitboss_balance, five))
+      assert(pitboss_balance.eq(five), msg('pitboss bankroll', pitboss_balance, five))
     })
   })
 
@@ -73,32 +73,30 @@ contract('BlackjackTipJar', function (accounts) {
       expected.dp = expected.overflow.mul(cut).div(100)
       expected.db = expected.db.add(expected.dp)
 
-      // Make a big deposit
+      // Make a big deposit then cashout 0
       return bjtj.deposit(dealer2, { from: dealer1, value: alot })
+    }).then(receipt=>{
+      return bjtj.cashout(dealer1, 0, { from: dealer2 })
     }).then(receipt=>{
 
       // Make sure an Overflow event was emitted
       let events = receipt.logs.filter(l=>l.event === 'Overflow')
-      assert(events.length === 1, msg(events.length, 1))
+      assert(events.length === 1, msg('Overflow emitted', events.length, 1))
 
       // Make sure the dealer was paid what we expected
       actual.dp = new BN(events[0].args._value);
-      assert(expected.dp.eq(actual.dp), msg(expected.dp, actual.dp))
+      assert(expected.dp.eq(actual.dp), msg('dealer payout', expected.dp, actual.dp))
 
       return bjtj.bankrolls(dealer2)
     }).then(bankroll=>{
 
       // Make sure the dealer's bankroll is overflow_lower
-      assert(bankroll.eq(expected.dealer_bankroll), msg(bankroll, expected.dealer_bankroll))
-
-      // Make sure the dealer received their overflow payment
-      actual.db = web3.eth.getBalance(dealer2)
-      assert(actual.db.eq(expected.db),  msg(actual.db, expected.db))
+      assert(bankroll.eq(expected.dealer_bankroll), msg('dealer bankroll', bankroll, expected.dealer_bankroll))
 
       // Make sure the pitboss received their overflow payment
       actual.pb = web3.eth.getBalance(pitboss)
       expected.pb = expected.pb.add(expected.overflow.sub(expected.dp))
-      assert(actual.pb.eq(expected.pb), msg(actual.pb, expected.pb))
+      assert(actual.pb.eq(expected.pb), msg('pitboss balance', actual.pb, expected.pb))
     })
   })
 
