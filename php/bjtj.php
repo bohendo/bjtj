@@ -20,6 +20,9 @@ include $bjtj_dir.'eth/index.php';
 include $bjtj_dir.'install.php';
 register_activation_hook(__FILE__, 'bjtj_install');
 
+include $bjtj_dir.'uninstall.php';
+register_deactivation_hook(__FILE__, 'bjtj_uninstall');
+
 include $bjtj_dir.'widget.php';
 add_action('widgets_init', 'bjtj_register_widget');
 
