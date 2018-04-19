@@ -28,9 +28,21 @@ function eth_jsonrpc($eth_provider, $method, $params) {
   $err = curl_error($ch);
   curl_close($ch);
 
-  if ($err) return false;
-  else if (property_exists($res, 'result')) return $res->result;
-  else return $res;
+  if ($err) {
+    update_option('bjtj_debug', json_encode($err));
+    return false;
+  }
+
+  if (property_exists($res, 'error')) {
+    update_option('bjtj_debug', json_encode($res));
+    return false;
+  }
+
+  if (property_exists($res, 'result')) {
+    return $res->result;
+  }
+
+  return false;
 
 }
 
