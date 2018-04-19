@@ -8,7 +8,7 @@ var BJTJ = web3.eth.contract(bjtjData.abi)
 
 var deploytx = {
   "data": bjtjData.bytecode,
-  "gas": 1000000,
+  "gas": 2000000,
 }
 
 // Print welcome message
