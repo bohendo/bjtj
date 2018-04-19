@@ -34,7 +34,7 @@ function eth_jsonrpc($eth_provider, $method, $params) {
   }
 
   if (property_exists($res, 'error')) {
-    update_option('bjtj_debug', json_encode($res));
+    update_option('bjtj_debug', json_encode($res->error));
     return false;
   }
 
