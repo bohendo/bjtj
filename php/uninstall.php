@@ -5,9 +5,7 @@ if (!defined('ABSPATH')) { exit(); }
 
 function bjtj_uninstall() {
   delete_option('bjtj_db_version');
-  delete_option('bjtj_ethprovider');
-  delete_option('bjtj_contract_address');
-  delete_option('bjtj_dealer_address');
+  delete_option('bjtj_dealer_key');
   delete_option('bjtj_event_filter');
 
   // I don't want to delete my custom database tables..
