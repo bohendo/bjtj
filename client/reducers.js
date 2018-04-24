@@ -22,7 +22,7 @@ const initialState = {
 
   contract_address: '0x???',
   dealer_address: '0x???',
-  dealer_balance: '0',
+  dealer_balance: '???',
 
   waiting: false,
   authed: false

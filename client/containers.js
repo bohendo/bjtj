@@ -6,7 +6,7 @@ const mapStateToProps = state => {
 
   if (typeof state.dealer_balance !== 'string') {
     console.log(`Invalid bankroll: ${state.dealer_balance}`)
-    state.dealer_balance = "0";
+    state.dealer_balance = "???";
   }
 
   return state
