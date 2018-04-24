@@ -13,7 +13,6 @@ class Blackjack {
 
   // TODO: make these private?
   public $deck = array();
-
   public $hiddenCard = false;
 
 }

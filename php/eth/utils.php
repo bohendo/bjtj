@@ -26,5 +26,12 @@ function meth_to_hex_wei($meth) {
   return gmp_strval(gmp_mul(intval($meth * 10), gmp_pow(10,14)), 16);
 }
 
+function is_hex($str) {
+  if (preg_match('/^0x[0-9a-fA-F]+$/', $str) === 1) {
+    return true;
+  }
+  return false;
+}
+
 
 ?>

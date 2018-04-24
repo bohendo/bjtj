@@ -16,6 +16,7 @@ function eth_balance($eth_provider, $address) {
   $params = array($address,'latest');
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (gettype($result) !== 'string') return false;
+  if (!is_hex($result)) return false;
   return gmp_init(substr($result, 2), 16);
 }
 
@@ -30,6 +31,7 @@ function eth_bankroll($eth_provider, $contract, $dealer) {
   ), 'latest');
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (gettype($result) !== 'string') return false;
+  if (!is_hex($result)) return false;
   return gmp_init(substr($result, 2), 16);
 }
 
@@ -42,6 +44,7 @@ function eth_deployedOn($eth_provider, $contract) {
   ), 'latest');
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (gettype($result) !== 'string') return false;
+  if (!is_hex($result)) return false;
   return gmp_init(substr($result, 2), 16);
 }
 
@@ -51,6 +54,7 @@ function eth_nonce($eth_provider, $address) {
   $params = array( $address, 'latest');
   $result = eth_jsonrpc($eth_provider, $method, $params);
   if (gettype($result) !== 'string') return false;
+  if (!is_hex($result)) return false;
   return gmp_init(substr($result, 2), 16);
 }
 
