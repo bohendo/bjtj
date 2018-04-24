@@ -12,10 +12,9 @@ function toHex($byte) {
 }
 
 
-// technically not RLP, more like LP
 // Adds length prefix to a hex string
 // See Ethereum yellow paper equation (179)
-function RLP($hexstr = '') {
+function LP($hexstr = '') {
   $tmp = $hexstr;
   $bytes = array();
   if (substr($tmp, 0, 2) === '0x') {
@@ -53,10 +52,10 @@ function RLP($hexstr = '') {
 }
 
 
-// Puts the R in RLP.. not really
+// Puts the R in RLP
 // Adds a length prefix to LP'd hex data
 // See Ethereum yellow paper equation (182)
-function LP($rlp = '') {
+function RLP($rlp = '') {
   $tmp = $rlp;
   if (substr($tmp, 0, 2) === '0x') {
     $tmp = substr($tmp, 2);
@@ -99,28 +98,19 @@ function eth_sendTx($tx) {
       gmp_init($tx->gasLimit,16)
     )
   ) <= 0) {
+    update_option('bjtj_debug', "Out of gas!");
     return false;
   }
 
+  // yellow paper eq (285) specifies the order of tx params
 
-  // Transaction Hash is a hash of raw concatenated values:
-  // nonce, gas price, gas limit, to, value, data, chain id
+  $rawTx = LP($tx->nonce).LP($tx->gasPrice).LP($tx->gasLimit).LP($tx->to).LP($tx->value).LP($tx->data);
 
   // Append a replay-resistant signature placeholder according to EIP155
   // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
 
-  $txHash = keccak(''
-    .pack('H*',$tx->nonce)
-    .pack('H*',$tx->gasPrice)
-    .pack('H*',$tx->gasLimit)
-    .pack('H*',$tx->to)
-    .pack('H*',$tx->value)
-    .pack('H*',$tx->data)
-    .pack('H*',$net_version)
-  );
+  $fakeTx = RLP($rawTx.LP(dechex($net_version)).'8080');
 
-  $rawTx = RLP($tx->nonce).RLP($tx->gasPrice).RLP($tx->gasLimit).RLP($tx->to).RLP($tx->value).RLP($tx->data);
-  $fakeTx = LP($rawTx.RLP(dechex($net_version)).'8080');
   $txHash = keccak(pack('H*', $fakeTx));
 
   $sig = ecdsa_sign($txHash, get_option('bjtj_dealer_key'));
@@ -129,12 +119,17 @@ function eth_sendTx($tx) {
   // Sanity checks to make sure the signature is valid
   $addr = '0x'.substr(keccak(pack('H*',ecdsa_recover($txHash, $sig))),-40);
   if ($addr !== $from) {
-    update_option('bjtj_debug', "Sanity check failed sending: $input <br> $fakeTx <br> <br> h='$txHash' <br> r='".$sig['r']."' <br> s='".$sig['s']."' <br> v='".$sig['v']."'<br> recovered $addr !== from ".$from);
+    update_option('bjtj_debug', "Sanity check failed sending: $input <br>
+      $fakeTx <br> <br>
+      h='$txHash' <br>
+      r='".$sig['r']."' <br>
+      s='".$sig['s']."' <br>
+      v='".$sig['v']."'<br>
+      recovered $addr !== from ".$from);
     return false;
   }
 
-  $rawTx = RLP($tx->nonce).RLP($tx->gasPrice).RLP($tx->gasLimit).RLP($tx->to).RLP($tx->value).RLP($tx->data);
-  $signedTx = '0x'.LP($rawTx.RLP(strval(dechex($sig['v']))).RLP($sig['r']).RLP($sig['s']));
+  $signedTx = '0x'.RLP($rawTx.LP(strval(dechex($sig['v']))).LP($sig['r']).LP($sig['s']));
 
   // Give the signed Tx to our ethprovider to broadcast
   $method = 'eth_sendRawTransaction';
@@ -144,11 +139,25 @@ function eth_sendTx($tx) {
   $output = json_encode($result, JSON_PRETTY_PRINT);
 
   if (!$result || property_exists($result, 'error')) {
-    update_option('bjtj_debug', "Error from provider while sending: $input <br> <br> $fakeTx <br> h='$txHash' <br> r='".$sig['r']."' <br> s='".$sig['s']."' <br> v='".$sig['v']."'<br> $output");
+    update_option('bjtj_debug', "Error from provider while sending: $input <br> <br>
+      $fakeTx <br>
+      h='$txHash' <br>
+      r='".$sig['r']."' <br>
+      s='".$sig['s']."' <br>
+      v='".$sig['v']."'<br>
+      $output");
     return false;
   }
 
-  return '0x'.$txHash;
+  $txHash = '0x'.keccak(pack('H*', substr($signedTx, 2)));
+  if ($txHash !== $result) {
+    update_option('bjtj_debug', "$input <br>
+      tx=\"$signedTx\" <br>
+      got=\"$txHash\" <br>
+      exp=$output");
+  }
+
+  return $result;
 }
 
 function getGasPrice() {
