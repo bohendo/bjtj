@@ -21,19 +21,25 @@ function bjtj_get_contract_status($ethprovider, $contract_address) {
   if (!$ethprovider) {
     return "Unable to connect to Ethereum provider";
   }
+
   if (!$contract_address) {
-    return "Please enter a contract address that looks something like: 0x123456789abcdef0123456789abcdef012345678";
+    return "Please enter a contract address that looks something like: 0x2610a8d6602d7744174181348104dafc2ad94b28";
   }
 
   $deployedOn = eth_deployedOn($ethprovider, $contract_address);
   $contract_balance = eth_balance($ethprovider, $contract_address);
 
-  if ($contract_balance === false || $deployedOn === false) {
-    return "Unable to query this contract address";
+  if ($contract_balance === false) {
+    return "Unable to connect to Ethereum provider";
   }
 
   $contract_balance = display_wei($contract_balance);
-  return "Balance: <strong>$contract_balance</strong> mETH".', deployed on block: <strong>'.$deployedOn.'</strong>';
+
+  if ($deployedOn === false) {
+    return "Balance: <strong>$contract_balance</strong> mETH <br> Error: Contract method call failed";
+  }
+
+  return "Balance: <strong>$contract_balance</strong> mETH <br> Deployed on block: <strong>$deployedOn</strong>";
 }
 
 
@@ -60,11 +66,11 @@ function bjtj_get_dealer_status($ethprovider, $contract_address, $dealer_address
   $dealer_balance = display_wei($dealer_balance);
 
   if ($dealer_bankroll === false) {
-    return "Balance: <strong>$dealer_balance</strong> mETH <br/> Nonce: <strong>$dealer_nonce</strong>";
+    return "Balance: <strong>$dealer_balance</strong> mETH <br> Nonce: <strong>$dealer_nonce</strong> <br> Error: Contract method call failed";
   }
 
   $dealer_bankroll = display_wei($dealer_bankroll);
-  return "Balance: <strong>$dealer_balance</strong> mETH <br/> Bankroll: <strong>$dealer_bankroll</strong> mETH <br/> Nonce: <strong>$dealer_nonce</strong>";
+  return "Balance: <strong>$dealer_balance</strong> mETH <br> Bankroll: <strong>$dealer_bankroll</strong> mETH <br> Nonce: <strong>$dealer_nonce</strong>";
 }
 
 
@@ -74,13 +80,18 @@ function bjtj_get_event_status($ethprovider, $event_filter) {
   if (!$ethprovider) {
     return "Unable to connect to Ethereum provider";
   }
+
   if (!$event_filter) {
     return "Event filter not initialized";
   }
 
   $npayments = $wpdb->get_var("SELECT COUNT(*) FROM ".$wpdb->prefix."bjtj_payments;");
 
-  return "Searching for events using filter <strong>$event_filter</strong>, DB contains <strong>$npayments</strong> payments";
+  if (!$npayments) {
+    return "Searching for events using filter <strong>$event_filter</strong> <br> Error: Unable to query database";
+  }
+
+  return "Searching for events using filter <strong>$event_filter</strong> <br> DB contains <strong>$npayments</strong> payments";
 }
 
 ?>
