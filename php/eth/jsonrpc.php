@@ -14,8 +14,8 @@ function eth_jsonrpc($eth_provider, $method, $params) {
   ));
 
   // http://php.net/manual/en/function.curl-setopt.php
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 2);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
