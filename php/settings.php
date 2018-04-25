@@ -27,12 +27,21 @@ function bjtj_register_settings() {
   register_setting('bjtj_settings_group', 'bjtj_dealer_address', $address_defaults);
   register_setting('bjtj_settings_group', 'bjtj_dealer_key', $key_defaults);
   register_setting('bjtj_settings_group', 'bjtj_contract_address', $address_defaults);
+
+  $debug_defaults = array(
+    'type'=>'string',
+    'group'=>'bjtj_debug_group',
+    'description'=>'Debug Message',
+    'sanitize_callback'=>'fresh_debug',
+    'show_in_rest'=>false
+  );
+  register_setting('bjtj_debug_group', 'bjtj_debug', $debug_defaults);
 }
 
 
 function sanitize_eth_key($key) {
   if (is_string($key) && strlen($key) == 64 && preg_match('/[0-9a-f]{64}/', $key)) {
-    return $key;
+    return strtolower($key);
   }
   return '';
 }
@@ -44,6 +53,9 @@ function sanitize_eth_address($address) {
   }
   return '';
 }
+
+
+function fresh_debug($debug) { return 'Nothing has gone wrong.. yet'; }
 
 
 function bjtj_create_settings_page() {
@@ -70,10 +82,7 @@ function bjtj_render_settings() {
     <div class="wrap">
       <h1>Blackjack Tip Jar Settings</h1>
       <form method="post" action="options.php">
-
-  ';
-  settings_fields('bjtj_settings_group');
-  echo '
+        '; settings_fields('bjtj_settings_group'); echo '
 
         <table class="form-table">
 
@@ -118,6 +127,7 @@ function bjtj_render_settings() {
             <th scope="row">Debug</th>
             <td>'.get_option('bjtj_debug').'</td>
           </tr>
+
         </table>
 
         <p class="submit">
@@ -125,6 +135,17 @@ function bjtj_render_settings() {
         </p>
 
       </form>
+
+      <form method="post" action="options.php">
+        '; settings_fields('bjtj_debug_group'); echo '
+
+        <input type="hidden" name="bjtj_debug" value="" />
+
+        <p class="submit">
+          <input type="submit" class="button-secondary" value="Reset Debug Message" />
+        </p>
+      </form>
+
     </div>
   ';
 
