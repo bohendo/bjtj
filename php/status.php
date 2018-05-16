@@ -7,12 +7,13 @@ function bjtj_get_provider_status($ethprovider) {
   }
 
   $bjtj_net_id = eth_net_id($ethprovider);
+  $bjtj_gas_price = eth_gas_price($ethprovider);
 
   if (!$bjtj_net_id) {
     return "Unable to connect to $ethprovider";
   }
 
-  return "Successfully connected to network <strong>$bjtj_net_id</strong>";
+  return "Successfully connected to network <strong>$bjtj_net_id</strong> <br> Gas price: <strong>$bjtj_gas_price</strong>";
 }
 
 

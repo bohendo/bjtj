@@ -1,15 +1,6 @@
 <?php
 
 
-function eth_net_id($eth_provider) {
-  $method = 'net_version';
-  $params = array();
-  $result = eth_jsonrpc($eth_provider, $method, $params);
-  if (gettype($result) !== 'string') return false;
-  return intval($result, 10);
-}
-
-
 // returns wei
 function eth_balance($eth_provider, $address) {
   $method = 'eth_getBalance';
@@ -46,6 +37,25 @@ function eth_deployedOn($eth_provider, $contract) {
   if (gettype($result) !== 'string') return false;
   if (!is_hex($result)) return false;
   return gmp_init(substr($result, 2), 16);
+}
+
+
+function eth_gas_price($eth_provider) {
+  $method = 'eth_gasPrice';
+  $params = array();
+  $result = eth_jsonrpc($eth_provider, $method, $params);
+  if (gettype($result) !== 'string') return false;
+  if (!is_hex($result)) return false;
+  return gmp_init(substr($result, 2), 16);
+}
+
+
+function eth_net_id($eth_provider) {
+  $method = 'net_version';
+  $params = array();
+  $result = eth_jsonrpc($eth_provider, $method, $params);
+  if (gettype($result) !== 'string') return false;
+  return intval($result, 10);
 }
 
 
