@@ -40,16 +40,17 @@ build/bjtjutils.js: $(artifacts) ops/utils.js
 	echo >> build/bjtjutils.js
 	cat ops/utils.js >> build/bjtjutils.js
 
-client.bundle.js: node_modules webpack.client.js $(artifacts) $(client)
+client.bundle.js: node-modules webpack.client.js $(artifacts) $(client)
 	$(webpack) --config ops/webpack.client.js
 
 test: $(artifacts)
 	truffle test
 
-$(artifacts): $(sol) node_modules
+$(artifacts): $(sol) node-modules
 	truffle compile
 	touch $(artifacts)
 
-node_modules: package.json
+node-modules: package.json
 	npm install
+	touch build/node-modules
 
